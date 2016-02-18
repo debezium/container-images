@@ -16,6 +16,8 @@ Next, start a container named `kafka` that runs Kafka on port 9092 and that uses
 
     $ docker run -d --name kafka -p 9092:9092 --link zookeeper:zookeeper debezium/kafka
 
+*TODO: The following is incomplete* ...
+
 Third, start a container named `connect` that runs the Kafka Connect service and all available Debezium connectors, linking to the `kafka` container and exposing Kafka Connect's REST API on port 8083:
 
     $ docker run -d --name connect -p 8083:8083 --link zookeeper:zookeeper --link kafka:kafka debezium/connect
