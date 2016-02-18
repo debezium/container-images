@@ -1,0 +1,12 @@
+.idea/
+*.iml
+*.ipr
+*.iws
+.metadata/
+.recommenders/
+.classpath
+.project
+.cache
+.settings/
+.gradle/
+.DS_Store
