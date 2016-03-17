@@ -1,4 +1,4 @@
-FROM debezium/jre8
+FROM debezium/jdk8
 
 MAINTAINER Debezium Community
 
@@ -30,7 +30,7 @@ RUN curl -fSL -o /tmp/zookeeper.tar.gz $(curl --stderr /dev/null https://www.apa
 #
 # Verify the contents and then install ...
 #
-RUN echo "$MD5HASH /tmp/zookeeper.tar.gz" | md5sum -c - &&\
+RUN echo "$MD5HASH  /tmp/zookeeper.tar.gz" | md5sum -c - &&\
     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
     rm -f /tmp/zookeeper.tar.gz
 

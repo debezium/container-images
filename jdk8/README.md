@@ -1,4 +1,4 @@
-A simple image with the OpenJDK Java Runtime Engine version 8. This is used as a base image for other Debezium images.
+A simple image with the Azul Zulu build of the OpenJDK Java Development Kit version 8. This is used as a base image for other Debezium images.
 
 # What is Debezium?
 
