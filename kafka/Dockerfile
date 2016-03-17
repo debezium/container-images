@@ -1,4 +1,4 @@
-FROM debezium/jre8
+FROM debezium/jdk8
 
 MAINTAINER Debezium Community
 
@@ -6,10 +6,10 @@ MAINTAINER Debezium Community
 # Set the version, home directory, and MD5 hash.
 # MD5 hash taken from http://kafka.apache.org/downloads.html for this version of Kafka
 #
-ENV KAFKA_VERSION=0.9.0.0 \
+ENV KAFKA_VERSION=0.9.0.1 \
     SCALA_VERSION=2.11 \
     KAFKA_HOME=/kafka \
-    MD5HASH=084FB80CDC8C72DC75BC3519A5D2CC5C
+    MD5HASH=B71E5CBC78165C1CA483279C27402663
 
 #
 # Create a user and home directory for Kafka
@@ -29,7 +29,7 @@ RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org
 #
 # Verify the contents and then install ...
 #
-RUN echo "$MD5HASH /tmp/kafka.tgz" | md5sum -c - &&\
+RUN echo "$MD5HASH  /tmp/kafka.tgz" | md5sum -c - &&\
     tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1 &&\
     rm -f /tmp/kafka.tgz
 

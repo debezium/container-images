@@ -1,96 +1,5 @@
 #!/bin/bash
 
-usage() {
-    echo "When a container is started, it can be run with several commands. The following command"
-    echo "will start a Kafka broker:"
-    echo ""
-    echo "    start"
-    echo ""
-    echo "while the following command can be used when attaching to a running container to create a new topic:"
-    echo ""
-    echo "    create-topic [-p numPartitions] [-r numReplicas] topic"
-    echo ""
-    echo "where 'topic' is the name of the new topic, 'numPartitions' is the number of partitions within"
-    echo "the new topic, and 'numReplicas' is the number of replicas for each partition within the"
-    echo "new topic. The default for both 'numPartitions' and 'numReplicas' is '1'."
-    echo ""
-    echo "The following command can be used when attaching to a running container to watch an existing topic:"
-    echo ""
-    echo "    watch-topic [-a] topicName"
-    echo ""
-    echo "This help message is displayed with the following command:"
-    echo ""
-    echo "    help"
-    echo ""
-    echo "Finally, the container can run arbitrary commands. For example, to start a new container"
-    echo "or attach to a running container and obtain a bash shell:"
-    echo ""
-    echo "    bash"
-    echo ""
-    echo "If none of these are used, then the container will start the Kafka broker."
-    echo ""
-    echo ""
-    echo "Environment variables"
-    echo "---------------------"
-    echo ""
-    echo "You can pass multiple environment variables to alter the Kafka configuration:"
-    echo ""
-    echo "   BROKER_ID                 Recommended. Set this to the unique and persistent number for the broker."
-    echo "                             This must be set for every broker in a Kafka cluster, and should be"
-    echo "                             set for a single standalone broker. The default is '1', and setting this"
-    echo "                             will update the Kafka configuration."
-    echo "   ZOOKEEPER_CONNECT         Recommended. Set this to a string described in the Kafka documentation"
-    echo "                             for the 'zookeeper.connect' property so that the Kafka broker can find the"
-    echo "                             Zookeeper service. If this container is started with a link to another"
-    echo "                             container running Zookeeper on port 2181, then this environment"
-    echo "                             variable need not be set since it can be determined automatically."
-    echo "                             Otherwise, it should be set with an explicit value. Setting this"
-    echo "                             will update the Kafka configuration."
-    echo "   HEAP_OPTS                 Recommended. Use this to set the JVM options for the Kafka broker."
-    echo "                             By default a value of '-Xmx1G -Xms1G' is used, meaning that each"
-    echo "                             Kafka broker uses 1GB of memory. Using too little memory may cause"
-    echo "                             performance problems, while using too much may prevent the broker"
-    echo "                             from starting properly given the memory available on the machine."
-    echo "   CREATE_TOPICS             Optional. Use this to specify the topics that should be created"
-    echo "                             as soon as the broker starts. The value should either be a comma-separated"
-    echo "                             list of topics, partitions, and replicas. For example, a single value"
-    echo "                             'topic1:1:2,topic2:3:1' or the array will create 'topic1' with 1 partition and"
-    echo "                             2 replicas, and 'topic2' with 3 partitions and 1 replica."
-    echo "   LOG_LEVEL                 Optional. Set the level of detail for Zookeeper's application log"
-    echo "                             written to STDOUT and STDERR. Valid values are 'INFO' (default), 'WARN',"
-    echo "                             'ERROR', 'DEBUG', or 'TRACE'."
-    echo ""
-    echo "Environment variables that start with 'KAFKA_' will be used to update the Kafka configuration file."
-    echo "Each environment variable name will be mapped to a configuration property name by:"
-    echo ""
-    echo "  1. removing the 'KAFKA_' prefix;"
-    echo "  2. lowercasing all characters; and"
-    echo "  3. converting all '_' characters to '.' characters"
-    echo ""                  
-    echo "For example, the environment variable 'KAFKA_ADVERTISED_HOST_NAME' is converted to the"
-    echo "'advertised.host.name' property, while 'KAFKA_AUTO_CREATE_TOPICS_ENABLE' is converted to"
-    echo "the 'auto.create.topics.enable' property. The container will then update the Kafka configuration"
-    echo "file to include the property's name and value."
-    echo ""
-    echo "The value of the environment variable may not contain a '\@' character."
-    echo ""
-    echo ""
-    echo "Volumes"
-    echo "-------"
-    echo ""
-    echo "The container exposes two volumes:"
-    echo ""
-    echo "  /kafka/data     The broker writes all persisted data as files within this directory"
-    echo "                  inside a subdirectory named with the value of BROKER_ID (see above)."
-    echo "                  Mount it appropriately when running your container to persist the data"
-    echo "                  after the container is stopped."
-    echo ""
-    echo "  /kafka/logs     The broker places its application log files within this directory."
-    echo ""
-    echo "  /kafka/config   The directory for the broker's configuration files."
-    echo ""
-}
-
 # Exit immediately if a *pipeline* returns a non-zero status. (Add -x for command tracing)
 set -e
 
@@ -119,13 +28,27 @@ export KAFKA_ZOOKEEPER_CONNECT=$ZOOKEEPER_CONNECT
 export KAFKA_BROKER_ID=$BROKER_ID
 export KAFKA_LOG_DIRS="$KAFKA_HOME/data/$KAFKA_BROKER_ID"
 mkdir -p $KAFKA_LOG_DIRS
+unset BROKER_ID
+unset ZOOKEEPER_CONNECT
 
-if [[ -z "$KAFKA_ADVERTISED_PORT" ]]; then
-    export KAFKA_ADVERTISED_PORT=9092
+if [[ -z "$ADVERTISED_PORT" ]]; then
+    ADVERTISED_PORT=9092
 fi
-if [[ -z "$KAFKA_ADVERTISED_HOST_NAME" ]]; then
-    export KAFKA_ADVERTISED_HOST_NAME=$(ip addr | grep 'BROADCAST' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
+if [[ -z "$HOST_NAME" ]]; then
+    HOST_NAME=$(ip addr | grep 'BROADCAST' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 fi
+
+: ${PORT:=8083}
+: ${ADVERTISED_PORT:=8083}
+: ${ADVERTISED_HOST_NAME:=$HOST_NAME}
+export KAFKA_ADVERTISED_PORT=$ADVERTISED_PORT
+export KAFKA_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
+export KAFKA_PORT=$PORT
+export KAFKA_HOST_NAME=$HOST_NAME
+unset PORT
+unset HOST_NAME
+unset ADVERTISED_HOST_PORT
+unset ADVERTISED_HOST_NAME
 echo "Using KAFKA_ADVERTISED_PORT=$KAFKA_ADVERTISED_PORT"
 echo "Using KAFKA_ADVERTISED_HOST_NAME=$KAFKA_ADVERTISED_HOST_NAME"
 
@@ -141,6 +64,7 @@ case $1 in
         sed -i -r -e "s|=INFO, stdout|=$LOG_LEVEL, stdout|g" $KAFKA_HOME/config/log4j.properties
         sed -i -r -e "s|^(log4j.appender.stdout.threshold)=.*|\1=${LOG_LEVEL}|g" $KAFKA_HOME/config/log4j.properties
         export KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:$KAFKA_HOME/config/log4j.properties"
+        unset LOG_LEVEL
         
         #
         # Process all environment variables that start with 'KAFKA_' (but not 'KAFKA_HOME' or 'KAFKA_VERSION'):
@@ -148,7 +72,7 @@ case $1 in
         for VAR in `env`
         do
           env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
-          if [[ $env_var =~ ^KAFKA_ && $env_var != "KAFKA_VERSION" && $env_var != "KAFKA_HOME" ]]; then
+          if [[ $env_var =~ ^KAFKA_ && $env_var != "KAFKA_VERSION" && $env_var != "KAFKA_HOME"  && $env_var != "KAFKA_LOG4J_OPTS" ]]; then
             prop_name=`echo "$VAR" | sed -r "s/^KAFKA_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
             if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/server.properties; then
                 #note that no config names or values may contain an '@' char
@@ -182,25 +106,45 @@ case $1 in
     watch-topic)
         shift
         FROM_BEGINNING=""
-        while getopts :a option; do
+        FETCH_MIN_BYTES=1
+        PRINT_KEY="false"
+        while getopts :akm: option; do
             case ${option} in
                 a)
                     FROM_BEGINNING="--from-beginning"
                     ;;
+                k)
+                    PRINT_KEY="true"
+                    ;;
+                m)
+                    FETCH_MIN_BYTES=$OPTARG
+                    ;;
                 h|\?)
-                    usage; exit 1;
+                    echo "Usage:   watch-topic [-a] [-k] [-m minBytes] topicname"
+                    echo ""
+                    echo "where"
+                    echo ""
+                    echo "    -a              Consume all messages from the beginning of the topic."
+                    echo "                    By default, this starts consuming messages starting at the"
+                    echo "                    time this utility connects."
+                    echo "    -k              Display the key with the value. By default, the key will"
+                    echo "                    not be displayed."
+                    echo "    -m minBytes     Fetch messages only when doing so will consume at least"
+                    echo "                    the specified number of bytes. Defaults to '1'."
+                    echo "    topicname       The required name of the topic to watch."
+                    exit 1;
                     ;;
             esac
         done
         shift $((OPTIND -1))
         if [[ -z $1 ]]; then
             echo "ERROR: A topic name must be specified"
-            usage; exit 1;
+            exit 1;
         fi    
         TOPICNAME=$1
         shift
         echo "Contents of topic $TOPICNAME:"
-        exec $KAFKA_HOME/bin/kafka-console-consumer.sh --zookeeper $KAFKA_ZOOKEEPER_CONNECT --topic "$TOPICNAME" $FROM_BEGINNING $@
+        exec $KAFKA_HOME/bin/kafka-console-consumer.sh --zookeeper $KAFKA_ZOOKEEPER_CONNECT --property print.key=$PRINT_KEY --property fetch.min.bytes=$FETCH_MIN_BYTES --topic "$TOPICNAME" $FROM_BEGINNING $@
         ;;
     create-topic)
         shift
@@ -215,22 +159,35 @@ case $1 in
                     REPLICAS=$OPTARG
                     ;;
                 h|\?)
-                    usage; exit 1;
+                    echo "Usage:   create-topic [-p numPartitions] [-r numReplicas] topicname"
+                    echo ""
+                    echo "where"
+                    echo ""
+                    echo "    -p numPartitions   Create the topic with the specified number of partitions."
+                    echo "                       By default, the topic is created with only one partition."
+                    echo "    -r numReplicas     Create the topic with the specified number of replicas."
+                    echo "                       By default, the topic is created with only one replica."
+                    echo "                       The number of replicas may not be larger than the number"
+                    echo "                       of brokers."
+                    echo "    topicname          The required name of the new topic."
+                    exit 1;
                     ;;
             esac
         done
         shift $((OPTIND -1))
         if [[ -z $1 ]]; then
             echo "ERROR: A topic name must be specified"
-            usage; exit 1;
+            exit 1;
         fi    
         TOPICNAME=$1
         echo "Creating new topic $TOPICNAME with $PARTITION partition(s) and $REPLICAS replica(s)..."
         exec $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partition $PARTITION --topic "$TOPICNAME"
         ;;
-    help)
-        usage; exit 1;
+    list-topics)
+        echo "Listing topics..."
+        exec $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $KAFKA_ZOOKEEPER_CONNECT
         ;;
+
 esac
 
 # Otherwise just run the specified command
