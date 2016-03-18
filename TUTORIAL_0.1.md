@@ -10,13 +10,13 @@ Debezium 0.1 includes support for monitoring MySQL database servers. Support for
 
 # Running Debezium with Docker
 
-Running Debezium involves Zookeeper, Kafka, and Debezium's connector service. Production environments require running multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines.
+Running Debezium involves Zookeeper, Kafka, and Debezium's connector service. An easy way to try out Debezium is to use [Debezium's Docker images](https://hub.docker.com/u/debezium/), like what this tutorial does. However, production environments would require running multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines, but often you'll want to install Kafka and Zookeeper on [dedicated hardware](http://kafka.apache.org/documentation.html#operations).
 
 ## Starting Docker
 
 Before we do anything, make sure that Docker is running. If you're running Linux, you can either run the Docker daemon or configure it to run automatically on startup. In this case, the _Docker host_ is your local machine.
 
-If you're using Windows or OS X, you have to run the Docker daeomon in a virtual machine. [Docker Machine|https://docs.docker.com/machine/get-started/] is the typical way to do this, so the rest of this section covers the bare minimum about how to use Docker Machine that's been [properly installed and configured])(https://www.docker.com/products/docker-toolbox) with a machine named "default" that runs the Docker daemon. First, check the status of the "default" machine:
+If you're using Windows or OS X, you have to run the Docker daeomon in a virtual machine. [Docker Machine](https://docs.docker.com/machine/get-started/) is the typical way to do this, so the rest of this section covers the bare minimum about how to use Docker Machine that's been [properly installed and configured](https://www.docker.com/products/docker-toolbox) with a machine named "default" that runs the Docker daemon. First, check the status of the "default" machine:
 
     $ docker-machine status default
 
