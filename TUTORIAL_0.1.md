@@ -1,8 +1,12 @@
-This tutorial walks you through running the Debezium platform for change data capture (CDC). It requires Docker (1.9 or later), and uses Debezium 0.1.0 that has support for monitoring MySQL database servers. Support for other DBMSes will be added in future releases.
+# Introduction
+
+This tutorial walks you through running the Debezium platform for change data capture (CDC). You will use Docker (1.9 or later) to start the Debezium platform, run a MySQL database server with a simple example database, use Debezium to monitor the database, and see the resulting event streams respond as the data in the database changes.
 
 # What is Debezium?
 
-Debezium is a distributed platform that turns your existing databases into event streams, so applications can see and respond in near real-time to each row-level change in the databases. Debezium is built on top of Kafka and provides Kafka Connect compatible connectors that monitor specific database management systems. Debezium records the history of data changes in Kafka logs, so your application can be stopped and restarted at any time and can easily consume all of the events it missed while it was not running, ensuring that all events are processed correctly and completely.
+Debezium is a distributed platform that turns your existing databases into event streams, so applications can see and respond immediately to each row-level change in the databases. Debezium is built on top of Kafka and provides Kafka Connect compatible connectors that monitor specific database management systems. Debezium records the history of data changes in Kafka logs, so your application can be stopped and restarted at any time and can easily consume all of the events it missed while it was not running, ensuring that all events are processed correctly and completely.
+
+Debezium 0.1 includes support for monitoring MySQL database servers. Support for other DBMSes will be added in future releases.
 
 # Running Debezium with Docker
 
