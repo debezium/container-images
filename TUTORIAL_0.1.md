@@ -85,7 +85,7 @@ Note: this is not the only way to run Docker containers. Rather than running a c
 
 Of all the different services/processes that make up Debezium, the first one to start is Zookeeper. Start a new terminal and set up the Docker environment (as described above), and then start a container with Zookeeper by running:
 
-    $ docker run -it --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 debezium/zookeeper
+    $ docker run -it --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 debezium/zookeeper:0.1
 
 This runs a new container using the `debezium/zookeeper` image, and assigns the name `zookeeper` to this container. The `-it` flag makes the container interactive, meaning it attaches the terminal's standard input and output to the container so that you can see what is going on in the container. The command maps three of the container's ports (e.g., 2181, 2888, and 3888) to the same ports on the Docker host so that software outside of the container can talk with Zookeeper.
 
@@ -128,7 +128,7 @@ The terminal will continue to show additional output as Zookeeper generates it.
 
 Open a new terminal and if needed configure it with the Docker environment. Then, start Kafka in a new container by running:
 
-    $ docker run -it --name kafka -p 9092:9092 -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper debezium/kafka
+    $ docker run -it --name kafka -p 9092:9092 -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper debezium/kafka:0.1
 
 This runs a new container using the `debezium/kafka` image, and assigns the name `kafka` to this container. The `-it` flag makes the container interactive, meaning it attaches the terminal's standard input and output to the container so that you can see what is going on in the container. The command maps port 9092 in the container to the same port on the Docker host so that software outside of the container can talk with Kafka. Finally, the command uses the `--link zookeeper:zookeeper` argument to tell the container that it can find Zookeeper in the container named `zookeeper` running on the same Docker host.
 
@@ -171,7 +171,7 @@ The terminal will continue to show additional output as Zookeeper generates it.
 
 Open a new terminal and if needed configure it with the Docker environment. Then, start Kafka Connect in a new container by running:
 
-    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper --link kafka:kafka debezium/connect
+    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper --link kafka:kafka debezium/connect:0.1
 
 This runs a new container using the `debezium/connect` image, and assigns the name `connect` to this container. The `-it` flag makes the container interactive, meaning it attaches the terminal's standard input and output to the container so that you can see what is going on in the container. The command maps port 8083 in the container to the same port on the Docker host so that software outside of the container can use Kafka Connect's REST API to set up and manage new connector instances. The command uses the `--link zookeeper:zookeeper` and `--link kafka:kafka` argument to tell the container that it can find Zookeeper and Kafka in the container named `zookeeper` and `kafka`, respectively, running on the same Docker host. And finally, it also uses the `-e` option four times to set the `GROUP_ID`, `CONFIG_STORAGE_TOPIC`, `OFFSET_STORAGE_TOPIC`, and `ADVERTISED_HOST_NAME` environment variables; the first three are required by this container (you can use different values as desired), while the last variable is optional but instructs the Kafka Connect server process to advertise the host at which the service is running (which in our case is the Docker host obtained via one of your computer's environment variables).
 
@@ -201,7 +201,7 @@ The Kafka Connect service exposes a RESTful API to manage the set of connectors,
 
     $ echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':'
 
-This checks the IP address of the Docker host, which for the rest of this example we'll assume is `192.168.99.100`.
+This checks the IP address of the Docker host, which for the rest of this example we'll assume is `192.168.99.100`. If this is blank, then be sure you set up your terminal with the Docker Machine environment (see above).
 
 Then, issue the following command to check the status of the Kafka Connect service running in the `connect` container, via the Docker host IP address which forwards port 8083 to the same port on the `connect` container:
 
@@ -228,7 +228,7 @@ At this point, we've started Zookeeper, Kafka, and Kafka Connect, but we've not 
 
 Open a new terminal and if needed configure it with the Docker environment. Then, start a new container that runs a MySQL database server preconfigured with an `inventory` database:
 
-    $ docker run -it --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql
+    $ docker run -it --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=debezium -e MYSQL_USER=mysqluser -e MYSQL_PASSWORD=mysqlpw debezium/example-mysql:0.1
 
 You should see in your terminal something like the following:
 
@@ -276,7 +276,7 @@ Notice that the MySQL server starts and stops multiple times as the configuratio
 
 Open another new terminal, and type the following to start a new container that runs the MySQL command line client that connects to the MySQL server running in the `mysql` container:
 
-    $ docker run -it --link mysql --rm mysql:5.7 sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
+    $ docker run -it --name mysqlterm --link mysql --rm mysql:5.7 sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"'
 
 and you should see:
 
@@ -329,7 +329,7 @@ It is essential to keeping track of the schema changes, because each row change 
 
 First, let's create that Kafka topic where the connector can write out the database's schema changes. We'll use the `debezium/kafka` image to start a container that runs the Kafka utility to create the topic that we'll name `schema-changes.inventory`. Go back to your terminal where you ran the `curl` commands against the Kafka Connect service, and run the following to create the topic:
 
-    $ docker run -it --rm --link zookeeper:zookeeper debezium/kafka create-topic -r 1 schema-changes.inventory
+    $ docker run -it --rm --link zookeeper:zookeeper debezium/kafka:0.1 create-topic -r 1 schema-changes.inventory
 
 Here, we link to the Zookeeper container so that it can find the Kafka broker(s). The topic will have one partition, which is what the connector requires since we need to maintain the total order of all DDL statements. We use the `-r 1` argument to specify the topic should have 1 replica; normally we'd want enough replicas (typically 3 or more) to not lose data should brokers fail, but in our example we're only running a single broker.
 
@@ -475,7 +475,7 @@ Each topic names start with `mysql-server-1`, which is the logical name we gave 
 
 Let's look at all of the data change events in the `mysql-server-1.inventory.customers` topic. Again, we'll use the `debezium/kafka` Docker image to start a new container that connects to Kafka to watch the topic from the beginning of the topic:
 
-    $ docker run -it --rm --link zookeeper:zookeeper debezium/kafka watch-topic -a -k mysql-server-1.inventory.customers
+    $ docker run -it --name watcher --rm --link zookeeper:zookeeper debezium/kafka:0.1 watch-topic -a -k mysql-server-1.inventory.customers
 
 Again, we use the `--rm` flag since we want the container to be removed when it stops, and we use the `-a` flag on `watch-topic` to signal that we want to see _all_ events since the beginning of the topic. (If we were to remove the `-a` flag, we'd see only the events that are recorded in the topic _after_ we start watching.) The `-k` flag specifies that the output should include the event's key, which in our case contains the row's primary key. Here's the output:
 
@@ -705,7 +705,7 @@ Notice that in the terminal where we're running `watch-topic`, there's been no u
 
 Now, in a new terminal, start a new container using the _same_ command we used before:
 
-    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper --link kafka:kafka debezium/connect
+    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper --link kafka:kafka debezium/connect:0.1
 
 This creates a whole new container, and since we've intialized it with the same topic information the new service can connect to Kafka, read the previous service's configuration and start the registered connectors, which will continue where they last left off.
 
@@ -723,8 +723,8 @@ Go ahead and use the MySQL command line client to add, modify, and remove rows t
 
 You can use Docker to stop and remove all of the running containers:
 
-    $ docker stop connect mysql kafka zookeeper
-    $ docker rm connect mysql kafka zookeeper
+    $ docker stop mysqlterm watcher connect mysql kafka zookeeper
+    $ docker rm mysqlterm watcher connect mysql kafka zookeeper
 
 Then, verify that all of the other processes are stopped:
 
