@@ -1,31 +1,34 @@
 #!/bin/sh
 
-echo ""
-echo "****************************************************************"
-echo "** Building  debezium/jdk8"
-echo "****************************************************************"
-docker build -t debezium/jdk8 jdk8/
+JAVA_VERSION=8u72
+DEBEZIUM_VERSION=0.1
 
 echo ""
 echo "****************************************************************"
-echo "** Building  debezium/zookeeper"
+echo "** Building  debezium/jdk8:$JAVA_VERSION"
 echo "****************************************************************"
-docker build -t debezium/zookeeper zookeeper/
+docker build -t debezium/jdk8:8u72 jdk8/8u72
 
 echo ""
 echo "****************************************************************"
-echo "** Building  debezium/kafka"
+echo "** Building  debezium/zookeeper:$DEBEZIUM_VERSION"
 echo "****************************************************************"
-docker build -t debezium/kafka kafka/
+docker build -t debezium/zookeeper:$DEBEZIUM_VERSION zookeeper/$DEBEZIUM_VERSION
 
 echo ""
 echo "****************************************************************"
-echo "** Building  debezium/connect"
+echo "** Building  debezium/kafka:$DEBEZIUM_VERSION"
 echo "****************************************************************"
-docker build -t debezium/connect connect/
+docker build -t debezium/kafka:$DEBEZIUM_VERSION kafka/$DEBEZIUM_VERSION
 
 echo ""
 echo "****************************************************************"
-echo "** Building  debezium/example-mysql"
+echo "** Building  debezium/connect:$DEBEZIUM_VERSION"
 echo "****************************************************************"
-docker build -t debezium/example-mysql examples/mysql/
+docker build -t debezium/connect:$DEBEZIUM_VERSION connect/$DEBEZIUM_VERSION
+
+echo ""
+echo "****************************************************************"
+echo "** Building  debezium/example-mysql:$DEBEZIUM_VERSION"
+echo "****************************************************************"
+docker build -t debezium/example-mysql:$DEBEZIUM_VERSION examples/mysql/$DEBEZIUM_VERSION
