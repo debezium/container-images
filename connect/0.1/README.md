@@ -27,7 +27,7 @@ To start the container in _detached_ mode, simply replace the `-it` option with 
 
 ## Start a shell in a running container
 
-If you already have a running containers with a Kafka Connect service, you can use this image to connect to that container and obtain a command line shell:
+If you are already running a container with a Kafka Connect service, you can use this image to connect to that container and obtain a command line shell:
 
     $ docker exec -it connect bash
 
@@ -101,13 +101,13 @@ This environment variable is optional. Use this to set the level of detail for K
 
 ### Others
 
-Environment variables that start with `KAFKA_` will be used to update the Kafka configuration file. Each environment variable name will be mapped to a configuration property name by:
+Environment variables that start with `CONNECT_` will be used to update the Kafka Connect worker configuration file. Each environment variable name will be mapped to a configuration property name by:
 
 1. removing the `CONNECT_` prefix;
 2. lowercasing all characters; and
 3. converting all '_' characters to '.' characters
 
-For example, the environment variable `KAFKA_HEARTBEAT_INTERVAL_MS` is converted to the `heartbeat.interval.ms` property. The container will then update the Kafka configuration file to include the property's name and value.
+For example, the environment variable `CONNECT__HEARTBEAT_INTERVAL_MS` is converted to the `heartbeat.interval.ms` property. The container will then update the Kafka Connect worker configuration file to include the property's name and value.
 
 The value of the environment variable may not contain a '\@' character.
 
