@@ -1,4 +1,4 @@
-FROM debezium/jdk8
+FROM debezium/jdk8:8u72
 
 MAINTAINER Debezium Community
 

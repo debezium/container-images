@@ -1,4 +1,4 @@
-FROM debezium/kafka
+FROM debezium/kafka:0.1
 
 MAINTAINER Debezium Community
 
