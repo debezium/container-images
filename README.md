@@ -10,7 +10,7 @@ Debezium is open source under the [Apache License, Version 2.0](http://www.apach
 
 We have the a tutorial that walks you through running Debezium on Docker, but the tutorial is different for each version of Debezium:
 
-* [Debezium 0.1](tutorials/0.1)
+* [Debezium 0.1](TUTORIAL_0.1.md)
 
 Give it a go, and let us know what you think:
 
