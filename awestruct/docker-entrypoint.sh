@@ -56,6 +56,10 @@ case $ARG1 in
             bundle --clean install
         fi
 
+        # We need to patch awestruct to make auto generation work. On mounted volumes file
+        # change montoring will only work with polling
+        gem contents awestruct | grep auto.rb | xargs sed -i "s/^\(.*force_polling =\).*/\1 true/"
+
         # Run Awestruct
         exec bundle exec awestruct -d
         ;;
