@@ -53,7 +53,7 @@ case $ARG1 in
         # Check to see if the site has any locally-cached gems in its bundle directory ...
         if [ ! -d "$BUNDLE_HOME/gems" ]; then
             # There are no Gems installed, so install them exactly per the Gemfile.lock file ...
-            bundle --clean install
+            bundle install --clean
         fi
 
         # We need to patch awestruct to make auto generation work. On mounted volumes file
