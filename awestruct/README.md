@@ -8,8 +8,8 @@ This image is primarily for those developing the Debezium website.
 
 Use Git to clone the Debezium website Git repository and change into that directory:
 
-    $ git clone https://github.com/debezium/debezium.io.git
-    $ cd debezium.io
+    $ git clone https://github.com/debezium/debezium.github.io.git
+    $ cd debezium.github.io
 
 If you're using this image to develop a website other than Debezium's, obtain a local copy of that site's codebase.
 
@@ -21,32 +21,46 @@ Start a container using this image that will generate the static site and run a 
 
 This command tells Docker to download the `debezium/awestruct` image if necessary, start up a Docker container using this image, and give you an interactive terminal (via `-it` flag) to the container so that you will see the output of the process running in the container. The `--rm` flag will remove the container when it stops, the `-p 4242` flag maps the container's 4242 port to the same port on the Docker host (which is the local machine on Linux or the virtual machine if running Boot2Docker or Docker Machine on OS X and Windows). The `-v $(pwd):/site` option mounts your current working directory into the `/site` directory within the container, which is where Awestruct expects to find your website code.
 
-## Step 3: Forward port
+Use CTRL-C to stop the webserver. The container will often detect changes in the code and regenerate, but if this does not happen you can stop the webserver (and the container) and restart the container. Alternatively, you can run the container with a shell and directly use the Rake commands. The following command runs the container with a shell:
 
-If you are running on Linux, you can skip this step.
+    $ docker run -it --rm -p 4242:4242 -v $(pwd):/site debezium/awestruct shell
 
-If you are running on Windows or OS X and are using [Docker Machine](https://www.docker.com/toolbox) or Boot2Docker to run the Docker host, then the container is running in a virtual machine. Although you can point your browser to the correct IP address, the generated site (at least in development mode) assumes a base URL of http://localhost:4242 and thus links will not work. Instead, use the following command to forward port 4242 on your local machine to the virtual machine. For Docker Machine, start a new terminal and run the following commands:
+When the container starts, the container's shell will start inside the `/site` directory, which is where your source code is. To manually setup the libraries, run:
 
-    $ eval $(docker-machine env)
-    $ docker-machine ssh default -vnNTL *:4242:$(docker-machine ip):4242
+    $site/: rake setup
 
-or, for Boot2Docker:
+When this completes, you can run the webserver with:
 
-    $ boot2docker shellinit
-    $ boot2docker ssh -vnNTL *:4242:$(boot2docker ip 2>/dev/null):4242
+    $site/: rake clean preview
 
-Leave this running while you access the website through your browser. Use CTRL-C to stop this port forwarding process when you're finished testing.
+and use CTRL-C to stop the webserver (and stay in the container). Simply run these commands as necessary.
 
-## Step 4: View the site
+## Step 3: View the site
 
-Point your browser to http://localhost:4242 to view the site. The site is generated somewhat lazily, so it may not be the fastest.
+If you're running on Linux, simply point your browser to http://localhost:4242. If your running OS X or Windows, use Docker Machine to tell you the address of the Docker host:
 
-## Step 5: Edit the site
+    $ docker-machine ip
+
+Then point your browser to http:://_dockerhostip_:4242. You can often do this from the command line with:
+
+    $ open http://$(docker-machine ip):4242
+
+The site is generated somewhat lazily, so it may not be the fastest.
+
+## Step 4: Edit the site
 
 Use any development tools on your local machine to edit the source files for the site. For minor modifications, Awestruct will detect the changes and will regenerate the corresponding static file(s). However, more comprehensive modifications may require you to restart the container (step 2).
 
-If you have to change the `Gemfile` to use different libraries, you will need to let the container download the new versions. The simplest way to do this is to stop the container (using CTRL-C), use `rm -rf bundler` to remove the directory where the gem files are stored, and then restart the container. This ensures that you're always using the exact files that are specified in the `Gemfile.lock` file.
+If you have to change the `Gemfile` to use different libraries, you can either run the container with the `setup` command:
 
-## Step 6: Commit changes
+    $ docker run -it --rm -p 4242:4242 -v $(pwd):/site debezium/awestruct setup
+
+or, if you're running a shell in the container, run rake directly:
+
+    $site/: rake setup
+
+(Alternatively, you can run `bundle install` manually from the shell as well.)
+
+## Step 5: Commit changes
 
 Use Git on your local machine to commit the changes to your site's codebase, and then publish the new version of the site.
