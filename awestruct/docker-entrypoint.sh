@@ -17,7 +17,7 @@ export BUNDLE_PATH=$SITE_HOME/.bundle/ruby/$RUBY_VERSION/
 
 # We also have to update the PATH to include the '_bin' directory
 # in the site's home directory so that `rake` can find Awestruct
-mkdir -p $SITE_HOME/_bin:$PATH
+mkdir -p $SITE_HOME/_bin
 export PATH=$SITE_HOME/_bin:$PATH
 
 # Rakefile takes BIND into account
