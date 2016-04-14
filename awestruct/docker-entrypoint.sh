@@ -9,6 +9,22 @@ else
     ARG1=$1
 fi
 
+# Change the path where Bundler can find gems. Normally this defaults
+# to '.bundle', but on this image it defaults to a different location
+# so we fix that here
+mkdir -p $SITE_HOME/.bundle/ruby/$RUBY_VERSION/
+export BUNDLE_PATH=$SITE_HOME/.bundle/ruby/$RUBY_VERSION/
+
+# We also have to update the PATH to include the '_bin' directory
+# in the site's home directory so that `rake` can find Awestruct
+mkdir -p $SITE_HOME/_bin:$PATH
+export PATH=$SITE_HOME/_bin:$PATH
+
+# Rakefile takes BIND into account
+# used to bind awestruct to 0.0.0.0 instead of localhost
+# otherwise the port is not exposed out of docker
+export BIND="-b 0.0.0.0"
+
 # Check to see if the site has any files ...
 if [ $(find $SITE_HOME -maxdepth 0 -type d -empty 2>/dev/null) ]; then
     echo "****************************************************************************************************"
@@ -34,39 +50,32 @@ if [ $(find $SITE_HOME -maxdepth 0 -type d -empty 2>/dev/null) ]; then
     echo ""
 fi
 
-# Create a local 'bundle' directory, and ensure there is a .gitignore file to ignore everything in the cache directory ...
-export BUNDLE_HOME=$SITE_HOME/bundle
-mkdir -p $BUNDLE_HOME
-if [ ! -e $BUNDLE_HOME/.gitignore ]; then
-    echo '*' > $BUNDLE_HOME/.gitignore
-fi
-
-mkdir -p $BUNDLE_HOME/bin
-export BUNDLE_BIN=$BUNDLE_HOME/bin
-export GEM_PATH=$BUNDLE_HOME:$BUNDLE_PATH
-export BUNDLE_PATH=$BUNDLE_HOME
-export PATH=$BUNDLE_HOME/bin:$PATH
-
 # Process some known arguments ...
 case $ARG1 in
     run)
-        # Check to see if the site has any locally-cached gems in its bundle directory ...
-        if [ ! -d "$BUNDLE_HOME/gems" ]; then
-            # There are no Gems installed, so install them exactly per the Gemfile.lock file ...
-            bundle install --clean
+        # Check to see if the site has any locally-cached gems in its .bundle directory ...
+        if [[ ! -d "$BUNDLE_PATH/gems" || ! -d "_bin" ]]; then
+            # At least one of the directories does not exist, so we know the required Gems are not properly
+            # installed. Use Rake to install them exactly per the Gemfile.lock file ...
+            rake setup
+            export BUNDLE_PATH=$SITE_HOME/.bundle/ruby/$RUBY_VERSION/
+            export PATH=$SITE_HOME/_bin:$PATH
         fi
 
         # We need to patch awestruct to make auto generation work. On mounted volumes file
         # change montoring will only work with polling
         gem contents awestruct | grep auto.rb | xargs sed -i "s/^\(.*force_polling =\).*/\1 true/"
 
-        # Run Awestruct
-        exec bundle exec awestruct -d
+        # Run rake
+        exec rake clean preview
         ;;
-    bundle)
+    clean)
         echo "Running the following command:"
-        echo "   $@"
-        exec "$@"
+        echo "   rake clean"
+        exec rake clean
+        ;;
+    setup)
+        exec rake setup
         ;;
     help)
         echo ""
@@ -81,9 +90,11 @@ case $ARG1 in
         echo "        can be edited, developed, and viewed locally. This will install all Ruby Gems"
         echo "        if not already done so."
         echo ""
-        echo "   bundle ..."
-        echo "        Runs the Ruby Bundler using the dependencies defined in the Gemfile."
-        echo "        Use this to manually install or update any of the dependencies."
+        echo "   setup"
+        echo "        Set up the environment by downloading all libraries used by the build."
+        echo ""
+        echo "   rake ..."
+        echo "        Run the Rake command (with any extra parameters) and exit."
         echo ""
         echo "   bash"
         echo "        Starts a shell in this container, for interactively running commands."
