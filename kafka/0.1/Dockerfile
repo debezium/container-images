@@ -17,7 +17,6 @@ ENV KAFKA_VERSION=0.9.0.1 \
 USER root
 RUN groupadd -r kafka -g 1001 && useradd -u 1001 -r -g kafka -m -d $KAFKA_HOME -s /sbin/nologin -c "Kafka user" kafka && \
     chmod 755 $KAFKA_HOME
-USER kafka
 RUN mkdir $KAFKA_HOME/data && \
     mkdir $KAFKA_HOME/logs
 
@@ -34,6 +33,13 @@ RUN echo "$MD5HASH  /tmp/kafka.tgz" | md5sum -c - &&\
     rm -f /tmp/kafka.tgz
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
+
+#
+# Change ownership and switch user
+#
+RUN chown -R kafka $KAFKA_HOME && \
+    chgrp -R kafka $KAFKA_HOME
+USER kafka
 
 # Set the working directory to the Kafka home directory
 WORKDIR $KAFKA_HOME

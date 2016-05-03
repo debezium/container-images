@@ -17,7 +17,7 @@ USER root
 RUN groupadd -r zookeeper -g 1001 && \
     useradd -u 1001 -r -g zookeeper -m -d $ZK_HOME -s /sbin/nologin -c "Zookeeper user" zookeeper && \
     chmod 755 $ZK_HOME
-USER zookeeper
+
 RUN mkdir $ZK_HOME/data && \
     mkdir $ZK_HOME/txns && \
     mkdir $ZK_HOME/logs
@@ -38,7 +38,7 @@ RUN echo "$MD5HASH  /tmp/zookeeper.tar.gz" | md5sum -c - &&\
 WORKDIR $ZK_HOME
 
 #
-# Customize the Zookeeper Log4J configuration files
+# Customize the Zookeeper and Log4J configuration files
 #
 COPY ./zoo.cfg $ZK_HOME/conf/zoo.cfg
 RUN sed -i -r -e "s|(\\$\\{zookeeper.log.dir\\})|$ZK_HOME/logs|g" \
@@ -48,6 +48,13 @@ RUN sed -i -r -e "s|(\\$\\{zookeeper.log.dir\\})|$ZK_HOME/logs|g" \
               -e "s|(\[myid\:\%X\{myid\}\]\s?)||g" \
               -e 's|#(log4j.appender.ROLLINGFILE.MaxBackupIndex.*)|\1|g' \
               $ZK_HOME/conf/log4j.properties
+
+#
+# Change ownership and switch user
+#
+RUN chown -R zookeeper $ZK_HOME && \
+    chgrp -R zookeeper $ZK_HOME
+USER zookeeper
 
 #
 # Expose the ports and set up volumes for the data, transaction log, and configuration
