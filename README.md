@@ -1,4 +1,8 @@
-This repository contains the primary Docker images for Debezium.
+[![Build Status](https://travis-ci.org/debezium/docker-images.svg?branch=master)](https://travis-ci.org/debezium/docker-images)
+[![License](http://img.shields.io/:license-apache%202.0-brightgreen.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
+[![DockerHub](http://img.shields.io/:images-DockerHub-brightgreen.svg)](https://hub.docker.com/r/debezium/)
+
+This repository contains the primary Docker images for Debezium, and they are automatically built and published on [DockerHub](https://hub.docker.com/r/debezium/).
 
 # What is Debezium?
 
