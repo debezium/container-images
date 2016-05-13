@@ -1,13 +1,13 @@
 #!/bin/sh
 
-JAVA_VERSION=8u72
+JAVA_VERSION=8u92
 DEBEZIUM_VERSION=0.1
 
 echo ""
 echo "****************************************************************"
 echo "** Building  debezium/jdk8:$JAVA_VERSION"
 echo "****************************************************************"
-docker build -t debezium/jdk8:8u72 jdk8/8u72
+docker build -t debezium/jdk8:$JAVA_VERSION jdk8/$JAVA_VERSION
 
 echo ""
 echo "****************************************************************"
