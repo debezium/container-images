@@ -9,6 +9,9 @@ else
     ARG1=$1
 fi
 
+# Let's switch to use the correct version of Ruby that bundler will use/see:
+export RUBY_VERSION=$(echo "RbConfig::CONFIG['ruby_version']" | irb | grep "[0-9][.][0-9]" | tr -d '"')
+
 # Change the path where Bundler can find gems. Normally this defaults
 # to '.bundle', but on this image it defaults to a different location
 # so we fix that here
@@ -31,7 +34,7 @@ if [ $(find $SITE_HOME -maxdepth 0 -type d -empty 2>/dev/null) ]; then
     echo "**"
     echo "**   WARNING: The site directory is empty."
     echo "**"
-    echo "**   Be sure to first use Git to check out the source files for the site. Then, when starting the" 
+    echo "**   Be sure to first use Git to check out the source files for the site. Then, when starting the"
     echo "**   container, be sure to mount the directory containing those files to ${SITE_HOME}:"
     echo "**"
     echo "**        docker run -it -P --rm -v /path/to/your/code:/site debezium/awestruct"
