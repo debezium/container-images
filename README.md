@@ -16,13 +16,4 @@ The Dockerfiles, scripts, and other files in this Git repository are licensed un
 
 # Tutorial for running Debezium with Docker
 
-We have the a tutorial that walks you through running Debezium on Docker, but the tutorial is different for each version of Debezium:
-
-* [Debezium 0.1](TUTORIAL_0.1.md)
-
-Give it a go, and let us know what you think:
-
-* [On Twitter](https://twitter.com/debezium)
-* [Chat with us](https://gitter.im/debezium/user)
-* [Join the mailing list](https://groups.google.com/forum/#!forum/debezium)
-* [Get the code](https://github.com/debezium/debezium)
+We have the a [tutorial](http://debezium.io/docs/tutorial) that walks you through running Debezium using Docker. Give it a go, and [let us know what you think](http://debezium.io/community/):
