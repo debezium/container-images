@@ -1,7 +1,7 @@
 #!/bin/sh
 
 JAVA_VERSION=8u92
-DEBEZIUM_VERSION=0.1
+DEBEZIUM_VERSION=0.2
 
 echo ""
 echo "****************************************************************"
@@ -32,3 +32,9 @@ echo "****************************************************************"
 echo "** Building  debezium/example-mysql:$DEBEZIUM_VERSION"
 echo "****************************************************************"
 docker build -t debezium/example-mysql:$DEBEZIUM_VERSION examples/mysql/$DEBEZIUM_VERSION
+
+echo ""
+echo "****************************************************************"
+echo "** Building  debezium/example-mysql-gtids:$DEBEZIUM_VERSION"
+echo "****************************************************************"
+docker build -t debezium/example-mysql:$DEBEZIUM_VERSION examples/mysql-gtids/$DEBEZIUM_VERSION
