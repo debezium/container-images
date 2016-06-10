@@ -1,10 +1,16 @@
 #!/bin/sh
 
-JAVA_VERSION=8u92
-DEBEZIUM_VERSION=0.2
+if [[ -z "$1" ]]; then
+    echo ""
+    echo "A version must be specified."
+    echo ""
+    echo "Usage:  build-debezium <version>";
+    echo ""
+    exit 1;
+fi
 
 echo ""
 echo "****************************************************************"
-echo "** Building  debezium/jdk8:$JAVA_VERSION"
+echo "** Building  debezium/jdk8:$1"
 echo "****************************************************************"
-docker build -t debezium/jdk8:$JAVA_VERSION jdk8/$JAVA_VERSION
+docker build -t debezium/jdk8:$1 jdk8/$1
