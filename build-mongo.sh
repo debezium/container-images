@@ -4,13 +4,13 @@ if [[ -z "$1" ]]; then
     echo ""
     echo "A version must be specified."
     echo ""
-    echo "Usage:  build-java <version>";
+    echo "Usage:  build-mongo <version>";
     echo ""
     exit 1;
 fi
 
 echo ""
 echo "****************************************************************"
-echo "** Building  debezium/jdk8:$1"
+echo "** Building  debezium/mongo-replicaset-initiator:$1"
 echo "****************************************************************"
-docker build -t debezium/jdk8:$1 jdk8/$1
+docker build -t debezium/mongo-replicaset-initiator:$1 mongo/$1/mongo-replicaset-initiator
