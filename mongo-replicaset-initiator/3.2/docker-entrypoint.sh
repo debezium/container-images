@@ -34,7 +34,11 @@ SECONDARY_COUNT=0;
 for VAR in `env | sort`
 do
   env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
-  if [[ $env_var =~ ^MONGO([0-9]+)_PORT_([0-9]+)_TCP_ADDR ]]; then
+  if [[ $env_var =~ ^MONGO_PORT_([0-9]+)_TCP_ADDR ]]; then
+    PRIMARY_HOST="${!env_var}";
+  elif [[ $env_var =~ ^MONGO_PORT_([0-9]+)_TCP_PORT ]]; then
+    PRIMARY_PORT="${!env_var}";
+  elif [[ $env_var =~ ^MONGO([0-9]+)_PORT_([0-9]+)_TCP_ADDR ]]; then
     SECONDARY_COUNT=$SECONDARY_COUNT+1
     SECONDARY_HOSTS[$SECONDARY_COUNT]="${!env_var}:${BASH_REMATCH[2]}";
   fi
