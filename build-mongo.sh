@@ -11,6 +11,6 @@ fi
 
 echo ""
 echo "****************************************************************"
-echo "** Building  debezium/mongo-replicaset-initiator:$1"
+echo "** Building  debezium/mongo-initiator:$1"
 echo "****************************************************************"
-docker build -t debezium/mongo-replicaset-initiator:$1 mongo-replicaset-initiator/$1
+docker build -t debezium/mongo-initiator:$1 mongo-initiator/$1
