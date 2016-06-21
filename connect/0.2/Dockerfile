@@ -13,8 +13,7 @@ COPY log4j.properties $KAFKA_HOME/config/log4j.properties
 #
 ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     DEBEZIUM_VERSION=0.2.1 \
-    MAVEN_CENTRAL="https://oss.sonatype.org/content/repositories/iodebezium-1002"
-#    MAVEN_CENTRAL="https://repo1.maven.org/maven2"
+    MAVEN_CENTRAL="https://repo1.maven.org/maven2"
 
 RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 
