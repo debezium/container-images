@@ -12,7 +12,7 @@ COPY log4j.properties $KAFKA_HOME/config/log4j.properties
 # Set up the plugins directory ...
 #
 ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
-    DEBEZIUM_VERSION=0.2.1 \
+    DEBEZIUM_VERSION=0.2.2 \
     MAVEN_CENTRAL="https://repo1.maven.org/maven2"
 
 RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
@@ -22,7 +22,7 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 #
 RUN curl -fSL -o /tmp/plugin.tar.gz \
                  $MAVEN_CENTRAL/io/debezium/debezium-connector-mysql/$DEBEZIUM_VERSION/debezium-connector-mysql-$DEBEZIUM_VERSION-plugin.tar.gz &&\
-    echo "035246d4780b2e59a2ddd7cfd6e3c043  /tmp/plugin.tar.gz" | md5sum -c - &&\
+    echo "e4c57aebd6b33c47afbf0787c9591330  /tmp/plugin.tar.gz" | md5sum -c - &&\
     tar -xzf /tmp/plugin.tar.gz -C $KAFKA_CONNECT_PLUGINS_DIR &&\
     rm -f /tmp/plugin.tar.gz    
 
