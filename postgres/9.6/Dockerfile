@@ -28,3 +28,6 @@ RUN git clone https://github.com/debezium/postgres-decoderbufs -b v0.1.0 --singl
 # Copy the custom configuration which will be passed down to the server (using a .sample file is the preferred way of doing it by 
 # the base Docker image)
 COPY postgresql.conf.sample /usr/share/postgresql/postgresql.conf.sample
+
+# Copy the script which will initialize the replication permissions
+COPY /docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
