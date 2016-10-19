@@ -52,6 +52,16 @@ unset ADVERTISED_HOST_NAME
 echo "Using KAFKA_ADVERTISED_PORT=$KAFKA_ADVERTISED_PORT"
 echo "Using KAFKA_ADVERTISED_HOST_NAME=$KAFKA_ADVERTISED_HOST_NAME"
 
+#
+# Set up the JMX options
+#
+: ${JMXAUTH:="false"}
+: ${JMXSSL:="false"}
+if [[ -n "$JMXPORT" && -n "$JMXHOST" ]]; then
+    echo "Enabling JMX on ${JMXHOST}:${JMXPORT}"
+    export KAFKA_JMX_OPTS="-Djava.rmi.server.hostname=${JMXHOST} -Dcom.sun.management.jmxremote.rmi.port=${JMXPORT} -Dcom.sun.management.jmxremote.port=${JMXPORT} -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=${JMXAUTH} -Dcom.sun.management.jmxremote.ssl=${JMXSSL} "
+fi
+
 # Process the argument to this container ...
 case $1 in
     start)
@@ -72,7 +82,7 @@ case $1 in
         for VAR in `env`
         do
           env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
-          if [[ $env_var =~ ^KAFKA_ && $env_var != "KAFKA_VERSION" && $env_var != "KAFKA_HOME"  && $env_var != "KAFKA_LOG4J_OPTS" ]]; then
+          if [[ $env_var =~ ^KAFKA_ && $env_var != "KAFKA_VERSION" && $env_var != "KAFKA_HOME"  && $env_var != "KAFKA_LOG4J_OPTS" && $env_var != "KAFKA_JMX_OPTS" ]]; then
             prop_name=`echo "$VAR" | sed -r "s/^KAFKA_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
             if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/server.properties; then
                 #note that no config names or values may contain an '@' char

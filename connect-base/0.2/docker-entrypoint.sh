@@ -70,6 +70,16 @@ export CLASSPATH
 echo "Complete classpath: $CLASSPATH"
 
 #
+# Set up the JMX options
+#
+: ${JMXAUTH:="false"}
+: ${JMXSSL:="false"}
+if [[ -n "$JMXPORT" && -n "$JMXHOST" ]]; then
+    echo "Enabling JMX on ${JMXHOST}:${JMXPORT}"
+    export KAFKA_JMX_OPTS="-Djava.rmi.server.hostname=${JMXHOST} -Dcom.sun.management.jmxremote.rmi.port=${JMXPORT} -Dcom.sun.management.jmxremote.port=${JMXPORT} -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=${JMXAUTH} -Dcom.sun.management.jmxremote.ssl=${JMXSSL} "
+fi
+
+#
 # Make sure the directory for logs exists ...
 #
 mkdir -p $KAFKA_HOME/data/$KAFKA_BROKER_ID
