@@ -9,6 +9,16 @@ else
     ARG1=$1
 fi
 
+if [[ -n "$JMXPORT" ]]; then
+    # Docker requires extra JMX-related JVM flags beyond what Zookeeper normally uses
+    JMX_EXTRA_FLAGS="-Djava.rmi.server.hostname=${JMXHOST} -Dcom.sun.management.jmxremote.rmi.port=${JMXPORT} -Dcom.sun.management.jmxremote.port=${JMXPORT}"
+    if [[ -n "$JVMFLAGS" ]]; then
+        export JVMFLAGS="${JMX_EXTRA_FLAGS} ${JVMFLAGS} "
+    else
+        export JVMFLAGS="${JMX_EXTRA_FLAGS} "
+    fi
+fi
+
 # Process some known arguments to run Zookeeper ...
 case $ARG1 in
     start)
