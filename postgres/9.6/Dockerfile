@@ -19,7 +19,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*             
  
 # Compile the plugin from sources and install it
-RUN git clone https://github.com/debezium/postgres-decoderbufs -b v0.1.0 --single-branch \
+RUN git clone https://github.com/debezium/postgres-decoderbufs -b v0.2.0 --single-branch \
     && cd /postgres-decoderbufs \ 
     && make && make install \
     && cd / \ 
