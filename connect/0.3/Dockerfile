@@ -2,7 +2,7 @@ FROM debezium/connect-base:0.3
 
 MAINTAINER Debezium Community
 
-ENV DEBEZIUM_VERSION=0.3.4 \
+ENV DEBEZIUM_VERSION=0.3.5 \
     MAVEN_CENTRAL="https://repo1.maven.org/maven2"
 
 #
@@ -19,7 +19,7 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR/debezium
 #
 RUN curl -fSL -o /tmp/plugin.tar.gz \
                  $MAVEN_CENTRAL/io/debezium/debezium-connector-mysql/$DEBEZIUM_VERSION/debezium-connector-mysql-$DEBEZIUM_VERSION-plugin.tar.gz &&\
-    echo "0b56f1204a321d71df5b1e92854f157f  /tmp/plugin.tar.gz" | md5sum -c - &&\
+    echo "5a4a9f25a25654c5e64ed01afdda95db  /tmp/plugin.tar.gz" | md5sum -c - &&\
     tar -xzf /tmp/plugin.tar.gz -C $KAFKA_CONNECT_PLUGINS_DIR/debezium --strip 1 &&\
     rm -f /tmp/plugin.tar.gz    
 
@@ -29,7 +29,7 @@ RUN curl -fSL -o /tmp/plugin.tar.gz \
 #
 RUN curl -fSL -o /tmp/plugin.tar.gz \
                  $MAVEN_CENTRAL/io/debezium/debezium-connector-mongodb/$DEBEZIUM_VERSION/debezium-connector-mongodb-$DEBEZIUM_VERSION-plugin.tar.gz &&\
-    echo "e122987ffe2810d65a2bdf2a3d05e762  /tmp/plugin.tar.gz" | md5sum -c - &&\
+    echo "3c8c4aef66b3fce8da7b2070411642f0  /tmp/plugin.tar.gz" | md5sum -c - &&\
     tar -xzf /tmp/plugin.tar.gz -C $KAFKA_CONNECT_PLUGINS_DIR/debezium --strip 1 &&\
     rm -f /tmp/plugin.tar.gz    
 
