@@ -133,13 +133,14 @@ case $ARG1 in
         else
             echo "Replica set \"${REPLICASET}\" is already initiated."
         fi
-        if [[ -n $VERBOSE ]]; then
-            echo ""
-            echo "Current replica status:"
-            echo "${rsStatus}"
-            echo ""
-        fi
-        echo "Replica set is ready."
+        #if [[ -n $VERBOSE ]]; then
+        #    echo ""
+        #    echo "Current replica status:"
+        #    echo "${rsStatus}"
+        #fi
+        echo ""
+        echo "Replica set is ready"
+        echo ""
 
         if [[ $ROUTER_COUNT -gt 0 ]]; then
             # Add the primary of the replica set as a shard to each of the routers ...
