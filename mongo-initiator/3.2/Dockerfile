@@ -1,4 +1,4 @@
-FROM mongo:3.2.6
+FROM mongo:3.2.12
 
 MAINTAINER Debezium Community
 
