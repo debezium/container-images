@@ -1,4 +1,4 @@
-FROM debezium/jdk8:8u121
+FROM fabric8/java-jboss-openjdk8-jdk
 
 MAINTAINER Debezium Community
 
@@ -15,10 +15,18 @@ ENV KAFKA_VERSION=0.10.2.0 \
 # Create a user and home directory for Kafka
 #
 USER root
+RUN yum -y install iproute && yum clean all
 RUN groupadd -r kafka -g 1001 && useradd -u 1001 -r -g kafka -m -d $KAFKA_HOME -s /sbin/nologin -c "Kafka user" kafka && \
     chmod 755 $KAFKA_HOME
 RUN mkdir $KAFKA_HOME/data && \
     mkdir $KAFKA_HOME/logs
+
+#
+# Change ownership and switch user
+#
+RUN chown -R kafka $KAFKA_HOME && \
+    chgrp -R kafka $KAFKA_HOME
+USER kafka
 
 #
 # Download Kafka
@@ -35,11 +43,9 @@ RUN echo "$MD5HASH  /tmp/kafka.tgz" | md5sum -c - &&\
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
 
 #
-# Change ownership and switch user
+# Allow random UID to use Kafka
 #
-RUN chown -R kafka $KAFKA_HOME && \
-    chgrp -R kafka $KAFKA_HOME
-USER kafka
+RUN chmod -R g+w,o+w $KAFKA_HOME
 
 # Set the working directory to the Kafka home directory
 WORKDIR $KAFKA_HOME
