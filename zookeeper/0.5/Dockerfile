@@ -1,4 +1,4 @@
-FROM debezium/jdk8:8u121
+FROM fabric8/java-jboss-openjdk8-jdk
 
 MAINTAINER Debezium Community
 
@@ -18,6 +18,13 @@ RUN groupadd -r zookeeper -g 1001 && \
     useradd -u 1001 -r -g zookeeper -m -d $ZK_HOME -s /sbin/nologin -c "Zookeeper user" zookeeper && \
     chmod 755 $ZK_HOME
 
+#
+# Change ownership and switch user
+#
+RUN chown -R zookeeper $ZK_HOME && \
+    chgrp -R zookeeper $ZK_HOME
+USER zookeeper
+
 RUN mkdir $ZK_HOME/data && \
     mkdir $ZK_HOME/txns && \
     mkdir $ZK_HOME/logs
@@ -34,6 +41,11 @@ RUN echo "$MD5HASH  /tmp/zookeeper.tar.gz" | md5sum -c - &&\
     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
     rm -f /tmp/zookeeper.tar.gz
 
+#
+# Allow random UID to use Zookeeper
+#
+RUN chmod -R g+w,o+w $ZK_HOME
+
 # Set the working directory to the Zookeeper home directory
 WORKDIR $ZK_HOME
 
@@ -48,13 +60,6 @@ RUN sed -i -r -e "s|(\\$\\{zookeeper.log.dir\\})|$ZK_HOME/logs|g" \
               -e "s|(\[myid\:\%X\{myid\}\]\s?)||g" \
               -e 's|#(log4j.appender.ROLLINGFILE.MaxBackupIndex.*)|\1|g' \
               $ZK_HOME/conf/log4j.properties
-
-#
-# Change ownership and switch user
-#
-RUN chown -R zookeeper $ZK_HOME && \
-    chgrp -R zookeeper $ZK_HOME
-USER zookeeper
 
 #
 # Expose the ports and set up volumes for the data, transaction log, and configuration
