@@ -26,7 +26,6 @@ RUN mkdir $KAFKA_HOME/data && \
 #
 RUN chown -R kafka $KAFKA_HOME && \
     chgrp -R kafka $KAFKA_HOME
-USER kafka
 
 #
 # Download Kafka
@@ -46,6 +45,8 @@ COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
 # Allow random UID to use Kafka
 #
 RUN chmod -R g+w,o+w $KAFKA_HOME
+
+USER kafka
 
 # Set the working directory to the Kafka home directory
 WORKDIR $KAFKA_HOME
