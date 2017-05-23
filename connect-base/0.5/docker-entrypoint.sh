@@ -127,6 +127,9 @@ case $1 in
         echo "      OFFSET_FLUSH_TIMEOUT_MS=$KCONNECT_OFFSET_FLUSH_TIMEOUT_MS"
         echo "      SHUTDOWN_TIMEOUT=$CONNECT_TASK_SHUTDOWN_GRACEFUL_TIMEOUT_MS"
 
+        # Copy config files if not provided in volume
+        cp -rn $KAFKA_HOME/config.template/* $KAFKA_HOME/config
+
         #
         # Configure the log files ...
         #
