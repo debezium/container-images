@@ -22,6 +22,9 @@ fi
 # Process some known arguments to run Zookeeper ...
 case $ARG1 in
     start)
+        # Copy config files if not provided in volume
+        cp -rn $ZK_HOME/conf.template/* $ZK_HOME/conf
+
         #
         # Process the logging-related environment variables. Zookeeper's log configuration allows *some* variables to be
         # set via environment variables, and more via system properties (e.g., "-Dzookeeper.console.threshold=INFO").
