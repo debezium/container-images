@@ -43,7 +43,7 @@ RUN echo "$MD5HASH  /tmp/kafka.tgz" | md5sum -c - &&\
     rm -f /tmp/kafka.tgz
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
-RUN mkdir $KAFKA_HOME/config.template && mv $KAFKA_HOME/config/* $KAFKA_HOME/config.template
+RUN mkdir $KAFKA_HOME/config.orig && mv $KAFKA_HOME/config/* $KAFKA_HOME/config.orig
 
 #
 # Allow random UID to use Kafka
