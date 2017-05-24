@@ -66,7 +66,7 @@ fi
 case $1 in
     start)
         # Copy config files if not provided in volume
-        cp -rn $KAFKA_HOME/config.template/* $KAFKA_HOME/config
+        cp -rn $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
 
         #
         # Configure the log files ...

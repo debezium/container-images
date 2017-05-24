@@ -60,7 +60,7 @@ RUN sed -i -r -e "s|(\\$\\{zookeeper.log.dir\\})|$ZK_HOME/logs|g" \
               -e "s|(\[myid\:\%X\{myid\}\]\s?)||g" \
               -e 's|#(log4j.appender.ROLLINGFILE.MaxBackupIndex.*)|\1|g' \
               $ZK_HOME/conf/log4j.properties
-RUN mkdir $ZK_HOME/conf.template && mv $ZK_HOME/conf/* $ZK_HOME/conf.template
+RUN mkdir $ZK_HOME/conf.orig && mv $ZK_HOME/conf/* $ZK_HOME/conf.orig
 
 #
 # Expose the ports and set up volumes for the data, transaction log, and configuration

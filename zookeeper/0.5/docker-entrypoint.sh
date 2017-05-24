@@ -23,7 +23,7 @@ fi
 case $ARG1 in
     start)
         # Copy config files if not provided in volume
-        cp -rn $ZK_HOME/conf.template/* $ZK_HOME/conf
+        cp -rn $ZK_HOME/conf.orig/* $ZK_HOME/conf
 
         #
         # Process the logging-related environment variables. Zookeeper's log configuration allows *some* variables to be
