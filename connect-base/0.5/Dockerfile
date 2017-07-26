@@ -29,14 +29,18 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 #
 
 RUN cd $KAFKA_HOME/libs &&\
-    curl -O http://packages.confluent.io/maven/io/confluent/kafka-connect-avro-converter/$CONFLUENT_VERSION/kafka-connect-avro-converter-$CONFLUENT_VERSION.jar &&\
-    curl -O http://packages.confluent.io/maven/io/confluent/kafka-avro-serializer/$CONFLUENT_VERSION/kafka-avro-serializer-$CONFLUENT_VERSION.jar &&\
-    curl -O http://packages.confluent.io/maven/io/confluent/kafka-schema-registry-client/$CONFLUENT_VERSION/kafka-schema-registry-client-$CONFLUENT_VERSION.jar &&\
-    curl -O http://packages.confluent.io/maven/io/confluent/kafka-avro-serializer/$CONFLUENT_VERSION/kafka-avro-serializer-$CONFLUENT_VERSION.jar &&\
-    curl -O http://packages.confluent.io/maven/io/confluent/common-config/$CONFLUENT_VERSION/common-config-$CONFLUENT_VERSION.jar &&\
-    curl -O http://packages.confluent.io/maven/io/confluent/common-utils/$CONFLUENT_VERSION/common-utils-$CONFLUENT_VERSION.jar &&\
-    curl -O http://central.maven.org/maven2/org/codehaus/jackson/jackson-core-asl/1.9.13/jackson-core-asl-1.9.13.jar &&\
-    curl -O http://central.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.9.13/jackson-mapper-asl-1.9.13.jar &&\
-    curl -O http://central.maven.org/maven2/org/apache/avro/avro/$AVRO_VERSION/avro-$AVRO_VERSION.jar
+    function confluent_dep { curl -O http://packages.confluent.io/maven/io/confluent/$1/$CONFLUENT_VERSION/$1-$CONFLUENT_VERSION.jar;  echo "$(curl http://packages.confluent.io/maven/io/confluent/$1/$CONFLUENT_VERSION/$1-$CONFLUENT_VERSION.jar.md5) $1-$CONFLUENT_VERSION.jar" >> sums.md5; };\
+    function central_dep { curl -O http://central.maven.org/maven2/$1/$2/$3/$2-$3.jar; echo "$(curl http://central.maven.org/maven2/$1/$2/$3/$2-$3.jar.md5) $2-$3.jar" >> sums.md5; };\
+    confluent_dep kafka-connect-avro-converter &&\
+    confluent_dep kafka-avro-serializer &&\
+    confluent_dep kafka-schema-registry-client &&\
+    confluent_dep common-config &&\
+    confluent_dep common-utils &&\
+    central_dep org/codehaus/jackson jackson-core-asl $AVRO_JACKSON_VERSION &&\
+    central_dep org/codehaus/jackson jackson-mapper-asl $AVRO_JACKSON_VERSION &&\
+    central_dep org/apache/avro avro $AVRO_VERSION &&\
+    cat sums.md5 &&\
+    md5sum --strict -c sums.md5 &&\
+    rm sums.md5
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
