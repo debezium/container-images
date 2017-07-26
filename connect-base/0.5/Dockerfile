@@ -28,5 +28,15 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
 
+RUN cd $KAFKA_HOME/libs &&\
+    curl -O http://packages.confluent.io/maven/io/confluent/kafka-connect-avro-converter/$CONFLUENT_VERSION/kafka-connect-avro-converter-$CONFLUENT_VERSION.jar &&\
+    curl -O http://packages.confluent.io/maven/io/confluent/kafka-avro-serializer/$CONFLUENT_VERSION/kafka-avro-serializer-$CONFLUENT_VERSION.jar &&\
+    curl -O http://packages.confluent.io/maven/io/confluent/kafka-schema-registry-client/$CONFLUENT_VERSION/kafka-schema-registry-client-$CONFLUENT_VERSION.jar &&\
+    curl -O http://packages.confluent.io/maven/io/confluent/kafka-avro-serializer/$CONFLUENT_VERSION/kafka-avro-serializer-$CONFLUENT_VERSION.jar &&\
+    curl -O http://packages.confluent.io/maven/io/confluent/common-config/$CONFLUENT_VERSION/common-config-$CONFLUENT_VERSION.jar &&\
+    curl -O http://packages.confluent.io/maven/io/confluent/common-utils/$CONFLUENT_VERSION/common-utils-$CONFLUENT_VERSION.jar &&\
+    curl -O http://central.maven.org/maven2/org/codehaus/jackson/jackson-core-asl/1.9.13/jackson-core-asl-1.9.13.jar &&\
+    curl -O http://central.maven.org/maven2/org/codehaus/jackson/jackson-mapper-asl/1.9.13/jackson-mapper-asl-1.9.13.jar &&\
+    curl -O http://central.maven.org/maven2/org/apache/avro/avro/$AVRO_VERSION/avro-$AVRO_VERSION.jar
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
