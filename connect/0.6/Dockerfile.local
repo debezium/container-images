@@ -1,8 +1,8 @@
-FROM debezium/connect-base:0.5
+FROM debezium/connect-base:0.6
 
 MAINTAINER Debezium Community
 
-ARG DEBEZIUM_VERSION=0.5.2
+ARG DEBEZIUM_VERSION=0.6.0
 ENV DEBEZIUM_VERSION=${DEBEZIUM_VERSION}
 
 #
