@@ -62,11 +62,12 @@ if [[ -n "$JMXPORT" && -n "$JMXHOST" ]]; then
     export KAFKA_JMX_OPTS="-Djava.rmi.server.hostname=${JMXHOST} -Dcom.sun.management.jmxremote.rmi.port=${JMXPORT} -Dcom.sun.management.jmxremote.port=${JMXPORT} -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=${JMXAUTH} -Dcom.sun.management.jmxremote.ssl=${JMXSSL} "
 fi
 
+# Copy config files if not provided in volume
+cp -rn $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
+
 # Process the argument to this container ...
 case $1 in
     start)
-        # Copy config files if not provided in volume
-        cp -rn $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
 
         #
         # Configure the log files ...
