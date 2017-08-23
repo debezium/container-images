@@ -1,6 +1,7 @@
 FROM postgres:9.6
 
 MAINTAINER Debezium Community
+ENV PLUGIN_VERSION=v0.5.1
 
 # Install the packages which will be required to get everything to compile
 RUN apt-get update \ 
@@ -19,7 +20,7 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*             
  
 # Compile the plugin from sources and install it
-RUN git clone https://github.com/debezium/postgres-decoderbufs -b v0.5.1 --single-branch \
+RUN git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSION --single-branch \
     && cd /postgres-decoderbufs \ 
     && make && make install \
     && cd / \ 
