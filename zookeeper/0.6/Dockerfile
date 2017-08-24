@@ -6,9 +6,9 @@ MAINTAINER Debezium Community
 # Set the version, home directory, and MD5 hash.
 # MD5 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.md5
 #
-ENV ZK_VERSION=3.4.9 \
+ENV ZK_VERSION=3.4.10 \
     ZK_HOME=/zookeeper \
-    MD5HASH=3e8506075212c2d41030d874fcc9dcd2
+    MD5HASH=e4cf1b1593ca870bf1c7a75188f09678
 
 #
 # Create a user and home directory for Zookeeper

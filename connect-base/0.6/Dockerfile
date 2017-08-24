@@ -11,7 +11,8 @@ COPY log4j.properties $KAFKA_HOME/config/log4j.properties
 #
 # Set up the plugins directory ...
 #
-ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect
+ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
+    CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR
 RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 
 #

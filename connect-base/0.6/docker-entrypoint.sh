@@ -62,12 +62,10 @@ unset SCALA_VERSION
 #
 # Set up the classpath with all the plugins ...
 #
-for pluginDir in $KAFKA_CONNECT_PLUGINS_DIR/*/ ; do
-    echo "Using plugin at $pluginDir"
-    CLASSPATH=$CLASSPATH:$pluginDir*
-done
-export CLASSPATH
-echo "Complete classpath: $CLASSPATH"
+if [ -z "$CONNECT_PLUGIN_PATH" ]; then
+    CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR
+fi
+echo "Plugins are loaded from $CONNECT_PLUGIN_PATH"
 
 #
 # Set up the JMX options
