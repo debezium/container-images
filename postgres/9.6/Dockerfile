@@ -26,6 +26,11 @@ RUN git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSIO
     && cd / \ 
     && rm -rf postgres-decoderbufs            
 
+RUN git clone https://github.com/eulerto/wal2json -b master --single-branch \
+    && cd /wal2json \
+    && make && make install \
+    && cd / \
+    && rm -rf wal2json
 # Copy the custom configuration which will be passed down to the server (using a .sample file is the preferred way of doing it by 
 # the base Docker image)
 COPY postgresql.conf.sample /usr/share/postgresql/postgresql.conf.sample
