@@ -1,7 +1,7 @@
 FROM postgres:9.6
 
 MAINTAINER Debezium Community
-ENV PLUGIN_VERSION=v0.5.1
+ENV PLUGIN_VERSION=v0.6.0
 
 # Install the packages which will be required to get everything to compile
 RUN apt-get update \ 
