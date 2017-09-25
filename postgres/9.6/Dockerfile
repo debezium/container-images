@@ -2,6 +2,7 @@ FROM postgres:9.6
 
 MAINTAINER Debezium Community
 ENV PLUGIN_VERSION=v0.6.0
+ENV WAL2JSON_COMMIT_ID=645ab69aae268a81c900671b5dfab7029384e9ff
 
 # Install the packages which will be required to get everything to compile
 RUN apt-get update \ 
@@ -24,10 +25,11 @@ RUN git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSIO
     && cd /postgres-decoderbufs \ 
     && make && make install \
     && cd / \ 
-    && rm -rf postgres-decoderbufs            
+    && rm -rf postgres-decoderbufs
 
 RUN git clone https://github.com/eulerto/wal2json -b master --single-branch \
     && cd /wal2json \
+    && git checkout $WAL2JSON_COMMIT_ID \
     && make && make install \
     && cd / \
     && rm -rf wal2json
