@@ -10,6 +10,7 @@ CREATE TABLE products (
   weight FLOAT
 );
 ALTER SEQUENCE products_id_seq RESTART WITH 101;
+ALTER TABLE products REPLICA IDENTITY FULL;
 
 INSERT INTO products
 VALUES (default,'scooter','Small 2-wheel scooter',3.14),
@@ -28,6 +29,7 @@ CREATE TABLE products_on_hand (
   quantity INTEGER NOT NULL,
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
+ALTER TABLE products_on_hand REPLICA IDENTITY FULL;
 
 INSERT INTO products_on_hand VALUES (101,3);
 INSERT INTO products_on_hand VALUES (102,8);
@@ -47,6 +49,7 @@ CREATE TABLE customers (
   email VARCHAR(255) NOT NULL UNIQUE
 );
 ALTER SEQUENCE customers_id_seq RESTART WITH 1001;
+ALTER TABLE customers REPLICA IDENTITY FULL;
 
 INSERT INTO customers
 VALUES (default,'Sally','Thomas','sally.thomas@acme.com'),
@@ -65,6 +68,7 @@ CREATE TABLE orders (
   FOREIGN KEY (product_id) REFERENCES products(id)
 );
 ALTER SEQUENCE orders_id_seq RESTART WITH 10001;
+ALTER TABLE orders REPLICA IDENTITY FULL;
 
 INSERT INTO orders
 VALUES (default, '2016-01-16', 1001, 1, 102),
