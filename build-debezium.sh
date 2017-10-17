@@ -39,6 +39,7 @@ build_docker_image connect
 build_docker_image example-mysql examples/mysql
 build_docker_image example-mysql-gtids examples/mysql-gtids
 build_docker_image example-postgres examples/postgres
+build_docker_image example-postgres examples/mongodb
 
 echo ""
 echo "**********************************"
