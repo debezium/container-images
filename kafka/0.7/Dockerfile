@@ -6,13 +6,13 @@ MAINTAINER Debezium Community
 # Set the version, home directory, and MD5 hash.
 # MD5 hash taken from http://kafka.apache.org/downloads.html for this version of Kafka
 #
-ENV KAFKA_VERSION=0.11.0.1 \
+ENV KAFKA_VERSION=1.0.0 \
     SCALA_VERSION=2.11 \
     CONFLUENT_VERSION=3.2.2 \
     AVRO_VERSION=1.7.7 \
     AVRO_JACKSON_VERSION=1.9.13 \
     KAFKA_HOME=/kafka \
-    MD5HASH=C8FD6521EC8D414687C7471524009A8A
+    SHA512HASH="b698028485d460c494af942b2dfa41c7342a2ad6052b543c95289cd1e832a1ebcf679b7e568dcabc342c799765337b94f91bc0cf0ee915534cdf82d1635a622a"
 
 #
 # Create a user and home directory for Kafka
@@ -38,7 +38,7 @@ RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org
 #
 # Verify the contents and then install ...
 #
-RUN echo "$MD5HASH  /tmp/kafka.tgz" | md5sum -c - &&\
+RUN echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
     tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1 &&\
     rm -f /tmp/kafka.tgz
 
