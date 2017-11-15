@@ -1,7 +1,7 @@
 FROM postgres:9.6
 
 MAINTAINER Debezium Community
-ENV PLUGIN_VERSION=v0.6.1
+ENV PLUGIN_VERSION=v0.6.2
 ENV WAL2JSON_COMMIT_ID=645ab69aae268a81c900671b5dfab7029384e9ff
 
 # Install the packages which will be required to get everything to compile
