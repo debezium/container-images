@@ -139,7 +139,7 @@ case $1 in
         export KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:$KAFKA_HOME/config/log4j.properties"
         
         #
-        # Process all environment variables that start with 'KAFKA_' (but not 'KAFKA_HOME' or 'KAFKA_VERSION'):
+        # Process all environment variables that start with 'CONNECT_'
         #
         for VAR in `env`
         do
