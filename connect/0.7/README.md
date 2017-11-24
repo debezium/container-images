@@ -62,6 +62,10 @@ This environment variable is an advanced setting. Set this to the hostname that 
 
 This environment variable is an advanced setting. Set this to the hostname that will be given out to other workers to connect with. Defaults to the hostname of the container.
 
+### `ADVERTISED_PORT`
+
+This environment variable is an advanced setting. Set this to the port that will be given out to other workers to connect with.
+
 ### `KEY_CONVERTER`
 
 This environment variable is an advanced setting. Set this to the fully-qualified name of the Java class that implements Kafka Connect's `Converter` class, used to convert the connector's keys to the form stored in Kafka. Defaults to `org.apache.kafka.connect.json.JsonConverter`.
