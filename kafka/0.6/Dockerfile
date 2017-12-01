@@ -13,6 +13,7 @@ ENV KAFKA_VERSION=0.11.0.1 \
     AVRO_JACKSON_VERSION=1.9.13 \
     KAFKA_HOME=/kafka \
     MD5HASH=C8FD6521EC8D414687C7471524009A8A
+ENV KAFKA_URL_PATH=kafka/$KAFKA_VERSION/kafka_$SCALA_VERSION-$KAFKA_VERSION.tgz
 
 #
 # Create a user and home directory for Kafka
@@ -33,7 +34,7 @@ RUN chown -R kafka $KAFKA_HOME && \
 #
 # Download Kafka
 #
-RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')kafka/$KAFKA_VERSION/kafka_$SCALA_VERSION-$KAFKA_VERSION.tgz
+RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$KAFKA_URL_PATH || curl -fSL -o /tmp/kafka.tgz https://archive.apache.org/dist/$KAFKA_URL_PATH
 
 #
 # Verify the contents and then install ...
