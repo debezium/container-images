@@ -9,6 +9,7 @@ MAINTAINER Debezium Community
 ENV ZK_VERSION=3.4.10 \
     ZK_HOME=/zookeeper \
     MD5HASH=e4cf1b1593ca870bf1c7a75188f09678
+ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz
 
 #
 # Create a user and home directory for Zookeeper
@@ -32,7 +33,7 @@ RUN mkdir $ZK_HOME/data && \
 #
 # Download and install Zookeeper
 #
-RUN curl -fSL -o /tmp/zookeeper.tar.gz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz
+RUN curl -fSL -o /tmp/zookeeper.tar.gz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$ZK_URL_PATH || curl -fSL -o /tmp/zookeeper.tgz https://archive.apache.org/dist/$ZK_URL_PATH
 
 #
 # Verify the contents and then install ...
