@@ -12,6 +12,9 @@ RUN apt-get update \
         pkg-config \ 
         git \
         postgresql-server-dev-10 \
+        postgresql-10-postgis-2.4 \
+        postgresql-10-postgis-2.4-scripts \
+        postgis \
         libproj-dev \
     && apt-get clean && apt-get update && apt-get install -f -y --no-install-recommends \            
         liblwgeom-dev \              
