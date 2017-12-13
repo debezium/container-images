@@ -23,7 +23,7 @@ CREATE TABLE products (
 );
 ALTER TABLE products AUTO_INCREMENT = 101;
 
-INSERT INTO products 
+INSERT INTO products
 VALUES (default,"scooter","Small 2-wheel scooter",3.14),
        (default,"car battery","12V car battery",8.1),
        (default,"12-pack drill bits","12-pack of drill bits with sizes ranging from #40 to #3",0.8),
@@ -66,7 +66,7 @@ VALUES (default,"Sally","Thomas","sally.thomas@acme.com"),
        (default,"Edward","Walker","ed@walker.com"),
        (default,"Anne","Kretchmar","annek@noanswer.org");
 
-# Create some veyr simple orders
+# Create some very simple orders
 CREATE TABLE orders (
   order_number INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
   order_date DATE NOT NULL,
@@ -77,7 +77,7 @@ CREATE TABLE orders (
   FOREIGN KEY ordered_product (product_id) REFERENCES products(id)
 ) AUTO_INCREMENT = 10001;
 
-INSERT INTO orders 
+INSERT INTO orders
 VALUES (default, '2016-01-16', 1001, 1, 102),
        (default, '2016-01-17', 1002, 2, 105),
        (default, '2016-02-19', 1002, 2, 106),
