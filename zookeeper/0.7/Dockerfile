@@ -42,6 +42,9 @@ RUN echo "$MD5HASH  /tmp/zookeeper.tar.gz" | md5sum -c - &&\
     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
     rm -f /tmp/zookeeper.tar.gz
 
+# Remove unnecessary files
+RUN rm -r $ZK_HOME/{contrib,dist-maven,docs,recipes,src,ivy.xml,ivysettings.xml,build.xml}
+
 #
 # Allow random UID to use Zookeeper
 #
