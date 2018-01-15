@@ -1,6 +1,7 @@
 FROM postgres:10.0
 
 MAINTAINER Debezium Community
+ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v0.7.1
 ENV WAL2JSON_COMMIT_ID=f68cb0096c669a2ee5a2d32b54a535513e3cb23b
 
@@ -12,10 +13,12 @@ RUN apt-get update \
         pkg-config \ 
         git \
         postgresql-server-dev-10 \
+        libproj-dev \
+    && if [ "$USE_POSTGIS" != "false" ]; then apt-get install -f -y --no-install-recommends \
         postgresql-10-postgis-2.4 \
         postgresql-10-postgis-2.4-scripts \
-        postgis \
-        libproj-dev \
+        postgis; \
+       fi \
     && apt-get clean && apt-get update && apt-get install -f -y --no-install-recommends \            
         liblwgeom-dev \              
     && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \ 
