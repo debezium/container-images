@@ -2,7 +2,7 @@ FROM postgres:10.0
 
 MAINTAINER Debezium Community
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v0.7.1
+ENV PLUGIN_VERSION=v0.7.2
 ENV WAL2JSON_COMMIT_ID=f68cb0096c669a2ee5a2d32b54a535513e3cb23b
 
 # Install the packages which will be required to get everything to compile
