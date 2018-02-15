@@ -1,4 +1,4 @@
-FROM debezium/connect-base:0.7
+FROM debezium/connect-base:0.8
 
 MAINTAINER Debezium Community
 

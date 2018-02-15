@@ -1,8 +1,8 @@
-FROM debezium/connect-base:0.7
+FROM debezium/connect-base:0.8
 
 MAINTAINER Debezium Community
 
-ENV DEBEZIUM_VERSION=0.7.3-SNAPSHOT \
+ENV DEBEZIUM_VERSION=0.8.0-SNAPSHOT \
     MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots"
 
 #
