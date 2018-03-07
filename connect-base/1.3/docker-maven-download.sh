@@ -6,7 +6,7 @@
 # - maven_dep(REPO, GROUP, PACKAGE, VERSION, FILE, MD5_CHECKSUM) # Downloads anything from a maven repo
 # - maven_core_dep(GROUP, PACKAGE, VERSION, MD5_CHECKSUM) # Downloads jar files
 # - maven_confluent_dep(GROUP, PACKAGE, VERSION, MD5_CHECKSUM) # Downloads jar files for Confluent deps
-# - maven_debezium_plugin(CONNECTOR, VERSION, MD5_CHECKSUM) # Downnloads debezium tar plugin
+# - maven_debezium_plugin(CONNECTOR, VERSION, MD5_CHECKSUM) # Downloads debezium tar plugin
 #
 # Author: Renato Mefi <https://github.com/renatomefi>
 #
