@@ -66,6 +66,27 @@ VALUES (default,"Sally","Thomas","sally.thomas@acme.com"),
        (default,"Edward","Walker","ed@walker.com"),
        (default,"Anne","Kretchmar","annek@noanswer.org");
 
+# Create some fake addresses
+CREATE TABLE addresses (
+  id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  customer_id INTEGER NOT NULL,
+  street VARCHAR(255) NOT NULL,
+  city VARCHAR(255) NOT NULL,
+  state VARCHAR(255) NOT NULL,
+  zip VARCHAR(255) NOT NULL,
+  type enum('SHIPPING','BILLING','LIVING') NOT NULL,
+  FOREIGN KEY address_customer (customer_id) REFERENCES customers(id)
+) AUTO_INCREMENT = 10;
+
+INSERT INTO addresses
+VALUES (default,1001,'3183 Moore Avenue','Euless','Texas','76036','SHIPPING'),
+       (default,1001,'2389 Hidden Valley Road','Harrisburg','Pennsylvania','17116','BILLING'),
+       (default,1002,'281 Riverside Drive','Augusta','Georgia','30901','BILLING'),
+       (default,1003,'3787 Brownton Road','Columbus','Mississippi','39701','SHIPPING'),
+       (default,1003,'2458 Lost Creek Road','Bethlehem','Pennsylvania','18018','SHIPPING'),
+       (default,1003,'4800 Simpson Square','Hillsdale','Oklahoma','73743','BILLING'),
+       (default,1004,'1289 University Hill Road','Canehill','Arkansas','72717','LIVING');
+
 # Create some very simple orders
 CREATE TABLE orders (
   order_number INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
