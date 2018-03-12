@@ -29,6 +29,7 @@ mongo -u admin -p admin localhost:27017/admin <<-EOF
             { role: "readWrite", db: "inventory" },
             { role: "read", db: "local" },
             { role: "listDatabases", db: "admin" },
+            { role: "read", db: "config" },
             { role: "read", db: "admin" }
         ]
     });
