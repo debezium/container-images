@@ -8,7 +8,7 @@ GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'replicator' IDENTIFIED BY
 GRANT SELECT, RELOAD, SHOW DATABASES, REPLICATION SLAVE, REPLICATION CLIENT  ON *.* TO 'debezium' IDENTIFIED BY 'dbz';
 
 # Create the database that we'll use to populate data and watch the effect in the binlog
-CREATE DATABASE inventory;
+CREATE DATABASE IF NOT EXISTS inventory;
 GRANT ALL PRIVILEGES ON inventory.* TO 'mysqluser'@'%';
 
 # Switch to this database
