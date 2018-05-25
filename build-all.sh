@@ -2,7 +2,7 @@
 
 DEBEZIUM_VERSION=0.7
 MONGO_VERSION=3.2
-POSTGRES_VERSIONS="9.6 10.0"
+POSTGRES_VERSIONS="9.6 9.6-alpine 10.0 10.0-alpine"
 
 ./build-mongo.sh $MONGO_VERSION
 if [ $? -ne 0 ]; then
