@@ -3,6 +3,8 @@
 # Exit immediately if a *pipeline* returns a non-zero status. (Add -x for command tracing)
 set -e
 
+SENSITIVE_PROPERTIES="CONNECT_SASL_JAAS_CONFIG"
+
 if [[ -z "$BOOTSTRAP_SERVERS" ]]; then
     # Look for any environment variables set by Docker container linking. For example, if the container
     # running Kafka were aliased to 'kafka' in this container, then Docker should have created several envs,
@@ -153,7 +155,11 @@ case $1 in
                 #echo "Adding property $prop_name=${!env_var}"
                 echo "$prop_name=${!env_var}" >> $KAFKA_HOME/config/connect-distributed.properties
             fi
-            echo "--- Setting property from $env_var: $prop_name=${!env_var}"
+            if [[ "$SENSITIVE_PROPERTIES" = *"$env_var"* ]]; then
+                echo "--- Setting property from $env_var: $prop_name=[hidden]"
+            else
+                echo "--- Setting property from $env_var: $prop_name=${!env_var}"
+            fi
           fi
         done
 
