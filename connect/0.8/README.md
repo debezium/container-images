@@ -13,7 +13,7 @@ This image can be used in several different ways. All require an already-running
 
 ## Start a Kafka Connect service instance
 
-When running a cluster of one or more Kafka Connect service instances, several important parameters must be defined using environment variables. Please see the section below for the list of these required environment variables and acceptable values. 
+When running a cluster of one or more Kafka Connect service instances, several important parameters must be defined using environment variables. Please see the section below for the list of these required environment variables and acceptable values.
 
 Starting an instance of Kafka Connect using this image is simple:
 
@@ -37,6 +37,7 @@ where `connect` is the name of your existing container. The shell will be set up
 # Environment variables
 
 The Debezium Kafka image uses several environment variables when running a Kafka broker using this image.
+Please also see [the documentation](http://kafka.apache.org/documentation/#connect_running) of Kafka Connect to learn more about the specific settings.
 
 ### `GROUP_ID`
 
@@ -48,7 +49,7 @@ This environment variable is required when running the Kafka Connect service. Se
 
 ### `OFFSET_STORAGE_TOPIC`
 
-This environment variable is required when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector offsets. The topic must have a single partition and be highly replicated (e.g., 3x or more).
+This environment variable is required when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector offsets. The topic must have a large number of partitions (e.g., 25 or 50), be highly replicated (e.g., 3x or more) and should be configured for compaction.
 
 ### `BOOTSTRAP_SERVERS`
 
@@ -132,4 +133,3 @@ Although this image will send Kafka Connect service log output to standard outpu
 ### Configuration
 
 This image defines a data volume at `/kafka/config` where the broker's configuration files are stored. Note that these configuration files are always modified based upon the environment variables and linked containers. The best use of this data volume is to be able to see the configuration files used by Kafka, although with some care it is possible to supply custom configuration files that will be adapted and used upon startup.
-
