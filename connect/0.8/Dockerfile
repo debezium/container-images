@@ -10,7 +10,7 @@ ENV DEBEZIUM_VERSION=0.7.3 \
 # Download connectors, verify the contents, and then install into the `$KAFKA_CONNECT_PLUGINS_DIR/debezium` directory...
 #
 RUN eval $MD5SUMS &&\
-    for CONNECTOR in {mysql,mongodb,postgres}; do \
+    for CONNECTOR in {mysql,mongodb,postgres,oracle}; do \
     curl -fSL -o /tmp/plugin.tar.gz \
                  $MAVEN_CENTRAL/io/debezium/debezium-connector-$CONNECTOR/$DEBEZIUM_VERSION/debezium-connector-$CONNECTOR-$DEBEZIUM_VERSION-plugin.tar.gz &&\
     declare MD5_PARAM_NAME="${CONNECTOR^^}_MD5" &&\

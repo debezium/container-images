@@ -124,7 +124,7 @@ Containers created using this image will expose port 8083, which is the standard
 
 # Storing data
 
-The Kafka Connect service run by this image stores no data in th econtainer, but it does produce logs. The only way to keep these files is to use volumes that map specific directories inside the container to the local file system (or to OpenShift persistent volumes).
+The Kafka Connect service run by this image stores no data in the econtainer, but it does produce logs. The only way to keep these files is to use volumes that map specific directories inside the container to the local file system (or to OpenShift persistent volumes).
 
 ### Log files
 
@@ -133,3 +133,9 @@ Although this image will send Kafka Connect service log output to standard outpu
 ### Configuration
 
 This image defines a data volume at `/kafka/config` where the broker's configuration files are stored. Note that these configuration files are always modified based upon the environment variables and linked containers. The best use of this data volume is to be able to see the configuration files used by Kafka, although with some care it is possible to supply custom configuration files that will be adapted and used upon startup.
+
+# Oracle Connector
+
+If you want to use the Oracle connector it is necessary to add dependencies that are not part of the image due to licensing restrictions. In this case you should create a new image derived from this one and bake-in Oracle Instant Client JAR files.
+
+The files in question are available as [oracle Instant Client for Linux](http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html). Please follow [an example](https://github.com/debezium/debezium-examples/blob/master/tutorial/debezium-with-oracle-jdbc/Dockerfile) so see how the resulting image should be structured.
