@@ -2,7 +2,7 @@ FROM postgres:9.6
 
 MAINTAINER Debezium Community
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v0.8.0.CR1
+ENV PLUGIN_VERSION=v0.8.0.Final
 
 # https://github.com/eulerto/wal2json/releases/tag/wal2json_1_0
 ENV WAL2JSON_COMMIT_ID=d2b7fef021c46e0d429f2c1768de361069e58696
