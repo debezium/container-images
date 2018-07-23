@@ -20,7 +20,7 @@ RUN eval $MD5SUMS &&\
     rm -f /tmp/plugin.tar.gz; \
     done;
 RUN eval $MD5SUMS &&\
-    for CONNECTOR in oracle; do \
+    for CONNECTOR in {oracle,sqlserver}; do \
     curl -fSL -o /tmp/plugin.tar.gz \
                  $MAVEN_REPO_INCUBATOR/io/debezium/debezium-connector-$CONNECTOR/$DEBEZIUM_VERSION/debezium-connector-$CONNECTOR-$DEBEZIUM_VERSION-plugin.tar.gz &&\
     declare MD5_PARAM_NAME="${CONNECTOR^^}_MD5" &&\
