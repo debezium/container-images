@@ -2,8 +2,11 @@ FROM postgres:10.0-alpine
 
 MAINTAINER Debezium Community
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v0.7.5
-ENV WAL2JSON_COMMIT_ID=f68cb0096c669a2ee5a2d32b54a535513e3cb23b
+ENV PLUGIN_VERSION=v0.9.0.Alpha1
+
+# https://github.com/eulerto/wal2json/releases/tag/wal2json_1_0
+ENV WAL2JSON_COMMIT_ID=d2b7fef021c46e0d429f2c1768de361069e58696
+
 ENV POSTGIS_VERSION=2.4.4
 
 RUN apk add --no-cache protobuf-c-dev
