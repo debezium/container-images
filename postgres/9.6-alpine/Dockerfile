@@ -4,14 +4,22 @@ MAINTAINER Debezium Community
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v0.7.5
 ENV WAL2JSON_COMMIT_ID=f68cb0096c669a2ee5a2d32b54a535513e3cb23b
+ENV POSTGIS_VERSION=2.4.4
 
 RUN apk add --no-cache protobuf-c-dev
 
 RUN if [ "$USE_POSTGIS" != "false" ]; then \
-        apk add --no-cache --repository 'http://dl-cdn.alpinelinux.org/alpine/edge/main' json-c \
+        apk add --no-cache --virtual .debezium-build-deps autoconf automake curl file gcc git libtool make musl-dev pkgconf tar \
+        && apk add --no-cache json-c libxml2-dev \
         && apk add --no-cache --repository 'http://dl-cdn.alpinelinux.org/alpine/edge/main' \
             --repository 'http://dl-cdn.alpinelinux.org/alpine/edge/testing' \
-            postgis-dev proj4-dev; \
+            gdal-dev geos-dev proj4-dev \
+        && curl -fSL "https://github.com/postgis/postgis/archive/${POSTGIS_VERSION}.tar.gz" >postgis.tar.gz \
+        && mkdir postgis \
+        && tar -xf postgis.tar.gz -C postgis --strip-components=1 \
+        && (cd /postgis && ./autogen.sh && ./configure && make && make install) \
+        && rm -rf postgis postgis.tar.gz \
+        && apk del .debezium-build-deps; \
     fi
 
 # Compile the plugins from sources and install
