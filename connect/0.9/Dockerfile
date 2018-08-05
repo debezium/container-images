@@ -2,10 +2,10 @@ FROM debezium/connect-base:0.9
 
 MAINTAINER Debezium Community
 
-ENV DEBEZIUM_VERSION=0.8.0.Beta1 \
+ENV DEBEZIUM_VERSION=0.9.0.Alpha1 \
     MAVEN_REPO_CORE="https://repo1.maven.org/maven2" \
     MAVEN_REPO_INCUBATOR="https://repo1.maven.org/maven2" \
-    MD5SUMS="MONGODB_MD5=c9c68459e5f30132b8fa5a66831469b5 MYSQL_MD5=d57c2cc12c98dcfa204f86a5d8adbf77 POSTGRES_MD5=46d83f9190b11f85971942fba68bd40d ORACLE_MD5=54eaff0ff98c9ddd9c67bb57342bad1b"
+    MD5SUMS="MONGODB_MD5=12eb9e9e6c4fca92d51c6d71793fe5b1 MYSQL_MD5=3b8358f037fb7b532630c7152aefc807 POSTGRES_MD5=6d2d747a11f068ddd482ebed587b0652 ORACLE_MD5=014403d9b9479d9c3e04f1d0cc760cf6 SQLSERVER_MD5=525f008ef015c8ce368f22f854a26d14"
 
 #
 # Download connectors, verify the contents, and then install into the `$KAFKA_CONNECT_PLUGINS_DIR/debezium` directory...
@@ -20,7 +20,7 @@ RUN eval $MD5SUMS &&\
     rm -f /tmp/plugin.tar.gz; \
     done;
 RUN eval $MD5SUMS &&\
-    for CONNECTOR in oracle; do \
+    for CONNECTOR in {oracle,sqlserver}; do \
     curl -fSL -o /tmp/plugin.tar.gz \
                  $MAVEN_REPO_INCUBATOR/io/debezium/debezium-connector-$CONNECTOR/$DEBEZIUM_VERSION/debezium-connector-$CONNECTOR-$DEBEZIUM_VERSION-plugin.tar.gz &&\
     declare MD5_PARAM_NAME="${CONNECTOR^^}_MD5" &&\
