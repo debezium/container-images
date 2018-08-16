@@ -3,7 +3,7 @@
 # Exit immediately if a *pipeline* returns a non-zero status. (Add -x for command tracing)
 set -e
 
-SENSITIVE_PROPERTIES="CONNECT_SASL_JAAS_CONFIG"
+SENSITIVE_PROPERTIES="CONNECT_SASL_JAAS_CONFIG,CONNECT_CONSUMER_SASL_JAAS_CONFIG,CONNECT_PRODUCER_SASL_JAAS_CONFIG"
 
 if [[ -z "$BOOTSTRAP_SERVERS" ]]; then
     # Look for any environment variables set by Docker container linking. For example, if the container
