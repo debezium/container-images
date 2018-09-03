@@ -161,8 +161,20 @@ case $1 in
         fi    
         TOPICNAME=$1
         shift
+        if [[ -z "$KAFKA_BROKER" ]]; then
+            # Look for any environment variables set by Docker container linking. For example, if the container
+            # running Kafka were named 'broker' in this container, then Docker should have created several envs,
+            # such as 'BROKER_PORT_9092_TCP'. If so, then use that to automatically connect to the linked broker.
+            export KAFKA_BROKER=$(env | grep .*PORT_9092_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
+        fi
+        if [[ "x$KAFKA_BROKER" = "x" ]]; then
+            echo "The KAFKA_BROKER variable must be set, or the container must be linked to one that runs Zookeeper."
+            exit 1
+        else
+            echo "Using KAFKA_BROKER=$KAFKA_BROKER"
+        fi
         echo "Contents of topic $TOPICNAME:"
-        exec $KAFKA_HOME/bin/kafka-console-consumer.sh --zookeeper $KAFKA_ZOOKEEPER_CONNECT --property print.key=$PRINT_KEY --property fetch.min.bytes=$FETCH_MIN_BYTES --topic "$TOPICNAME" $FROM_BEGINNING $@
+        exec $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server $KAFKA_BROKER --property print.key=$PRINT_KEY --property fetch.min.bytes=$FETCH_MIN_BYTES --topic "$TOPICNAME" $FROM_BEGINNING $@
         ;;
     create-topic)
         shift
