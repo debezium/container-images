@@ -1,4 +1,4 @@
-FROM postgres:10.0-alpine
+FROM postgres:10-alpine
 
 MAINTAINER Debezium Community
 ARG USE_POSTGIS=true
