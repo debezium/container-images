@@ -22,12 +22,6 @@ fi
 : ${OFFSET_FLUSH_INTERVAL_MS:=60000}
 : ${OFFSET_FLUSH_TIMEOUT_MS:=5000}
 : ${SHUTDOWN_TIMEOUT:=10000}
-: ${OFFSET_STORAGE_REPLICATION_FACTOR:=1}
-: ${OFFSET_STORAGE_PARTITIONS:=25}
-: ${CONFIG_STORAGE_REPLICATION_FACTOR:=1}
-: ${CONFIG_STORAGE_PARTITIONS:=1}
-: ${STATUS_STORAGE_REPLICATION_FACTOR:=1}
-: ${STATUS_STORAGE_PARTITIONS:=5}
 : ${KEY_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${VALUE_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${INTERNAL_KEY_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
@@ -40,13 +34,9 @@ export CONNECT_BOOTSTRAP_SERVERS=$BOOTSTRAP_SERVERS
 export CONNECT_GROUP_ID=$GROUP_ID
 export CONNECT_CONFIG_STORAGE_TOPIC=$CONFIG_STORAGE_TOPIC
 export CONNECT_OFFSET_STORAGE_TOPIC=$OFFSET_STORAGE_TOPIC
-export CONNECT_STATUS_STORAGE_TOPIC=$STATUS_STORAGE_TOPIC
-export CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR=$OFFSET_STORAGE_REPLICATION_FACTOR
-export CONNECT_OFFSET_STORAGE_PARTITIONS=$OFFSET_STORAGE_PARTITIONS
-export CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR=$CONFIG_STORAGE_REPLICATION_FACTOR
-export CONNECT_CONFIG_STORAGE_PARTITIONS=$CONFIG_STORAGE_PARTITIONS
-export CONNECT_STATUS_STORAGE_REPLICATION_FACTOR=$STATUS_STORAGE_REPLICATION_FACTOR
-export CONNECT_STATUS_STORAGE_PARTITIONS=$STATUS_STORAGE_PARTITIONS
+if [[ -n "$STATUS_STORAGE_TOPIC" ]]; then
+    export CONNECT_STATUS_STORAGE_TOPIC=$STATUS_STORAGE_TOPIC
+fi
 export CONNECT_KEY_CONVERTER=$KEY_CONVERTER
 export CONNECT_VALUE_CONVERTER=$VALUE_CONVERTER
 export CONNECT_INTERNAL_KEY_CONVERTER=$INTERNAL_KEY_CONVERTER
@@ -123,23 +113,19 @@ case $1 in
             exit 1
         fi
 
-	if [[ "x$CONNECT_STATUS_STORAGE_TOPIC" = "x" ]]; then
-            echo "The STATUS_STORAGE_TOPIC variable must be set to the name of the topic where connector status will be stored."
+        if [[ "x$CONNECT_STATUS_STORAGE_TOPIC" = "x" ]]; then
+            echo "WARNING: it is recommended to specify the STATUS_STORAGE_TOPIC variable for defining the name of the topic where connector statuses will be stored."
             echo "This topic must have a single partition and be highly replicated (e.g., 3x or more)."
-            exit 1
+            echo "As no value is given, the default of 'connect-status' will be used."
         fi
 
         echo "Using the following environment variables:"
         echo "      GROUP_ID=$CONNECT_GROUP_ID"
         echo "      CONFIG_STORAGE_TOPIC=$CONNECT_CONFIG_STORAGE_TOPIC"
         echo "      OFFSET_STORAGE_TOPIC=$CONNECT_OFFSET_STORAGE_TOPIC"
-        echo "      STATUS_STORAGE_TOPIC=$CONNECT_STATUS_STORAGE_TOPIC"
-        echo "      OFFSET_STORAGE_REPLICATION_FACTOR=$CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR"
-        echo "      OFFSET_STORAGE_PARTITIONS=$CONNECT_OFFSET_STORAGE_PARTITIONS"
-        echo "      CONFIG_STORAGE_REPLICATION_FACTOR=$CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR"
-        echo "      CONFIG_STORAGE_PARTITIONS=$CONNECT_CONFIG_STORAGE_PARTITIONS"
-        echo "      STATUS_STORAGE_REPLICATION_FACTOR=$CONNECT_STATUS_STORAGE_REPLICATION_FACTOR"
-        echo "      STATUS_STORAGE_PARTITIONS=$CONNECT_STATUS_STORAGE_PARTITIONS"
+        if [[ "x$CONNECT_STATUS_STORAGE_TOPIC" != "x" ]]; then
+            echo "      STATUS_STORAGE_TOPIC=$CONNECT_STATUS_STORAGE_TOPIC"
+        fi
         echo "      BOOTSTRAP_SERVERS=$CONNECT_BOOTSTRAP_SERVERS"
         echo "      REST_HOST_NAME=$CONNECT_REST_HOST_NAME"
         echo "      REST_PORT=$CONNECT_REST_PORT"
@@ -165,7 +151,7 @@ case $1 in
         sed -i -r -e "s|=INFO, stdout|=$LOG_LEVEL, stdout|g" $KAFKA_HOME/config/log4j.properties
         sed -i -r -e "s|^(log4j.appender.stdout.threshold)=.*|\1=${LOG_LEVEL}|g" $KAFKA_HOME/config/log4j.properties
         export KAFKA_LOG4J_OPTS="-Dlog4j.configuration=file:$KAFKA_HOME/config/log4j.properties"
-        
+
         #
         # Process all environment variables that start with 'CONNECT_'
         #
@@ -191,7 +177,7 @@ case $1 in
 
         #
         # Execute the Kafka Connect distributed service, replacing this shell process with the specified program ...
-        #        
+        #
         exec $KAFKA_HOME/bin/connect-distributed.sh $KAFKA_HOME/config/connect-distributed.properties
         ;;
 esac
