@@ -20,6 +20,8 @@ However, use a single directory for connectors when those connectors share depen
 
 ## Start a Kafka Connect service instance
 
+*NOTE:* Please see the Apache Kafka [documentation](https://kafka.apache.org/documentation/#connect_running) for general information on running Kafka Connect and more details on the various options and environment variables.
+
 Kafka Connect requires an already-running Zookeeper service, which is either running locally via the container named `zookeeper` or with OpenShift running as a service named `zookeeper`. Also required are already-running Kafka brokers, which are either running locally via the container named `kafka` or with OpenShift running as a service named `kafka`.
 
 When running a cluster of one or more Kafka Connect service instances, several important parameters must be defined using environment variables. Please see the section below for the list of these required environment variables and acceptable values.
@@ -53,15 +55,15 @@ This environment variable is required when running the Kafka Connect service. Se
 
 ### `CONFIG_STORAGE_TOPIC`
 
-This environment variable is required when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector configurations. The topic must have a single partition and be highly replicated (e.g., 3x or more).
+This environment variable is required when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector configurations. The topic must have a single partition, should be highly replicated (e.g., 3x or more) and should be configured for compaction.
 
 ### `OFFSET_STORAGE_TOPIC`
 
-This environment variable is required when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector offsets. The topic must have a single partition and be highly replicated (e.g., 3x or more).
+This environment variable is required when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector offsets. The topic should have many partitions, be highly replicated (e.g., 3x or more) and should be configured for compaction.
 
 ### `STATUS_STORAGE_TOPIC`
 
-This environment variable should be provided when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector status. The topic must have a single partition and be highly replicated (e.g., 3x or more).
+This environment variable should be provided when running the Kafka Connect service. Set this to the name of the Kafka topic where the Kafka Connect services in the group store connector status. The topic can have multiple partitions, should be highly replicated (e.g., 3x or more) and should be configured for compaction.
 
 ### `BOOTSTRAP_SERVERS`
 

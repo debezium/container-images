@@ -103,19 +103,19 @@ case $1 in
 
         if [[ "x$CONNECT_CONFIG_STORAGE_TOPIC" = "x" ]]; then
             echo "The CONFIG_STORAGE_TOPIC variable must be set to the name of the topic where connector configurations will be stored."
-            echo "This topic must have a single partition and be highly replicated (e.g., 3x or more)."
+            echo "This topic must have a single partition, be highly replicated (e.g., 3x or more) and should be configured for compaction."
             exit 1
         fi
 
         if [[ "x$CONNECT_OFFSET_STORAGE_TOPIC" = "x" ]]; then
             echo "The OFFSET_STORAGE_TOPIC variable must be set to the name of the topic where connector offsets will be stored."
-            echo "This topic should have many partitions (e.g., 25 or 50) and be highly replicated (e.g., 3x or more)."
+            echo "This topic should have many partitions (e.g., 25 or 50), be highly replicated (e.g., 3x or more) and be configured for compaction."
             exit 1
         fi
 
         if [[ "x$CONNECT_STATUS_STORAGE_TOPIC" = "x" ]]; then
             echo "WARNING: it is recommended to specify the STATUS_STORAGE_TOPIC variable for defining the name of the topic where connector statuses will be stored."
-            echo "This topic must have a single partition and be highly replicated (e.g., 3x or more)."
+            echo "This topic may have multiple partitions, be highly replicated (e.g., 3x or more) and should be configured for compaction."
             echo "As no value is given, the default of 'connect-status' will be used."
         fi
 
