@@ -108,14 +108,14 @@ case $1 in
             # then creates the topics when the broker is running and able to receive connections ...
             (
                 echo "STARTUP: Waiting for Kafka broker to open socket on port 9092 ..."
-                while ss | awk '$5 ~ /:9092$/ {exit 1}'; do sleep 1; done
+                while ss -n | awk '$5 ~ /:9092$/ {exit 1}'; do sleep 1; done
                 echo "START: Found running Kafka broker on port 9092, so creating topics ..."
                 IFS=','; for topicToCreate in $CREATE_TOPICS; do
                     # remove leading and trailing whitespace ...
                     topicToCreate="$(echo ${topicToCreate} | xargs )"
                     IFS=':' read -a topicConfig <<< "$topicToCreate"
                     echo "STARTUP: Creating topic ${topicConfig[0]} with ${topicConfig[1]} partitions and ${topicConfig[2]} replicas ..."
-                    $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partition ${topicConfig[1]} --topic "${topicConfig[0]}"
+                    $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}"
                 done
             )&
         fi
