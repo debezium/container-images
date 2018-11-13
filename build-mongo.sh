@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [[ -z "$1" ]]; then
+if [ -z "$1" ]; then
     echo ""
     echo "A version must be specified."
     echo ""
@@ -13,4 +13,4 @@ echo ""
 echo "****************************************************************"
 echo "** Building  debezium/mongo-initiator:$1"
 echo "****************************************************************"
-docker build -t debezium/mongo-initiator:$1 mongo-initiator/$1
+docker build -t "debezium/mongo-initiator:$1" "mongo-initiator/$1"
