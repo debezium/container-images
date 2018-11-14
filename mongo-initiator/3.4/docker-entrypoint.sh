@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit immediately if a *pipeline* returns a non-zero status. (Add -x for command tracing)
-set -e
+set -eEo pipefail
 
 # The names of container links are as follows, where 'n' is 1, 2, 3, etc.:
 #
@@ -121,15 +121,21 @@ case $ARG1 in
                 else
                     priority=1
                     echo "- secondary node: ${hostAndPort}"
+                    CONFIGVAR="${CONFIGVAR},"
                 fi
-                CONFIGVAR="${CONFIGVAR}, {_id: ${hostNum}, host: \"${hostAndPort}\", priority: ${priority} }"
+                CONFIGVAR="${CONFIGVAR} {_id: ${hostNum}, host: \"${hostAndPort}\", priority: ${priority} }"
                 hostNum=$hostNum+1
             done
             CONFIGVAR="${CONFIGVAR} ] }"
 
             # Initiate the replica set with our document ...
             $PRIMARY_MONGO --eval "${CONFIGVAR};rs.initiate(config);"
+
             rsStatus=$($PRIMARY_MONGO --eval "rs.status()")
+            if [[ $rsStatus =~ "no replset config has been received" ]]; then
+                echo "Failed to initialize replica set"
+                exit 1
+            fi
         else
             echo "Replica set \"${REPLICASET}\" is already initiated."
         fi
