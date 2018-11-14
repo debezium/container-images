@@ -1,7 +1,7 @@
 #!/bin/bash
 
 DEBEZIUM_VERSION=0.9
-MONGO_VERSION="3.2 3.4 3.6 4.0 latest"
+MONGO_VERSION="3.2 3.4 3.6 4.0"
 POSTGRES_VERSIONS="9.6 9.6-alpine 10 10-alpine 11 11-alpine"
 
 for i in $MONGO_VERSION; do
