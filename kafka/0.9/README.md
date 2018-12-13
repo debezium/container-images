@@ -80,7 +80,7 @@ This environment variable is recommended. Use this to set the JVM options for th
 
 ### `CREATE_TOPICS`
 
-This environment variable is optional. Use this to specify the topics that should be created as soon as the broker starts. The value should be a comma-separated list of topics, partitions, and replicas. For example, when this environment variable is set to `topic1:1:2,topic2:3:1`, then the container will create 'topic1' with 1 partition and 2 replicas, and 'topic2' with 3 partitions and 1 replica.
+This environment variable is optional. Use this to specify the topics that should be created as soon as the broker starts. The value should be a comma-separated list of topics, partitions, and replicas. For example, when this environment variable is set to `topic1:1:2,topic2:3:1:compact`, then the container will create 'topic1' with 1 partition and 2 replicas, and 'topic2' with 3 partitions, 1 replica and `cleanup.policy` set to compact.
 
 ### `LOG_LEVEL`
 
