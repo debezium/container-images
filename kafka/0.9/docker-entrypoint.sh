@@ -114,8 +114,12 @@ case $1 in
                     # remove leading and trailing whitespace ...
                     topicToCreate="$(echo ${topicToCreate} | xargs )"
                     IFS=':' read -a topicConfig <<< "$topicToCreate"
-                    echo "STARTUP: Creating topic ${topicConfig[0]} with ${topicConfig[1]} partitions and ${topicConfig[2]} replicas ..."
-                    $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}"
+                    config=
+                    if [ -n "${topicConfig[3]}" ]; then
+                        config="--config=cleanup.policy=${topicConfig[3]}"
+                    fi
+                    echo "STARTUP: Creating topic ${topicConfig[0]} with ${topicConfig[1]} partitions and ${topicConfig[2]} replicas with cleanup policy ${topicConfig[3]}..."
+                    $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" ${config}
                 done
             )&
         fi
