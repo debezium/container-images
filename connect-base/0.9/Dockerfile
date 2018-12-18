@@ -32,11 +32,11 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 RUN cd $KAFKA_HOME/libs &&\
     function confluent_dep { curl -O http://packages.confluent.io/maven/io/confluent/$1/$CONFLUENT_VERSION/$1-$CONFLUENT_VERSION.jar;  echo "$2 $1-$CONFLUENT_VERSION.jar" >> sums.md5; };\
     function central_dep { curl -O http://central.maven.org/maven2/$1/$2/$3/$2-$3.jar; echo "$4 $2-$3.jar" >> sums.md5; };\
-    confluent_dep kafka-connect-avro-converter 2cadbf1478bdcf5fee56dd9096414221 &&\
-    confluent_dep kafka-avro-serializer e1bacc8127dc268f9760a75960dc3b32 &&\
-    confluent_dep kafka-schema-registry-client 15c9f0ded332159c3cbb5f18f6ad573d &&\
-    confluent_dep common-config dd2a8b669cf3cd032c8635bc7c95691f &&\
-    confluent_dep common-utils ea6bfb3413731e53676d10ab02a068dc &&\
+    confluent_dep kafka-connect-avro-converter 9702d20cd7c000875251eaf02aae690b &&\
+    confluent_dep kafka-avro-serializer 4b6f564af3c90f077189330604d3a04e &&\
+    confluent_dep kafka-schema-registry-client 946601d4142f91b8b61395d645170d72 &&\
+    confluent_dep common-config 5cf73e0cb7f687a560d7cce1300c4da0 &&\
+    confluent_dep common-utils 724fee3d2766d1466f5631ee3fa3acaf &&\
     central_dep org/codehaus/jackson jackson-core-asl $AVRO_JACKSON_VERSION 319c49a4304e3fa9fe3cd8dcfc009d37 &&\
     central_dep org/codehaus/jackson jackson-mapper-asl $AVRO_JACKSON_VERSION 1750f9c339352fc4b728d61b57171613 &&\
     central_dep org/apache/avro avro $AVRO_VERSION 10395e5a571e1a1f6113411f276d2fea &&\
