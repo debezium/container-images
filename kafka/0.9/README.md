@@ -28,9 +28,9 @@ To start the container in _detached_ mode, simply replace the `-it` option with 
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and uses them to create a topic:
 
-    $ docker run -it --rm --link zookeeper:zookeeper debezium/kafka create-topic [-p numPartitions] [-r numReplicas] topic-name
+    $ docker run -it --rm --link zookeeper:zookeeper debezium/kafka create-topic [-p numPartitions] [-r numReplicas] [-c cleanupPolicy] topic-name
 
-where `topic-name` is the name of the new topic, `numPartitions` is the number of partitions within the new topic, and `numReplicas` is the number of replicas for each partition within the new topic. The default for both `numPartitions` and `numReplicas` is '1'. 
+where `topic-name` is the name of the new topic, `numPartitions` is the number of partitions within the new topic, `numReplicas` is the number of replicas for each partition within the new topic and `cleanupPolicy` is the cleanup policy for the new topic. The default for both `numPartitions` and `numReplicas` is '1'. The default `cleanupPolicy` is `delete`.
 
 The container will exit as soon as the request to create the topic completes, and because `--rm` is used the container will be immediately removed.
 
