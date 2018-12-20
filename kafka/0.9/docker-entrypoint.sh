@@ -184,7 +184,8 @@ case $1 in
         shift
         PARTITION=1
         REPLICAS=1
-        while getopts :p:r: option; do
+        CLEANUP_POLICY=delete
+        while getopts :p:r:c: option; do
             case ${option} in
                 p)
                     PARTITION=$OPTARG
@@ -192,8 +193,11 @@ case $1 in
                 r)
                     REPLICAS=$OPTARG
                     ;;
+                c)
+                    CLEANUP_POLICY=$OPTARG
+                    ;;
                 h|\?)
-                    echo "Usage:   create-topic [-p numPartitions] [-r numReplicas] topicname"
+                    echo "Usage:   create-topic [-p numPartitions] [-r numReplicas] [-c cleanupPolicy] topicname"
                     echo ""
                     echo "where"
                     echo ""
@@ -203,6 +207,8 @@ case $1 in
                     echo "                       By default, the topic is created with only one replica."
                     echo "                       The number of replicas may not be larger than the number"
                     echo "                       of brokers."
+                    echo "    -c cleanupPolicy   Create the topic with the specified cleanup policy."
+                    echo "                       By default, the topic is created with delete cleanup policy."
                     echo "    topicname          The required name of the new topic."
                     exit 1;
                     ;;
@@ -214,8 +220,8 @@ case $1 in
             exit 1;
         fi    
         TOPICNAME=$1
-        echo "Creating new topic $TOPICNAME with $PARTITION partition(s) and $REPLICAS replica(s)..."
-        exec $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partition $PARTITION --topic "$TOPICNAME"
+        echo "Creating new topic $TOPICNAME with $PARTITION partition(s), $REPLICAS replica(s) and cleanup policy set to $CLEANUP_POLICY..."
+        exec $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partitions $PARTITION --topic "$TOPICNAME" --config=cleanup.policy=$CLEANUP_POLICY
         ;;
     list-topics)
         echo "Listing topics..."
