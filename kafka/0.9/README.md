@@ -41,18 +41,18 @@ Simply run this command once for each topic you want to create.
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and watches a topic:
 
-    $ docker run -it --rm --link zookeeper:zookeeper debezium/kafka watch-topic [-a] topic-name
+    $ docker run -it --rm --link zookeeper:zookeeper --link kafka:kafka debezium/kafka watch-topic [-a] topic-name
 
-where `topic-name` is the name of the topic, and `-a` is the optional flag that specifies that all of the topic messages should be displayed (e.g., from the beginning).
+where `topic-name` is the name of the topic, and `-a` is the optional flag that specifies that all of the topic messages should be displayed (i.e. from the beginning).
 
 
 ## Listing topics on a running broker
 
-If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and lists the exisitng topics:
+If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and lists the existing topics:
 
     $ docker run -it --rm --link zookeeper:zookeeper debezium/kafka list-topics
 
-The container will exit (and be removeD) immediately after the response is displayed.
+The container will exit (and be removed) immediately after the response is displayed.
 
 # Environment variables
 
@@ -116,7 +116,7 @@ This image defines a data volume at `/kafka/data`. The broker writes all persist
 
 Although this image will send Kafka broker log output to standard output so it is visible in the Docker logs, this image also configures Kafka to write out more detailed logs to a data volume at `/kafka/logs`. All logs are rotated daily, and include:
 
-* `server.log` - Contain the same log output sent to standard output and standard error. 
+* `server.log` - Contain the same log output sent to standard output and standard error.
 * `state-change.log` - Records the timeline of requested and completed state changes between the controller and brokers.
 * `kafka-request.log` - Records one entry for each of the request received and handled by the broker.
 * `log-cleaner.log` - Records the detail about log compaction, whereby Kafka ensures that a compacted topic retains at least the last value for each distinct message key.
@@ -125,4 +125,3 @@ Although this image will send Kafka broker log output to standard output so it i
 ### Configuration
 
 This image defines a data volume at `/kafka/config` where the broker's configuration files are stored. Note that these configuration files are always modified based upon the environment variables and linked containers. The best use of this data volume is to be able to see the configuration files used by Kafka, although with some care it is possible to supply custom configuration files that will be adapted and used upon startup.
-

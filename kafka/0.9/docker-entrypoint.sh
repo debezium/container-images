@@ -101,10 +101,10 @@ case $1 in
             fi
           fi
         done
-        
+
         if [[ -n $CREATE_TOPICS ]]; then
             echo "Creating topics: $CREATE_TOPICS"
-            # Start a subshell in the background that waits for the Kafka broker to open socket on port 9092 and 
+            # Start a subshell in the background that waits for the Kafka broker to open socket on port 9092 and
             # then creates the topics when the broker is running and able to receive connections ...
             (
                 echo "STARTUP: Waiting for Kafka broker to open socket on port 9092 ..."
@@ -158,7 +158,7 @@ case $1 in
         if [[ -z $1 ]]; then
             echo "ERROR: A topic name must be specified"
             exit 1;
-        fi    
+        fi
         TOPICNAME=$1
         shift
         if [[ -z "$KAFKA_BROKER" ]]; then
@@ -168,7 +168,7 @@ case $1 in
             export KAFKA_BROKER=$(env | grep .*PORT_9092_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
         fi
         if [[ "x$KAFKA_BROKER" = "x" ]]; then
-            echo "The KAFKA_BROKER variable must be set, or the container must be linked to one that runs Zookeeper."
+            echo "The KAFKA_BROKER variable must be set, or the container must be linked to one that runs Kafka."
             exit 1
         else
             echo "Using KAFKA_BROKER=$KAFKA_BROKER"
@@ -208,7 +208,7 @@ case $1 in
         if [[ -z $1 ]]; then
             echo "ERROR: A topic name must be specified"
             exit 1;
-        fi    
+        fi
         TOPICNAME=$1
         echo "Creating new topic $TOPICNAME with $PARTITION partition(s) and $REPLICAS replica(s)..."
         exec $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partition $PARTITION --topic "$TOPICNAME"
