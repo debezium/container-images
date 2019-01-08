@@ -211,7 +211,7 @@ case $1 in
         fi
         TOPICNAME=$1
         echo "Creating new topic $TOPICNAME with $PARTITION partition(s) and $REPLICAS replica(s)..."
-        exec $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partition $PARTITION --topic "$TOPICNAME"
+        exec $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partitions $PARTITION --topic "$TOPICNAME"
         ;;
     list-topics)
         echo "Listing topics..."
