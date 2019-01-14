@@ -4,8 +4,7 @@ MAINTAINER Debezium Community
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v0.9.0.Beta2
 
-# https://github.com/eulerto/wal2json/releases/tag/wal2json_1_0
-ENV WAL2JSON_COMMIT_ID=d2b7fef021c46e0d429f2c1768de361069e58696
+ENV WAL2JSON_COMMIT_ID=92b33c7d7c2fccbeb9f79455dafbc92e87e00ddd
 
 ENV POSTGIS_VERSION=2.4.4
 
