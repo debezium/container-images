@@ -6,5 +6,7 @@ RUN mkdir kafkacat &&\
     ./bootstrap.sh
 
 FROM fedora:28
-RUN dnf -y install jq httpie && dnf clean all
+RUN dnf -y install jq httpie mycli python-pip gcc redhat-rpm-config python-devel &&\
+    pip install pgcli &&\
+    dnf clean all
 COPY --from=0 /kafkacat/kafkacat /usr/bin/kafkacat
