@@ -10,3 +10,7 @@ RUN dnf -y install jq httpie mycli python-pip gcc redhat-rpm-config python-devel
     pip install pgcli &&\
     dnf clean all
 COPY --from=0 /kafkacat/kafkacat /usr/bin/kafkacat
+
+RUN mkdir licenses
+
+COPY LICENSE* /licenses/
