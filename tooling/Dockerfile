@@ -1,5 +1,5 @@
 FROM fedora:28
-RUN dnf -y install gcc which gcc-c++ wget make git
+RUN dnf -y install gcc which gcc-c++ wget make git cmake
 RUN git clone https://github.com/edenhill/kafkacat -b 1.4.0-RC1 --single-branch && \
     cd kafkacat && \
     ./bootstrap.sh
