@@ -69,7 +69,7 @@ This environment variable should be provided when running the Kafka Connect serv
 
 This environment variable is an advanced setting, used only when Kafka is not running in a linkable container or service. Set this to a list of host/port pairs to use for establishing the *initial* connection to the Kafka cluster. Once a connection is established to one of these brokers, the service will then discover and make use of all Kafka brokers in the cluster, regardless of which servers are specified here for bootstrapping. The list should be in the form `host1:port1,host2:port2,...`. We recommend that you include more than one broker in this list, in case one of those is down.
 
-### `HOST_NAME`
+### `REST_HOST_NAME`
 
 This environment variable is an advanced setting. Set this to the hostname that the the REST API will bind to. Defaults to the hostname of the container.
 
