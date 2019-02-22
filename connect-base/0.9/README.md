@@ -71,7 +71,9 @@ This environment variable is an advanced setting, used only when Kafka is not ru
 
 ### `REST_HOST_NAME`
 
-This environment variable is an advanced setting. Set this to the hostname that the the REST API will bind to. Defaults to the hostname of the container.
+This environment variable is an advanced setting. Set this to the hostname that the REST API will bind to.
+Defaults to the hostname of the container.
+Specify a value of `0.0.0.0` to bind the REST API to all available interfaces.
 
 ### `ADVERTISED_HOST_NAME`
 
