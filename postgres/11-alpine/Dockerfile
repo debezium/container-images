@@ -2,7 +2,7 @@ FROM postgres:11-alpine
 
 MAINTAINER Debezium Community
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v0.9.2.Final
+ENV PLUGIN_VERSION=v0.9.3.Final
 
 ENV WAL2JSON_COMMIT_ID=92b33c7d7c2fccbeb9f79455dafbc92e87e00ddd
 

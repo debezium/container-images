@@ -2,10 +2,10 @@ FROM debezium/connect-base:0.9
 
 MAINTAINER Debezium Community
 
-ENV DEBEZIUM_VERSION=0.9.2.Final \
+ENV DEBEZIUM_VERSION=0.9.3.Final \
     MAVEN_REPO_CORE="https://repo1.maven.org/maven2" \
     MAVEN_REPO_INCUBATOR="https://repo1.maven.org/maven2" \
-    MD5SUMS="MONGODB_MD5=20e4721b480d8d4d7a885fef971c8030 MYSQL_MD5=8d7276713b55549ee985febda5fe7128 POSTGRES_MD5=c156fad668c1cd277ed7d2a42a1c29c3 SQLSERVER_MD5=552311fcb0fd963adbd6c2b5ae635da2 ORACLE_MD5=49a2a4187cccc6fa6706b31c4b7e4cd1"
+    MD5SUMS="MONGODB_MD5=16da4728d65be1ba902af00eefd8c813 MYSQL_MD5=c5c036dddc54f255a191c5289788e92d POSTGRES_MD5=aca230acf6887c9e543f02e583f16e80 SQLSERVER_MD5=1d37d1c3481425d0d879f605c60f7651 ORACLE_MD5=caac2645fc6dd7b8632f8480904e614d"
 
 #
 # Download connectors, verify the contents, and then install into the `$KAFKA_CONNECT_PLUGINS_DIR/debezium` directory...
