@@ -2,7 +2,7 @@ FROM debezium/connect-base:0.10
 
 MAINTAINER Debezium Community
 
-ENV DEBEZIUM_VERSION=0.9.4-SNAPSHOT \
+ENV DEBEZIUM_VERSION=0.9.5-SNAPSHOT \
     MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots"
 
 #
