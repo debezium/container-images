@@ -69,7 +69,7 @@ The Kafka broker run by this image writes data to the local file system, and the
 
 ### Zookeeper data
 
-This image defines a data volume at `/zookeeper/data`, and it is in this directory that the Zookeeper server will persist all of its data. You must mount it appropriately when running your container to persist the data after the container is stopped; failing to do so will result in all data being lost when the container is stopped.
+This image defines data volumes at `/zookeeper/data` and `/zookeeper/txns`, and it is in these directories that the Zookeeper server will persist all of its data. You must mount them appropriately when running your container to persist the data after the container is stopped; failing to do so will result in all data being lost when the container is stopped.
 
 ### Log files
 
