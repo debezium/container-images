@@ -3,4 +3,6 @@ language: bash
 services:
   - docker
 
-script: bash build-all.sh
+before_script: ./check-all.sh
+
+script: ./build-all.sh
