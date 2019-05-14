@@ -6,4 +6,7 @@ services:
 env:
   - SH=bash
 
+before_script:
+  - shellcheck build-*.sh # Lint shell build files
+
 script: ./build-all.sh
