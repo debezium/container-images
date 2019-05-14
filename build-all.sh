@@ -1,21 +1,17 @@
 #!/bin/bash
 
-DEBEZIUM_VERSION=0.9
-MONGO_VERSION="3.2 3.4 3.6 4.0"
+set -eo pipefail
+
+DEBEZIUM_VERSION="0.9"
+MONGO_VERSIONS="3.2 3.4 3.6 4.0"
 POSTGRES_VERSIONS="9.6 9.6-alpine 10 10-alpine 11 11-alpine"
 
-for i in $MONGO_VERSION; do
-  ./build-mongo.sh $i
-  if [ $? -ne 0 ]; then
-      exit $?;
-  fi
+for MONGO_VERSION in $MONGO_VERSIONS; do
+  ./build-mongo.sh "$MONGO_VERSION"
 done
 
-for i in $POSTGRES_VERSIONS; do
-  ./build-postgres.sh $i
-  if [ $? -ne 0 ]; then
-      exit $?;
-  fi
+for POSTGRES_VERSION in $POSTGRES_VERSIONS; do
+  ./build-postgres.sh "$POSTGRES_VERSION"
 done
 
-./build-debezium.sh $DEBEZIUM_VERSION
+./build-debezium.sh "$DEBEZIUM_VERSION"
