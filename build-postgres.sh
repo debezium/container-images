@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 if [[ -z "$1" ]]; then
     echo ""
@@ -13,4 +13,4 @@ echo ""
 echo "****************************************************************"
 echo "** Building  debezium/postgres:$1"
 echo "****************************************************************"
-docker build -t debezium/postgres:$1 postgres/$1
+docker build -t "debezium/postgres:$1" "postgres/$1"
