@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -eo pipefail
 
 #
 # Parameter 1: image name
@@ -7,17 +9,24 @@
 build_docker_image () {
     IMAGE_NAME=$1;
     IMAGE_PATH=$2;
+    
     if [ -z "$IMAGE_PATH" ]; then
         IMAGE_PATH=${IMAGE_NAME};
     fi
+    
+    IMAGE_PATH="${IMAGE_PATH}/${DEBEZIUM_VERSION}"
+
     echo ""
     echo "****************************************************************"
-    echo "** Building  debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
+    echo "** Validating  debezium/${IMAGE_NAME}"
     echo "****************************************************************"
-    docker build -t debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION} ${IMAGE_PATH}/${DEBEZIUM_VERSION}
-    if [ $? -ne 0 ]; then
-        exit $?;
-    fi
+    echo ""
+    docker run --rm -i hadolint/hadolint:latest < "${IMAGE_PATH}"
+
+    echo "****************************************************************"
+    echo "** Building    debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
+    echo "****************************************************************"
+    docker build -t "debezium/${IMAGE_NAME}" "${IMAGE_PATH}"
 }
 
 
@@ -30,7 +39,7 @@ if [[ -z "$1" ]]; then
     exit 1;
 fi
 
-DEBEZIUM_VERSION=$1
+DEBEZIUM_VERSION="$1"
 
 build_docker_image zookeeper
 build_docker_image kafka

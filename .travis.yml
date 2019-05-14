@@ -3,6 +3,7 @@ language: bash
 services:
   - docker
 
-before_script: ./check-all.sh
+env:
+  - SH=bash
 
 script: ./build-all.sh
