@@ -1,6 +1,6 @@
 FROM debezium/kafka:0.10
 
-MAINTAINER Debezium Community
+LABEL maintainer="Debezium Community"
 
 EXPOSE 8083
 VOLUME ["/kafka/data","/kafka/logs","/kafka/config"]
