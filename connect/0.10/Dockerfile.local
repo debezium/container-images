@@ -1,6 +1,6 @@
 FROM debezium/connect-base:0.10
 
-MAINTAINER Debezium Community
+LABEL maintainer="Debezium Community"
 
 ARG DEBEZIUM_VERSION=0.10.0
 ENV DEBEZIUM_VERSION=${DEBEZIUM_VERSION}
