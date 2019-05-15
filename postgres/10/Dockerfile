@@ -1,6 +1,6 @@
 FROM postgres:10
 
-MAINTAINER Debezium Community
+LABEL maintainer="Debezium Community"
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v0.10.0.Alpha1
 
