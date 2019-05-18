@@ -2,7 +2,7 @@ FROM debezium/connect-base:0.10
 
 LABEL maintainer="Debezium Community"
 
-ENV DEBEZIUM_VERSION=0.9.0.Final \
+ENV DEBEZIUM_VERSION=0.9.5.Final \
     MAVEN_REPO_CORE="https://repo1.maven.org/maven2" \
     MAVEN_REPO_INCUBATOR="https://repo1.maven.org/maven2" \
     MONGODB_MD5=c6e21b95145e778602bb771b6552e997 \
@@ -11,10 +11,10 @@ ENV DEBEZIUM_VERSION=0.9.0.Final \
     SQLSERVER_MD5=2d5ed4cc0e6bb73f9f0cc305df339947 \
     ORACLE_MD5=aa0af74cbe7ea95d47753372baac388c
 
-COPY docker-debezium-download.sh /usr/local/bin/docker-debezium-download
+COPY docker-maven-download.sh /usr/local/bin/docker-maven-download
 
-RUN docker-debezium-download mongodb "$MONGODB_MD5" && \
-    docker-debezium-download mysql "$MYSQL_MD5" && \
-    docker-debezium-download postgres "$POSTGRES_MD5" && \
-    docker-debezium-download sqlserver "$SQLSERVER_MD5" && \
-    docker-debezium-download oracle "$ORACLE_MD5"
+RUN docker-maven-download debezium mongodb "$MONGODB_MD5" && \
+    docker-maven-download debezium mysql "$MYSQL_MD5" && \
+    docker-maven-download debezium postgres "$POSTGRES_MD5" && \
+    docker-maven-download debezium sqlserver "$SQLSERVER_MD5" && \
+    docker-maven-download debezium oracle "$ORACLE_MD5"
