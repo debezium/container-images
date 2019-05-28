@@ -28,7 +28,7 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 # This will prevent the classes in the shared dependencies from appearing in multiple JARs
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
-# hadolint ignore=DL3003
+# hadolint ignore=DL3003 (changing directories is not recommended, but it seems fine)
 RUN cd "$KAFKA_HOME/libs" &&\
     confluent_dep() { curl -O "http://packages.confluent.io/maven/io/confluent/$1/$CONFLUENT_VERSION/$1-$CONFLUENT_VERSION.jar";  echo "$2 $1-$CONFLUENT_VERSION.jar" >> sums.md5; } &&\
     central_dep() { curl -O "http://central.maven.org/maven2/$1/$2/$3/$2-$3.jar"; echo "$4 $2-$3.jar" >> sums.md5; } &&\
