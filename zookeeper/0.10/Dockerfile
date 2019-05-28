@@ -4,11 +4,11 @@ MAINTAINER Debezium Community
 
 #
 # Set the version, home directory, and MD5 hash.
-# MD5 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.md5
+# SHA 256 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.md5
 #
-ENV ZK_VERSION=3.4.13 \
+ENV ZK_VERSION=3.4.14 \
     ZK_HOME=/zookeeper \
-    MD5HASH=c380eb03049998280895078d570cb944
+    SHA256HASH=b14f7a0fece8bd34c7fffa46039e563ac5367607c612517aa7bd37306afbd1cd
 ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz
 
 #
@@ -39,12 +39,12 @@ RUN curl -fSL -o /tmp/zookeeper.tar.gz https://archive.apache.org/dist/$ZK_URL_P
 #
 # Verify the contents and then install ...
 #
-RUN echo "$MD5HASH  /tmp/zookeeper.tar.gz" | md5sum -c - &&\
+RUN echo "$SHA256HASH  /tmp/zookeeper.tar.gz" | sha256sum -c - &&\
     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
     rm -f /tmp/zookeeper.tar.gz
 
 # Remove unnecessary files
-RUN rm -r $ZK_HOME/{contrib,dist-maven,docs,recipes,src,ivy.xml,ivysettings.xml,build.xml}
+RUN rm -r $ZK_HOME/{dist-maven,src,ivy.xml,ivysettings.xml,build.xml}
 
 #
 # Allow random UID to use Zookeeper
