@@ -26,7 +26,12 @@ build_docker_image () {
     echo "****************************************************************"
     echo "** Building    debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
     echo "****************************************************************"
-    docker build -t "debezium/${IMAGE_NAME}" "${IMAGE_PATH}"
+    docker build -t "debezium/${IMAGE_NAME}:latest" "${IMAGE_PATH}"
+
+    echo "****************************************************************"
+    echo "** Tag         debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
+    echo "****************************************************************"
+    docker tag "debezium/${IMAGE_NAME}:latest" "debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
 }
 
 
