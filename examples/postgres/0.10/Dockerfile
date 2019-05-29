@@ -1,4 +1,4 @@
-FROM debezium/postgres:9.6
+FROM debezium/postgres:11
 
 MAINTAINER Debezium Community
 
