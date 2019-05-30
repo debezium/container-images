@@ -1,6 +1,6 @@
 FROM ruby:2.3
  
-LABEL maintainer="Debezium Community" http://debezium.io
+LABEL maintainer="Debezium Community"
  
 ENV SITE_HOME=/site \
     CACHE_HOME=/cache \
