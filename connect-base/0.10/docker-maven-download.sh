@@ -15,6 +15,7 @@ set -e
 # If there's not maven repository url set externally,
 # default to the ones below
 MAVEN_REPO_CENTRAL=${MAVEN_REPO_CENTRAL:-"https://repo1.maven.org/maven2"}
+MAVEN_REPO_INCUBATOR=${MAVEN_REPO_INCUBATOR:-"https://repo1.maven.org/maven2"}
 MAVEN_REPO_CONFLUENT=${MAVEN_REPO_CONFLUENT:-"https://packages.confluent.io/maven"}
 MAVEN_DEP_DESTINATION=${MAVEN_DEP_DESTINATION}
 
@@ -50,6 +51,11 @@ maven_debezium_plugin() {
     tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
 }
 
+maven_debezium_incubator_plugin() {
+    maven_dep $MAVEN_REPO_INCUBATOR "io/debezium" "debezium-connector-$1" $2 "debezium-connector-$1-$2-plugin.tar.gz" $3
+    tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
+}
+
 case $1 in
     "central" ) shift
             maven_central_dep ${@}
@@ -59,5 +65,8 @@ case $1 in
             ;;
     "debezium" ) shift
             maven_debezium_plugin ${@}
+            ;;
+    "debezium-incubator" ) shift
+            maven_debezium_incubator_plugin ${@}
             ;;
 esac
