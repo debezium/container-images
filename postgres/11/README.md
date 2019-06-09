@@ -1,6 +1,6 @@
 The [Postgres](https://www.postgresql.org) relational database management system has a feature called [logical decoding](https://www.postgresql.org/docs/9.4/static/logicaldecoding-explanation.html) that allows clients to extract all persistent changes to a database's tables into a coherent, easy to understand format which can be interpreted without detailed knowledge of the database's internal state. An output plugin transform the data from the write-ahead log's internal representation into the format the consumer of a replication slot desires.
 
-This image is based upon [`postgres:10`](https://hub.docker.com/_/postgres/) and adds a Debezium-specific [logical decoding output plugin that uses Protobuf](https://github.com/debezium/postgres-decoderbufs), enabling the [Debezium PostgreSQL Connector](http://debezium.io/docs/connectors/postgresql/) to capture changes committed to the database and record the data change events in Kafka topics. The image also includes [PostGIS](http://www.postgis.net) spatial database extender used to provide geospatial queries, so that changes to geometric data can also be captured by Debezium.
+This image is based upon [`postgres:11`](https://hub.docker.com/_/postgres/) and adds a Debezium-specific [logical decoding output plugin that uses Protobuf](https://github.com/debezium/postgres-decoderbufs), enabling the [Debezium PostgreSQL Connector](http://debezium.io/docs/connectors/postgresql/) to capture changes committed to the database and record the data change events in Kafka topics. The image also includes [PostGIS](http://www.postgis.net) spatial database extender used to provide geospatial queries, so that changes to geometric data can also be captured by Debezium.
 
 This provides an example of how the Debezium output plugin can be installed and how to enable PostgreSQL's logical decoding feature.
 
@@ -13,7 +13,7 @@ Running Debezium involves Zookeeper, Kafka, and services that run Debezium's con
 
 # How to use this image
 
-This image is used in the same manner as the [`postgres:10.0`](https://hub.docker.com/_/postgres/) image, though the `/usr/share/postgresql/postgresql.conf.sample` file configures the logical decoding feature:
+This image is used in the same manner as the [`postgres:11.0`](https://hub.docker.com/_/postgres/) image, though the `/usr/share/postgresql/postgresql.conf.sample` file configures the logical decoding feature:
 
 ```
 # LOGGING
