@@ -2,7 +2,7 @@
 
 set -eo pipefail
 
-DEBEZIUM_VERSION="0.10"
+DEBEZIUM_VERSION="0.11"
 MONGO_VERSIONS="3.2 3.4 3.6 4.0"
 POSTGRES_VERSIONS="9.6 9.6-alpine 10 10-alpine 11 11-alpine"
 
