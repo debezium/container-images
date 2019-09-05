@@ -2,6 +2,9 @@
 CREATE SCHEMA inventory;
 SET search_path TO inventory;
 
+-- enable PostGis 
+CREATE EXTENSION postgis;
+
 -- Create and populate our products using a single insert with many rows
 CREATE TABLE products (
   id SERIAL NOT NULL PRIMARY KEY,
@@ -75,3 +78,14 @@ VALUES (default, '2016-01-16', 1001, 1, 102),
        (default, '2016-01-17', 1002, 2, 105),
        (default, '2016-02-19', 1002, 2, 106),
        (default, '2016-02-21', 1003, 1, 107);
+
+-- Create table with Spatial/Geometry type
+CREATE TABLE geom (
+        id SERIAL NOT NULL PRIMARY KEY,
+        g GEOMETRY NOT NULL,
+        h GEOMETRY);
+
+INSERT INTO geom
+VALUES(default, ST_GeomFromText('POINT(1 1)')),
+      (default, ST_GeomFromText('LINESTRING(2 1, 6 6)')),
+      (default, ST_GeomFromText('POLYGON((0 5, 2 5, 2 7, 0 7, 0 5))'));
