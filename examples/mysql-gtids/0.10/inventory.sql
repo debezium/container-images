@@ -82,3 +82,14 @@ VALUES (default, '2016-01-16', 1001, 1, 102),
        (default, '2016-01-17', 1002, 2, 105),
        (default, '2016-02-19', 1002, 2, 106),
        (default, '2016-02-21', 1003, 1, 107);
+
+# Create table with Spatial/Geometry type
+CREATE TABLE geom (
+	id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+	g GEOMETRY NOT NULL,
+	h GEOMETRY);
+
+INSERT INTO geom
+VALUES(default, ST_GeomFromText('POINT(1 1)'), NULL),
+      (default, ST_GeomFromText('LINESTRING(2 1, 6 6)'), NULL),
+      (default, ST_GeomFromText('POLYGON((0 5, 2 5, 2 7, 0 7, 0 5))'), NULL);
