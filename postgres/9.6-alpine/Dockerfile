@@ -2,7 +2,7 @@ FROM postgres:9.6-alpine
 
 LABEL maintainer="Debezium Community"
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v0.10.0.CR1
+ENV PLUGIN_VERSION=v0.10.0.CR2
 
 ENV WAL2JSON_COMMIT_ID=92b33c7d7c2fccbeb9f79455dafbc92e87e00ddd
 
