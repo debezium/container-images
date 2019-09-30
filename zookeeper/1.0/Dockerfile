@@ -1,4 +1,4 @@
-FROM fabric8/java-centos-openjdk8-jdk
+FROM fabric8/java-centos-openjdk11-jdk
 
 LABEL maintainer="Debezium Community"
 
