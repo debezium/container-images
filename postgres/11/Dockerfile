@@ -1,7 +1,8 @@
 FROM postgres:11 AS build
 
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v1.0.0.Beta2
+ENV PLUGIN_VERSION=v1.0.0.Beta2-1
+ENV PROTOC_VERSION=1.3
 
 ENV WAL2JSON_COMMIT_ID=92b33c7d7c2fccbeb9f79455dafbc92e87e00ddd
 
@@ -13,17 +14,9 @@ RUN apt-get update \
         pkg-config \
         git \
         postgresql-server-dev-$PG_MAJOR \
-        libproj-dev \
-    && if [ "$USE_POSTGIS" != "false" ]; then apt-get install -f -y --no-install-recommends \
-        postgresql-$PG_MAJOR-postgis-2.5 \
-        postgresql-$PG_MAJOR-postgis-2.5-scripts \
-        postgis; \
-       fi \
-    && apt-get clean && apt-get update && apt-get install -f -y --no-install-recommends \
-        liblwgeom-dev \
     && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
     && apt-get update && apt-get install -f -y --no-install-recommends \
-        libprotobuf-c-dev=1.2.* \
+        libprotobuf-c-dev=$PROTOC_VERSION.* \
     && rm -rf /var/lib/apt/lists/*
 
 # Compile the plugin from sources and install it
@@ -45,12 +38,14 @@ FROM postgres:11
 
 LABEL maintainer="Debezium Community"
 
+ENV POSTGIS_VERSION=2.5
+
 RUN apt-get update \
     && apt-get install -f -y --no-install-recommends \
         software-properties-common \
     && if [ "$USE_POSTGIS" != "false" ]; then apt-get install -f -y --no-install-recommends \
-        postgresql-$PG_MAJOR-postgis-2.5 \
-        postgresql-$PG_MAJOR-postgis-2.5-scripts \
+        postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION \
+        postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts \
         postgis; \
        fi \
     && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
