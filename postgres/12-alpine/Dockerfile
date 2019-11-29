@@ -1,14 +1,14 @@
 FROM postgres:12-alpine
 
 LABEL maintainer="Debezium Community"
-ENV PLUGIN_VERSION=v1.0.0.Beta2-1
+ENV PLUGIN_VERSION=v1.0.0.Beta3
 
 ENV WAL2JSON_COMMIT_ID=92b33c7d7c2fccbeb9f79455dafbc92e87e00ddd
 
 RUN apk add --no-cache protobuf-c-dev
 
 # Compile the plugins from sources and install
-RUN apk add --no-cache --virtual .debezium-build-deps gcc git make musl-dev pkgconf \
+RUN apk add --no-cache --virtual .debezium-build-deps gcc clang llvm git make musl-dev pkgconf \
     && git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSION --single-branch \
     && (cd /postgres-decoderbufs && make && make install) \
     && rm -rf postgres-decoderbufs \
