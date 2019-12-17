@@ -3,13 +3,13 @@ FROM fabric8/java-centos-openjdk11-jdk
 LABEL maintainer="Debezium Community"
 
 #
-# Set the version, home directory, and MD5 hash.
-# SHA 256 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.md5
+# Set the version, home directory, and SHA hash.
+# SHA 512 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.sha512
 #
-ENV ZK_VERSION=3.4.14 \
+ENV ZK_VERSION=3.5.6 \
     ZK_HOME=/zookeeper \
-    SHA256HASH=b14f7a0fece8bd34c7fffa46039e563ac5367607c612517aa7bd37306afbd1cd
-ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz
+    SHA256HASH=2bbd0c3a1de0a7d466d0c2c7dce47730bf20002381e2032b87b216bddb41b659d16920c587d4769d45d2ad12230b0fef6adad7fddbfef275bbb547d7bca2c78d
+ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/apache-zookeeper-$ZK_VERSION-bin.tar.gz
 
 #
 # Create a user and home directory for Zookeeper
@@ -39,12 +39,12 @@ RUN curl -fSL -o /tmp/zookeeper.tar.gz https://archive.apache.org/dist/$ZK_URL_P
 #
 # Verify the contents and then install ...
 #
-RUN echo "$SHA256HASH  /tmp/zookeeper.tar.gz" | sha256sum -c - &&\
+RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - &&\
     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
     rm -f /tmp/zookeeper.tar.gz
 
 # Remove unnecessary files
-RUN rm -r $ZK_HOME/{dist-maven,src,ivy.xml,ivysettings.xml,build.xml}
+RUN rm -r $ZK_HOME/docs
 
 #
 # Allow random UID to use Zookeeper
