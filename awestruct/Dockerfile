@@ -15,7 +15,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 RUN npm install -g yarn
 
 # Install Antora framework
-RUN yarn global add @antora/cli@latest @antora/site-generator-default@latest \
+RUN yarn global add @antora/cli@2.3.0-alpha.2 @antora/site-generator-default@2.3.0-alpha.2 \
     && rm -rf $(yarn cache dir)/* \
     && find $(yarn global dir)/node_modules/asciidoctor.js/dist/* -maxdepth 0 -not -name node -exec rm -rf {} \; \
     && find $(yarn global dir)/node_modules/handlebars/dist/* -maxdepth 0 -not -name cjs -exec rm -rf {} \; \
@@ -39,7 +39,8 @@ USER awestruct
 WORKDIR $HOME
  
 # Install Rake and Bundler. This is the minimum needed to generate the site ...
-RUN gem install rdoc rake bundler
+RUN gem install rdoc -v 6.2.0
+RUN gem install rake bundler
  
 WORKDIR $SITE_HOME
 VOLUME [ $SITE_HOME ]
