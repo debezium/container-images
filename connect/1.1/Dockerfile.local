@@ -11,7 +11,8 @@ COPY debezium-connector-mongodb-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_
 COPY debezium-connector-postgres-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-postgres-plugin.tar.gz
 COPY debezium-connector-oracle-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-oracle-plugin.tar.gz
 COPY debezium-connector-sqlserver-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-sqlserver-plugin.tar.gz
+COPY debezium-connector-db2-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-db2-plugin.tar.gz
 
-RUN for CONNECTOR in {mysql,mongodb,postgres,oracle,sqlserver}; do \
+RUN for CONNECTOR in {mysql,mongodb,postgres,oracle,sqlserver,db2}; do \
     tar -xzf $KAFKA_CONNECT_PLUGINS_DIR/debezium-$CONNECTOR-plugin.tar.gz -C $KAFKA_CONNECT_PLUGINS_DIR; \
     done;
