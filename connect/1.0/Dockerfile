@@ -2,15 +2,15 @@ FROM debezium/connect-base:1.0
 
 LABEL maintainer="Debezium Community"
 
-ENV DEBEZIUM_VERSION="1.0.1.Final" \
+ENV DEBEZIUM_VERSION="1.0.2.Final" \
     MAVEN_REPO_CENTRAL="" \
     MAVEN_REPO_INCUBATOR="" \
     MAVEN_DEP_DESTINATION=$KAFKA_CONNECT_PLUGINS_DIR \
-    MONGODB_MD5=b99e1c0517f7f02f2155494efbb6ee35 \
-    MYSQL_MD5=06ca6933da4b03c97b13b17df3ce6ad5 \
-    POSTGRES_MD5=bed9bb3fff7c68e1aadff8768c232b77 \
-    SQLSERVER_MD5=98a6e2a3c3462e5a3c8ed7cb2536bc62 \
-    ORACLE_MD5=c5f8093ff3e1affe509ddffc3bd5fbb7
+    MONGODB_MD5=48e29fd95b92481dc4a4815c28467ac4 \
+    MYSQL_MD5=579be868cc9c393dda34e08904647b66 \
+    POSTGRES_MD5=5f281fdf09ad6a55d0d7939cbffc7bcf \
+    SQLSERVER_MD5=3009ee5a04ad7c8793555d0e17918c4b \
+    ORACLE_MD5=96246c2e3158d7efb630112657edcdac
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
