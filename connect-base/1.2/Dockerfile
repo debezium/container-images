@@ -15,8 +15,8 @@ COPY docker-maven-download.sh /usr/local/bin/docker-maven-download
 ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR \
     MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \
-    CONFLUENT_VERSION=5.3.1 \
-    AVRO_VERSION=1.8.2 \
+    CONFLUENT_VERSION=5.5.0 \
+    AVRO_VERSION=1.9.2 \
     AVRO_JACKSON_VERSION=1.9.13
 
 RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
@@ -34,14 +34,14 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 # This will prevent the classes in the shared dependencies from appearing in multiple JARs
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
-RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VERSION" 0a5b55833174edbb43bfea083e9c8427 && \
-    docker-maven-download confluent kafka-avro-serializer "$CONFLUENT_VERSION" 79afbe85a56b837a19968d9cdb9d88ae && \
-    docker-maven-download confluent kafka-schema-registry-client "$CONFLUENT_VERSION" 6fc24c86bddf289c295f9ff7faa4f5ee && \
-    docker-maven-download confluent common-config "$CONFLUENT_VERSION" 4a05ff77f0dafe5310894a7fe5ff1e26 && \
-    docker-maven-download confluent common-utils "$CONFLUENT_VERSION" 0d08ae0b949613a4faeecc2cbf27b5c7 && \
+RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VERSION" 16c38a7378032f850f0293b7654aa6bf && \
+    docker-maven-download confluent kafka-avro-serializer "$CONFLUENT_VERSION" b1379606e1dcc5d7b809c82abe294cc7 && \
+    docker-maven-download confluent kafka-schema-registry-client "$CONFLUENT_VERSION" e3631a8a3fe10312a727e9d50fcd5527 && \
+    docker-maven-download confluent common-config "$CONFLUENT_VERSION" e1a4dc2b6d1d8d8c2df47db580276f38 && \
+    docker-maven-download confluent common-utils "$CONFLUENT_VERSION" ad9e39d87c6a9fa1a9b19e6ce80392fa && \
     docker-maven-download central org/codehaus/jackson jackson-core-asl "$AVRO_JACKSON_VERSION" 319c49a4304e3fa9fe3cd8dcfc009d37 && \
     docker-maven-download central org/codehaus/jackson jackson-mapper-asl "$AVRO_JACKSON_VERSION" 1750f9c339352fc4b728d61b57171613 && \
-    docker-maven-download central org/apache/avro avro "$AVRO_VERSION" 10395e5a571e1a1f6113411f276d2fea
+    docker-maven-download central org/apache/avro avro "$AVRO_VERSION" cb70195f70f52b27070f9359b77690bb
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
