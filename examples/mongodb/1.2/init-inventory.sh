@@ -1,5 +1,20 @@
 HOSTNAME=`hostname`
 
+  OPTS=`getopt -o h: --long hostname: -n 'parse-options' -- "$@"`
+  if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
+
+  echo "$OPTS"
+  eval set -- "$OPTS"
+
+  while true; do
+    case "$1" in
+      -h | --hostname )     HOSTNAME=$2;        shift; shift ;;
+      -- ) shift; break ;;
+      * ) break ;;
+    esac
+  done
+echo "Using HOSTNAME='$HOSTNAME'"
+
 mongo localhost:27017/inventory <<-EOF
     rs.initiate({
         _id: "rs0",
