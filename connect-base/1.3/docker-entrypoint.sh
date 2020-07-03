@@ -29,6 +29,7 @@ fi
 : ${VALUE_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${INTERNAL_KEY_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${INTERNAL_VALUE_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
+: ${DEBEZIUM_ENABLE_APICURIO:=0}
 export CONNECT_REST_ADVERTISED_PORT=$ADVERTISED_PORT
 export CONNECT_REST_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
 export CONNECT_REST_PORT=$REST_PORT
@@ -74,6 +75,21 @@ if [ -z "$CONNECT_PLUGIN_PATH" ]; then
     CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR
 fi
 echo "Plugins are loaded from $CONNECT_PLUGIN_PATH"
+
+if [[ "${DEBEZIUM_ENABLE_APICURIO}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/apicurio" ]] ; then
+    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
+    for plugin_dir in $plugin_dirs ; do
+        for connector in $plugin_dir/*/ ; do
+            ln -snf $KAFKA_HOME/external_libs/apicurio/* "$connector"
+        done
+    done
+    echo "Apicurio connectors enabled!"
+else
+    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
+    for plugin_dir in $plugin_dirs ; do
+        find $plugin_dir/ -lname "$KAFKA_HOME/external_libs/apicurio/*" -exec rm -f {} \;
+    done
+fi
 
 #
 # Set up the JMX options
