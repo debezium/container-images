@@ -13,13 +13,15 @@ COPY docker-maven-download.sh /usr/local/bin/docker-maven-download
 # Set up the plugins directory ...
 #
 ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
+    EXTERNAL_LIBS_DIR=$KAFKA_HOME/external_libs \
     CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR \
     MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \
     CONFLUENT_VERSION=5.5.0 \
     AVRO_VERSION=1.9.2 \
-    AVRO_JACKSON_VERSION=1.9.13
+    AVRO_JACKSON_VERSION=1.9.13 \
+    APICURIO_VERSION=1.2.2.Final
 
-RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
+RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 
 #
 # The `docker-entrypoint.sh` script will automatically discover the child directories
@@ -43,7 +45,8 @@ RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VER
     docker-maven-download confluent common-utils "$CONFLUENT_VERSION" ad9e39d87c6a9fa1a9b19e6ce80392fa && \
     docker-maven-download central org/codehaus/jackson jackson-core-asl "$AVRO_JACKSON_VERSION" 319c49a4304e3fa9fe3cd8dcfc009d37 && \
     docker-maven-download central org/codehaus/jackson jackson-mapper-asl "$AVRO_JACKSON_VERSION" 1750f9c339352fc4b728d61b57171613 && \
-    docker-maven-download central org/apache/avro avro "$AVRO_VERSION" cb70195f70f52b27070f9359b77690bb
+    docker-maven-download central org/apache/avro avro "$AVRO_VERSION" cb70195f70f52b27070f9359b77690bb && \
+    docker-maven-download apicurio "$APICURIO_VERSION" 2a872aa67d1e2264d4bb87d1cfaba7f2
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]

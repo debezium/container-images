@@ -18,6 +18,7 @@ MAVEN_REPO_CENTRAL=${MAVEN_REPO_CENTRAL:-"https://repo1.maven.org/maven2"}
 MAVEN_REPO_INCUBATOR=${MAVEN_REPO_INCUBATOR:-"https://repo1.maven.org/maven2"}
 MAVEN_REPO_CONFLUENT=${MAVEN_REPO_CONFLUENT:-"https://packages.confluent.io/maven"}
 MAVEN_DEP_DESTINATION=${MAVEN_DEP_DESTINATION}
+EXTERNAL_LIBS_DIR=${EXTERNAL_LIBS_DIR}
 
 maven_dep() {
     local REPO="$1"
@@ -56,6 +57,21 @@ maven_debezium_incubator_plugin() {
     tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
 }
 
+maven_apicurio_converter() {
+    if [[ -z "$EXTERNAL_LIBS_DIR" ]] ; then
+        echo "WARNING: EXTERNAL_LIBS_DIR is not set. Skipping Apicurio converter loading..."
+        return
+    fi
+    if [[ ! -d "$EXTERNAL_LIBS_DIR" ]] ; then
+        echo "WARNING: EXTERNAL_LIBS_DIR is not a directory. Skipping Apicurio converter loading..."
+        return
+    fi
+    APICURIO_CONVERTER_PACKAGE="apicurio-registry-distro-connect-converter"
+    maven_dep $MAVEN_REPO_CENTRAL "io/apicurio" "$APICURIO_CONVERTER_PACKAGE" "$1" "$APICURIO_CONVERTER_PACKAGE-$1-converter.tar.gz" "$2"
+    mkdir "$EXTERNAL_LIBS_DIR/apicurio"
+    tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR/apicurio" && rm "$DOWNLOAD_FILE"
+}
+
 case $1 in
     "central" ) shift
             maven_central_dep ${@}
@@ -68,5 +84,8 @@ case $1 in
             ;;
     "debezium-incubator" ) shift
             maven_debezium_incubator_plugin ${@}
+            ;;
+    "apicurio" ) shift
+            maven_apicurio_converter ${@}
             ;;
 esac
