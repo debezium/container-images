@@ -29,7 +29,7 @@ fi
 : ${VALUE_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${INTERNAL_KEY_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${INTERNAL_VALUE_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
-: ${DEBEZIUM_ENABLE_APICURIO:=0}
+: ${ENABLE_APICURIO_CONVERTERS:=false}
 export CONNECT_REST_ADVERTISED_PORT=$ADVERTISED_PORT
 export CONNECT_REST_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
 export CONNECT_REST_PORT=$REST_PORT
@@ -76,7 +76,7 @@ if [ -z "$CONNECT_PLUGIN_PATH" ]; then
 fi
 echo "Plugins are loaded from $CONNECT_PLUGIN_PATH"
 
-if [[ "${DEBEZIUM_ENABLE_APICURIO}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/apicurio" ]] ; then
+if [[ "${ENABLE_APICURIO_CONVERTERS}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/apicurio" ]] ; then
     plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
     for plugin_dir in $plugin_dirs ; do
         for connector in $plugin_dir/*/ ; do

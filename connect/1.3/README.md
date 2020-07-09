@@ -104,10 +104,10 @@ This environment variable is recommended. Use this to set the JVM options for th
 
 This environment variable is optional. Use this to set the level of detail for Kafka's application log written to STDOUT and STDERR. Valid values are `INFO` (default), `WARN`, `ERROR`, `DEBUG`, or `TRACE`."
 
-### `DEBEZIUM_ENABLE_APICURIO`
+### `ENABLE_APICURIO_CONVERTERS`
 
 This environment variable is optional. Use this to enable [Apicur.io](https://www.apicur.io/) converters with 
-Apicurio Schema Registry by setting `DEBEZIUM_ENABLE_APICURIO=true` as container env var. Valid values are `false` to disable (default) or `true` to enable Apicurio converters.
+Apicurio Schema Registry by setting `ENABLE_APICURIO_CONVERTERS=true` as container env var. Valid values are `false` to disable (default) or `true` to enable Apicurio converters.
 
 ### Others
 
