@@ -4,19 +4,19 @@ Debezium is a distributed platform that turns your existing databases into event
 
 # What is Debezium Server?
 
-Debezium can be deployed either as connector instances in [Kafka Connect](https://kafka.apache.org/documentation/#connect) cluster as a standalone application - Debezium Server.
+Debezium can be deployed either as connector instances in a [Kafka Connect](https://kafka.apache.org/documentation/#connect) cluster, or as a standalone application - Debezium Server.
 Debezium [Server](https://debezium.io/documentation/reference/operations/debezium-server.html) is a [Quarkus-based](https://quarkus.io/) high-performance application that streams data from database to a one of supported sinks or a user developed sink.
 
-Debezium Server supports multiple transformations to provide different output message formats.
+Debezium Server supports multiple converters to provide different output message formats.
 
 
 # How to use this image
 
 The image requires as a dependency source and sink systems to read data from and write output messages to.
 
-The application itself can be configured either via environment variables or via `appliaction.properties` via injected into the container via a volume.
+The application itself can be configured either via environment variables or via `appliaction.properties` injected into the container via a volume.
 
-Starting an instance of Debezium Server via image is simple:
+Starting an instance of Debezium Server using this container image is simple:
 
     $ docker run -it --name debezium -p 8080:8080 -v $PWD/conf:/debezium/conf -v $PWD/data:/debezium/data debezium/server
 

@@ -1,4 +1,4 @@
-FROM fabric8/java-centos-openjdk11-jdk
+FROM registry.access.redhat.com/ubi8/openjdk-11
 
 LABEL maintainer="Debezium Community"
 
@@ -54,4 +54,4 @@ WORKDIR $SERVER_HOME
 EXPOSE 8080
 VOLUME ["/debezium/conf","/debezium/data"]
 
-CMD ["./run.sh"]
+CMD ["/debezium/run.sh"]
