@@ -11,19 +11,17 @@ ENV DEBEZIUM_VERSION="1.2.1.Final" \
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz
 
 #
-# Create a user and home directory for Debezium Server
+# Create a directory for Debezium Server
 #
 USER root
-RUN groupadd -r debezium -g 1001 && \
-    useradd -u 1001 -r -g debezium -m -d $SERVER_HOME -s /sbin/nologin -c "Debezium Server user" debezium && \
-    chmod 755 $SERVER_HOME
+RUN mkdir $SERVER_HOME && chmod 755 $SERVER_HOME
 
 #
 # Change ownership and switch user
 #
-RUN chown -R debezium $SERVER_HOME && \
-    chgrp -R debezium $SERVER_HOME
-USER debezium
+RUN chown -R jboss $SERVER_HOME && \
+    chgrp -R jboss $SERVER_HOME
+USER jboss
 
 RUN mkdir $SERVER_HOME/conf && \
     mkdir $SERVER_HOME/data
