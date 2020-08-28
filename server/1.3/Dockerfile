@@ -5,9 +5,9 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory, and MD5 hash.
 #
-ENV DEBEZIUM_VERSION="1.2.1.Final" \
+ENV DEBEZIUM_VERSION="1.3.0.Beta1" \
     SERVER_HOME=/debezium \
-    SERVER_MD5=3f39de479ba7fc90316d127aa9b5f7d5
+    SERVER_MD5=22612c5e9dc50da93389e98e6a797115
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz
 
 #
