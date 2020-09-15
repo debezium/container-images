@@ -166,7 +166,7 @@ case $1 in
                 #note that no config names or values may contain an '@' char
                 sed -r -i "s@(^|^#)($prop_name)=(.*)@\2=${!env_var}@g" $KAFKA_HOME/config/connect-distributed.properties
             else
-                #echo "Adding property $prop_name=${!env_var}"
+                echo "Adding property $prop_name=${!env_var}"
                 echo "$prop_name=${!env_var}" >> $KAFKA_HOME/config/connect-distributed.properties
             fi
             if [[ "$SENSITIVE_PROPERTIES" = *"$env_var"* ]]; then
