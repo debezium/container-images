@@ -111,6 +111,10 @@ This environment variable is an advanced setting. Set this to the number of mill
 
 This environment variable is recommended. Use this to set the JVM options for the Kafka broker. By default a value of '-Xmx1G -Xms1G' is used, meaning that each Kafka broker uses 1GB of memory. Using too little memory may cause performance problems, while using too much may prevent the broker from starting properly given the memory available on the machine. Obviously the container must be able to use the amount of memory defined by this environment variable.
 
+### `CONNECT_LOG4J_LOGGERS`
+
+This environment variable is optional. Use this to override the loggers used in `log4j.properties` for the property `log4j.rootLogger`.  Additional environment variables can be provided for log4j logging with the CONNECT_LOG4J prefix, mapped to properties in the `log4j.properties` file as described below in Others.
+
 ### `LOG_LEVEL`
 
 This environment variable is optional. Use this to set the level of detail for Kafka's application log written to STDOUT and STDERR. Valid values are `INFO` (default), `WARN`, `ERROR`, `DEBUG`, or `TRACE`."
