@@ -2,16 +2,16 @@ FROM debezium/connect-base:1.3
 
 LABEL maintainer="Debezium Community"
 
-ENV DEBEZIUM_VERSION="1.3.0.Beta1" \
+ENV DEBEZIUM_VERSION="1.3.0.Beta2" \
     MAVEN_REPO_CENTRAL="" \
     MAVEN_REPO_INCUBATOR="" \
     MAVEN_DEP_DESTINATION=$KAFKA_CONNECT_PLUGINS_DIR \
-    MONGODB_MD5=dd8bedde1ac94c6be9a793db4c2164b3 \
-    MYSQL_MD5=bac22e9379f03b95bfd73bd07f481faf \
-    POSTGRES_MD5=df645ebc7ab3476c32279cff5c71b0cd \
-    SQLSERVER_MD5=f073b4d7b5ccbc5f1f906d5a59821ec4 \
-    ORACLE_MD5=b7125e8b6a6ad5c1a21be206fcb638f3 \
-    DB2_MD5=cb0cbac333e4172831c77dd1413d37fe
+    MONGODB_MD5=542f95c9440825e3642087c392b46288 \
+    MYSQL_MD5=3c3402fe7e98c93d3a0e69f34645d4e9 \
+    POSTGRES_MD5=52b4870ac04aff2f29e386dda1811b51 \
+    SQLSERVER_MD5=b0aed3afcd7dbfdf503e0e0a3af7de77 \
+    ORACLE_MD5=d94f5a3fc1f68a58efcf7abf8639621f \
+    DB2_MD5=c359cfb3119ac7b4a0882c8186c83d62
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
