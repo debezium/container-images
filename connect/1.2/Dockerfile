@@ -11,11 +11,13 @@ ENV DEBEZIUM_VERSION="1.2.4.Final" \
     POSTGRES_MD5=5b1bcfaf4cef46fbdd2eeaa228e37455 \
     SQLSERVER_MD5=4e405a6f41979318bbbc3d075349a3b0 \
     ORACLE_MD5=6dc222766846286b14ed434befe7101d \
-    DB2_MD5=36e1ba8ba4aaa63068fe43b6fb47ce01
+    DB2_MD5=36e1ba8ba4aaa63068fe43b6fb47ce01 \
+    SCRIPTING_MD5=e422bcc9d3cd4bcc48a210bc67f35805
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
     docker-maven-download debezium postgres "$DEBEZIUM_VERSION" "$POSTGRES_MD5" && \
     docker-maven-download debezium sqlserver "$DEBEZIUM_VERSION" "$SQLSERVER_MD5" && \
     docker-maven-download debezium-incubator oracle "$DEBEZIUM_VERSION" "$ORACLE_MD5" && \
-    docker-maven-download debezium-incubator db2 "$DEBEZIUM_VERSION" "$DB2_MD5"
+    docker-maven-download debezium-incubator db2 "$DEBEZIUM_VERSION" "$DB2_MD5" && \
+    docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5"
