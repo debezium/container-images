@@ -30,6 +30,7 @@ fi
 : ${INTERNAL_KEY_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${INTERNAL_VALUE_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${ENABLE_APICURIO_CONVERTERS:=false}
+: ${ENABLE_DEBEZIUM_SCRIPTING:=false}
 export CONNECT_REST_ADVERTISED_PORT=$ADVERTISED_PORT
 export CONNECT_REST_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
 export CONNECT_REST_PORT=$REST_PORT
@@ -80,14 +81,29 @@ if [[ "${ENABLE_APICURIO_CONVERTERS}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && 
     plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
     for plugin_dir in $plugin_dirs ; do
         for connector in $plugin_dir/*/ ; do
-            ln -snf $KAFKA_HOME/external_libs/apicurio/* "$connector"
+            ln -snf $EXTERNAL_LIBS_DIR/apicurio/* "$connector"
         done
     done
     echo "Apicurio connectors enabled!"
 else
     plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
     for plugin_dir in $plugin_dirs ; do
-        find $plugin_dir/ -lname "$KAFKA_HOME/external_libs/apicurio/*" -exec rm -f {} \;
+        find $plugin_dir/ -lname "$EXTERNAL_LIBS_DIR/apicurio/*" -exec rm -f {} \;
+    done
+fi
+
+if [[ "${ENABLE_DEBEZIUM_SCRIPTING}" == "true" && ! -f "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/debezium-scripting" ]] ; then
+    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
+    for plugin_dir in $plugin_dirs ; do
+        for connector in $plugin_dir/*/ ; do
+            ln -snf $EXTERNAL_LIBS_DIR/debezium-scripting/*.jar "$connector"
+        done
+    done
+    echo "Debezium Scripting enabled!"
+else
+    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
+    for plugin_dir in $plugin_dirs ; do
+        find $plugin_dir/ -lname "$EXTERNAL_LIBS_DIR/debezium-scripting/*" -exec rm -f {} \;
     done
 fi
 

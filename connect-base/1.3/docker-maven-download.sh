@@ -52,6 +52,11 @@ maven_debezium_plugin() {
     tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
 }
 
+maven_debezium_optional() {
+    maven_dep $MAVEN_REPO_CENTRAL "io/debezium" "debezium-$1" $2 "debezium-$1-$2.tar.gz" $3
+    tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR" && rm "$DOWNLOAD_FILE"
+}
+
 maven_debezium_incubator_plugin() {
     maven_dep $MAVEN_REPO_INCUBATOR "io/debezium" "debezium-connector-$1" $2 "debezium-connector-$1-$2-plugin.tar.gz" $3
     tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
@@ -84,6 +89,9 @@ case $1 in
             ;;
     "debezium-incubator" ) shift
             maven_debezium_incubator_plugin ${@}
+            ;;
+    "debezium-optional" ) shift
+            maven_debezium_optional ${@}
             ;;
     "apicurio" ) shift
             maven_apicurio_converter ${@}
