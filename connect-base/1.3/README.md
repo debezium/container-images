@@ -120,6 +120,12 @@ This environment variable is optional. Use this to set the level of detail for K
 This environment variable is optional. Use this to enable [Apicur.io](https://www.apicur.io/) converters with 
 Apicurio Schema Registry by setting `ENABLE_APICURIO_CONVERTERS=true` as container env var. Valid values are `false` to disable (default) or `true` to enable Apicurio converters.
 
+### `ENABLE_DEBEZIUM_SCRIPTING`
+
+This environment variable is optional.
+Use this to enable Debezium features that use scripting languages like Message Filtering or Content-based Routing SMT by setting `ENABLE_DEBEZIUM_SCRIPTING=true` as container env var.
+Valid values are `false` to disable (default) or `true` to enable scripting.
+
 ### Others
 
 Environment variables that start with `CONNECT_` will be used to update the Kafka Connect worker configuration file. Each environment variable name will be mapped to a configuration property name by:
