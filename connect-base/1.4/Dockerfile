@@ -19,7 +19,7 @@ ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     CONFLUENT_VERSION=5.5.1 \
     AVRO_VERSION=1.9.2 \
     AVRO_JACKSON_VERSION=2.10.2 \
-    APICURIO_VERSION=1.3.0.Final
+    APICURIO_VERSION=1.3.2.Final
 
 RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 
@@ -47,7 +47,7 @@ RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VER
     docker-maven-download central com/fasterxml/jackson/core jackson-databind "$AVRO_JACKSON_VERSION" 057751b4e2dd1104be8caad6e9a3e589 && \
     docker-maven-download central com/fasterxml/jackson/core jackson-annotations "$AVRO_JACKSON_VERSION" d9e46501509b1751d64c495ab088a6cf && \
     docker-maven-download central org/apache/avro avro "$AVRO_VERSION" cb70195f70f52b27070f9359b77690bb && \
-    docker-maven-download apicurio "$APICURIO_VERSION" 5b51efdd3b7de64e56177fb46b00ca98
+    docker-maven-download apicurio "$APICURIO_VERSION" a25a604ae3e194bc5deba0040aae2a98
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
