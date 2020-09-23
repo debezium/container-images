@@ -125,6 +125,7 @@ Apicurio Schema Registry by setting `ENABLE_APICURIO_CONVERTERS=true` as contain
 This environment variable is optional.
 Use this to enable Debezium features that use scripting languages like Message Filtering or Content-based Routing SMT by setting `ENABLE_DEBEZIUM_SCRIPTING=true` as container env var.
 Valid values are `false` to disable (default) or `true` to enable scripting.
+Note: in order to prevent the execution of arbitrary scripting expressions, you should enable this option only if you've secured access to the Kafka Connect configuration interface appropriately.
 
 ### Others
 
