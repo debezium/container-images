@@ -182,8 +182,9 @@ case $1 in
         #
         if [[ -n "$CONNECT_LOG4J_LOGGERS" ]]; then
             sed -i -r -e "s|^(log4j.rootLogger)=.*|\1=${CONNECT_LOG4J_LOGGERS}|g" $KAFKA_HOME/config/log4j.properties
+            unset CONNECT_LOG4J_LOGGERS
         fi
-        for VAR in `env | grep ^CONNECT_LOG4J | grep -v CONNECT_LOG4J_LOGGERS`
+        for VAR in `env | grep ^CONNECT_LOG4J`
         do
           prop_name=`echo "$VAR" | sed -r "s/^CONNECT_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
           if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/log4j.properties; then
@@ -198,6 +199,7 @@ case $1 in
           else
               echo "--- Setting logging property from $env_var: $prop_name=${!env_var}"
           fi
+          unset $VAR
         done
         if [[ -n "$LOG_LEVEL" ]]; then
             sed -i -r -e "s|=INFO, stdout|=$LOG_LEVEL, stdout|g" $KAFKA_HOME/config/log4j.properties
