@@ -46,7 +46,9 @@ RUN echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
     rm -f /tmp/kafka.tgz
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
-RUN mkdir $KAFKA_HOME/config.orig && mv $KAFKA_HOME/config/* $KAFKA_HOME/config.orig
+RUN mkdir $KAFKA_HOME/config.orig &&\
+    mv $KAFKA_HOME/config/* $KAFKA_HOME/config.orig &&\
+    chown -R kafka:kafka $KAFKA_HOME/config.orig
 
 # Remove unnecessary files
 RUN rm $KAFKA_HOME/libs/*-{sources,javadoc,scaladoc}.jar* &&\
