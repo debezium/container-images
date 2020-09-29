@@ -6,7 +6,7 @@ EXPOSE 8083
 VOLUME ["/kafka/data","/kafka/logs","/kafka/config"]
 
 COPY docker-entrypoint.sh /
-COPY log4j.properties $KAFKA_HOME/config/log4j.properties
+COPY --chown=kafka:kafka log4j.properties $KAFKA_HOME/config/log4j.properties
 COPY docker-maven-download.sh /usr/local/bin/docker-maven-download
 
 #

@@ -186,12 +186,12 @@ case $1 in
         fi
         for VAR in `env | grep ^CONNECT_LOG4J`
         do
+          env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
           prop_name=`echo "$VAR" | sed -r "s/^CONNECT_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
           if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/log4j.properties; then
               #note that no config names or values may contain an '@' char
               sed -r -i "s@(^|^#)($prop_name)=(.*)@\2=${!env_var}@g" $KAFKA_HOME/config/log4j.properties
           else
-              #echo "Adding property $prop_name=${!env_var}"
               echo "$prop_name=${!env_var}" >> $KAFKA_HOME/config/log4j.properties
           fi
           if [[ "$SENSITIVE_PROPERTIES" = *"$env_var"* ]]; then
@@ -199,7 +199,7 @@ case $1 in
           else
               echo "--- Setting logging property from $env_var: $prop_name=${!env_var}"
           fi
-          unset $VAR
+          unset $env_var
         done
         if [[ -n "$LOG_LEVEL" ]]; then
             sed -i -r -e "s|=INFO, stdout|=$LOG_LEVEL, stdout|g" $KAFKA_HOME/config/log4j.properties
