@@ -1,8 +1,8 @@
-FROM debezium/connect-base:1.3
+FROM debezium/connect-base:1.4
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=1.3.0.Final
+ARG DEBEZIUM_VERSION=1.4.0
 ENV DEBEZIUM_VERSION=${DEBEZIUM_VERSION}
 
 # -------- testing ---------

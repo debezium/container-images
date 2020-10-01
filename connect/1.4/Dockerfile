@@ -1,4 +1,4 @@
-FROM debezium/connect-base:1.3
+FROM debezium/connect-base:1.4
 
 LABEL maintainer="Debezium Community"
 
