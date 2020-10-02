@@ -15,7 +15,7 @@ set -e
 # If there's not maven repository url set externally,
 # default to the ones below
 MAVEN_REPO_CENTRAL=${MAVEN_REPO_CENTRAL:-"https://repo1.maven.org/maven2"}
-MAVEN_REPO_INCUBATOR=${MAVEN_REPO_INCUBATOR:-"https://repo1.maven.org/maven2"}
+MAVEN_REPOS_ADDITIONAL=${MAVEN_REPOS_ADDITIONAL:-""}
 MAVEN_REPO_CONFLUENT=${MAVEN_REPO_CONFLUENT:-"https://packages.confluent.io/maven"}
 MAVEN_DEP_DESTINATION=${MAVEN_DEP_DESTINATION}
 EXTERNAL_LIBS_DIR=${EXTERNAL_LIBS_DIR}
@@ -57,8 +57,15 @@ maven_debezium_optional() {
     tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR" && rm "$DOWNLOAD_FILE"
 }
 
-maven_debezium_incubator_plugin() {
-    maven_dep $MAVEN_REPO_INCUBATOR "io/debezium" "debezium-connector-$1" $2 "debezium-connector-$1-$2-plugin.tar.gz" $3
+maven_debezium_additional_plugin() {
+    eval "$MAVEN_REPOS_ADDITIONAL"
+    REPO=${1^^}
+    if [ -z "${!REPO}" ]
+    then
+        maven_dep $MAVEN_REPO_CENTRAL "io/debezium" "debezium-connector-$2" $3 "debezium-connector-$2-$3-plugin.tar.gz" $4
+    else
+        maven_dep "${!REPO}" "io/debezium" "debezium-connector-$2" $3 "debezium-connector-$2-$3-plugin.tar.gz" $4
+    fi
     tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
 }
 
@@ -87,8 +94,8 @@ case $1 in
     "debezium" ) shift
             maven_debezium_plugin ${@}
             ;;
-    "debezium-incubator" ) shift
-            maven_debezium_incubator_plugin ${@}
+    "debezium-additional" ) shift
+            maven_debezium_additional_plugin ${@}
             ;;
     "debezium-optional" ) shift
             maven_debezium_optional ${@}
