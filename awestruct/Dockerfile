@@ -15,7 +15,7 @@ RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - \
 RUN npm install -g yarn
 
 # Install Antora framework
-RUN yarn global add @antora/cli@2.3.0-alpha.2 @antora/site-generator-default@2.3.0-alpha.2 \
+RUN yarn global add @antora/cli@2.3.4 @antora/site-generator-default@2.3.4 \
     && rm -rf $(yarn cache dir)/* \
     && find $(yarn global dir)/node_modules/asciidoctor.js/dist/* -maxdepth 0 -not -name node -exec rm -rf {} \; \
     && find $(yarn global dir)/node_modules/handlebars/dist/* -maxdepth 0 -not -name cjs -exec rm -rf {} \; \
