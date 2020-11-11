@@ -14,11 +14,10 @@ if [[ -z "$ZOOKEEPER_CONNECT" ]]; then
     export ZOOKEEPER_CONNECT=$(env | grep .*PORT_2181_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
 fi
 if [[ "x$ZOOKEEPER_CONNECT" = "x" ]]; then
-    echo "The ZOOKEEPER_CONNECT variable must be set, or the container must be linked to one that runs Zookeeper."
-    exit 1
-else
-    echo "Using ZOOKEEPER_CONNECT=$ZOOKEEPER_CONNECT"
+    export ZOOKEEPER_CONNECT=0.0.0.0:2181
 fi
+echo "Using ZOOKEEPER_CONNECT=$ZOOKEEPER_CONNECT"
+
 if [[ -n "$HEAP_OPTS" ]]; then
     sed -r -i "s/^(export KAFKA_HEAP_OPTS)=\"(.*)\"/\1=\"${KAFKA_HEAP_OPTS}\"/g" $KAFKA_HOME/bin/kafka-server-start.sh
     unset HEAP_OPTS
@@ -177,11 +176,9 @@ case $1 in
             export KAFKA_BROKER=$(env | grep .*PORT_9092_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
         fi
         if [[ "x$KAFKA_BROKER" = "x" ]]; then
-            echo "The KAFKA_BROKER variable must be set, or the container must be linked to one that runs Kafka."
-            exit 1
-        else
-            echo "Using KAFKA_BROKER=$KAFKA_BROKER"
+            export KAFKA_BROKER=0.0.0.0:9092
         fi
+        echo "Using KAFKA_BROKER=$KAFKA_BROKER"
         echo "Contents of topic $TOPICNAME:"
         exec $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server $KAFKA_BROKER --property print.key=$PRINT_KEY --property fetch.min.bytes=$FETCH_MIN_BYTES --topic "$TOPICNAME" $FROM_BEGINNING $@
         ;;

@@ -13,6 +13,14 @@ if [[ -z "$BOOTSTRAP_SERVERS" ]]; then
     # such as 'KAFKA_PORT_9092_TCP'. If so, then use that to automatically set the 'bootstrap.servers' property.
     BOOTSTRAP_SERVERS=$(env | grep .*PORT_9092_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
 fi
+
+if [[ "x$BOOTSTRAP_SERVERS" = "x" ]]; then
+    export BOOTSTRAP_SERVERS=0.0.0.0:9092
+fi
+
+echo "Using BOOTSTRAP_SERVERS=$BOOTSTRAP_SERVERS"
+
+
 if [[ -z "$HOST_NAME" ]]; then
     HOST_NAME=$(ip addr | grep 'BROADCAST' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 fi
