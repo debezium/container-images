@@ -30,8 +30,6 @@ RUN apt-get install git
 # Install Rake and Bundler. This is the minimum needed to generate the site ...
 RUN gem install rdoc -v 6.2.0
 RUN gem install rake bundler
-RUN gem install bundler
-RUN gem install jekyll
  
 WORKDIR $SITE_HOME
 VOLUME [ $SITE_HOME ]
