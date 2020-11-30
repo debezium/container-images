@@ -20,7 +20,8 @@ RUN yarn global add @antora/cli@2.3.4 @antora/site-generator-default@2.3.4 \
 # Install Rake and Bundler. This is the minimum needed to generate the site ...
 RUN gem install bundler -v "~>1.0" \
     && gem install rdoc -v 6.2.0 \
-    && gem install bundler jekyll \
+    && gem install bundler \
+    && gem install jekyll -v ">= 3.8.3" \
     && gem install rake
 
 
