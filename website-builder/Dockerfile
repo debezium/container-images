@@ -7,7 +7,7 @@ ENV SITE_HOME=/site
 RUN apk add --no-cache build-base gcc bash cmake git jq nodejs yarn
 
 # Install Antora framework
-RUN yarn global add @antora/cli @antora/site-generator-default \
+RUN yarn global add @antora/cli@2.3.4 @antora/site-generator-default@2.3.4 \
     && rm -rf $(yarn cache dir)/* \
     && find $(yarn global dir)/node_modules/asciidoctor.js/dist/* -maxdepth 0 -not -name node -exec rm -rf {} \; \
     && find $(yarn global dir)/node_modules/handlebars/dist/* -maxdepth 0 -not -name cjs -exec rm -rf {} \; \
