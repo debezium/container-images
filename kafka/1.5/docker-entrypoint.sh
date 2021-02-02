@@ -19,7 +19,7 @@ fi
 echo "Using ZOOKEEPER_CONNECT=$ZOOKEEPER_CONNECT"
 
 if [[ -n "$HEAP_OPTS" ]]; then
-    sed -r -i "s/^(export KAFKA_HEAP_OPTS)=\"(.*)\"/\1=\"${KAFKA_HEAP_OPTS}\"/g" $KAFKA_HOME/bin/kafka-server-start.sh
+    sed -r -i "s/^(export KAFKA_HEAP_OPTS)=\"(.*)\"/\1=\"${HEAP_OPTS}\"/g" $KAFKA_HOME/bin/kafka-server-start.sh
     unset HEAP_OPTS
 fi
 
