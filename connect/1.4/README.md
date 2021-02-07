@@ -21,7 +21,7 @@ Starting an instance of Kafka Connect using this image is simple:
 
 This command uses this image and starts a new container named `connect`, which runs in the foreground and attaches the console so that it display the service's output and error messages. It exposes its REST API on port 8083, which is mapped to the same port number on the local host. It uses Zookeeper in the container (or service) named `zookeeper` and Kafka brokers in the container (or service) named `kafka`. This command sets the three required environment variables, though you should replace their values with more meaningful values for your environment.
 
-To start the container in _detached_ mode, simply replace the `-it` option with `-d`. No service output will not be sent to your console, but it can be read at any time using the `docker logs` command. For example, the following command will display the output and keep following the output:
+To start the container in _detached_ mode, simply replace the `-it` option with `-d`. No service output will be sent to your console, but it can be read at any time using the `docker logs` command. For example, the following command will display the output and keep following the output:
 
     $ docker logs --follow --name connect
 
