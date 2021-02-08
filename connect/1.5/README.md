@@ -1,11 +1,11 @@
-[Kafka Connect](http://kafka.apache.org/documentation.html#connect) is a system for moving data into and out of Kafka. All Debezium connectors adhere to the Kafka Connector API for _source connectors_, and each monitors a specific kind of database management system for changing data, and then forwards those changes directly into Kafka topics organized by server, database, and table. This image defines a runnable Kafka Connect service preconfigured with all Debezium connectors. The service has a RESTful API for managing connector instances -- simply start up a container, configure a connector for each data source you want to monitor, and let Debezium monitor those sources for changes and forward them to the appropriate Kafka topics.
+[Kafka Connect](https://kafka.apache.org/documentation.html#connect) is a system for moving data into and out of Kafka. All Debezium connectors adhere to the Kafka Connector API for _source connectors_, and each monitors a specific kind of database management system for changing data, and then forwards those changes directly into Kafka topics organized by server, database, and table. This image defines a runnable Kafka Connect service preconfigured with all Debezium connectors. The service has a RESTful API for managing connector instances -- simply start up a container, configure a connector for each data source you want to monitor, and let Debezium monitor those sources for changes and forward them to the appropriate Kafka topics.
 
 # What is Debezium?
 
 Debezium is a distributed platform that turns your existing databases into event streams, so applications can quickly react to each row-level change in the databases. Debezium is built on top of Kafka and provides Kafka Connect compatible connectors that monitor specific database management systems. Debezium records the history of data changes in Kafka logs, so your application can be stopped and restarted at any time and can easily consume all of the events it missed while it was not running, ensuring that all events are processed correctly and completely.
 
-Running Debezium involves Zookeeper, Kafka, and services that run Debezium's connectors. For simple evaluation and experimentation, all services can all be run on a single host machine, using the recipe outlined below. Production environments, however, require properly running and networking multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines. But running Kafka in a Docker container has limitations, so for scenarios where very high throughput is required, you should run Kafka on dedicated hardware as explained in the [Kafka documentation](http://kafka.apache.org/documentation.html).
-
+Running Debezium involves Zookeeper, Kafka, and services that run Debezium's connectors. For simple evaluation and experimentation, all services can all be run on a single host machine, using the recipe outlined below. Production environments, however, require properly running and networking multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines.
+Using a Kubernetes operator such as [Strimzi](https://strimzi.io/) (which comes with operators and CRDs for Kafka, Kafka Connect, connectors, and more) is recommended for such deployments.
 
 # How to use this image
 
@@ -21,7 +21,7 @@ Starting an instance of Kafka Connect using this image is simple:
 
 This command uses this image and starts a new container named `connect`, which runs in the foreground and attaches the console so that it display the service's output and error messages. It exposes its REST API on port 8083, which is mapped to the same port number on the local host. It uses Zookeeper in the container (or service) named `zookeeper` and Kafka brokers in the container (or service) named `kafka`. This command sets the three required environment variables, though you should replace their values with more meaningful values for your environment.
 
-To start the container in _detached_ mode, simply replace the `-it` option with `-d`. No service output will not be sent to your console, but it can be read at any time using the `docker logs` command. For example, the following command will display the output and keep following the output:
+To start the container in _detached_ mode, simply replace the `-it` option with `-d`. No service output will be sent to your console, but it can be read at any time using the `docker logs` command. For example, the following command will display the output and keep following the output:
 
     $ docker logs --follow --name connect
 
@@ -37,7 +37,7 @@ where `connect` is the name of your existing container. The shell will be set up
 # Environment variables
 
 The Debezium Kafka image uses several environment variables when running a Kafka broker using this image.
-Please also see [the documentation](http://kafka.apache.org/documentation/#connect_running) of Kafka Connect to learn more about the specific settings.
+Please also see [the documentation](https://kafka.apache.org/documentation/#connect_running) of Kafka Connect to learn more about the specific settings.
 
 ### `GROUP_ID`
 
