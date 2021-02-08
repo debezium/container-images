@@ -98,7 +98,7 @@ This environment variable is an advanced setting. Set this to the number of mill
 
 ### `HEAP_OPTS`
 
-This environment variable is recommended. Use this to set the JVM options for the Kafka broker. By default a value of '-Xmx1G -Xms1G' is used, meaning that each Kafka broker uses 1GB of memory. Using too little memory may cause performance problems, while using too much may prevent the broker from starting properly given the memory available on the machine. Obviously the container must be able to use the amount of memory defined by this environment variable.
+This environment variable is recommended. Use this to set the JVM options for Kafka Connect. By default a value of "-Xms256M -Xmx2G" is used, meaning that each Connect worker uses up to 2GB of heap memory. Using too little memory may cause performance problems, while using too much may prevent the worker from starting properly given the memory available on the machine. Obviously the container must be able to use the amount of memory defined by this environment variable.
 
 ### `LOG_LEVEL`
 
