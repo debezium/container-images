@@ -221,7 +221,7 @@ case $1 in
         for VAR in `env`
         do
           env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
-          if [[ $env_var =~ ^CONNECT ]]; then
+          if [[ $env_var =~ ^CONNECT_ ]]; then
             prop_name=`echo "$VAR" | sed -r "s/^CONNECT_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
             if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/connect-distributed.properties; then
                 #note that no config names or values may contain an '@' char
