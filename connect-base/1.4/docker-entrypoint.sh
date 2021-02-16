@@ -192,7 +192,7 @@ case $1 in
             sed -i -r -e "s|^(log4j.rootLogger)=.*|\1=${CONNECT_LOG4J_LOGGERS}|g" $KAFKA_HOME/config/log4j.properties
             unset CONNECT_LOG4J_LOGGERS
         fi
-        for VAR in `env | grep ^CONNECT_LOG4J`
+        env | grep '^CONNECT_LOG4J' | while read -r VAR;
         do
           env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
           prop_name=`echo "$VAR" | sed -r "s/^CONNECT_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
@@ -219,7 +219,7 @@ case $1 in
         #
         # Process all environment variables that start with 'CONNECT_'
         #
-        for VAR in `env`
+        env | while read -r VAR;
         do
           env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
           if [[ $env_var =~ ^CONNECT ]]; then
