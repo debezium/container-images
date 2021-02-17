@@ -57,6 +57,11 @@ maven_debezium_optional() {
     tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR" && rm "$DOWNLOAD_FILE"
 }
 
+maven_camel_kafka() {
+    maven_dep $MAVEN_REPO_CENTRAL "org/apache/camel/kafkaconnector" "camel-$1-kafka-connector" $2 "camel-$1-kafka-connector-$2-package.tar.gz" $3
+    tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
+}
+
 maven_debezium_additional_plugin() {
     eval "$MAVEN_REPOS_ADDITIONAL"
     REPO=${1^^}
@@ -99,6 +104,9 @@ case $1 in
             ;;
     "debezium-optional" ) shift
             maven_debezium_optional ${@}
+            ;;
+    "camel-kafka" ) shift
+            maven_camel_kafka ${@}
             ;;
     "apicurio" ) shift
             maven_apicurio_converter ${@}
