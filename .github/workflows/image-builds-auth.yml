@@ -1,6 +1,5 @@
-name: Build Container Images
+name: Build Container Images Authenticated
 on:
-  pull_request:
   push:
     branches: [ master ]
 
