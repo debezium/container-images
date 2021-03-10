@@ -4,7 +4,7 @@
 set -e
 
 if [[ -z "$SENSITIVE_PROPERTIES" ]]; then
-    SENSITIVE_PROPERTIES="CONNECT_SASL_JAAS_CONFIG,CONNECT_CONSUMER_SASL_JAAS_CONFIG,CONNECT_PRODUCER_SASL_JAAS_CONFIG,CONNECT_SSL_KEYSTORE_PASSWORD,CONNECT_PRODUCER_SSL_KEYSTORE_PASSWORD,CONNECT_SSL_TRUSTSTORE_PASSWORD,CONNECT_PRODUCER_SSL_TRUSTSTORE_PASSWORD,CONNECT_SSL_KEY_PASSWORD,CONNECT_PRODUCER_SSL_KEY_PASSWORD"
+    SENSITIVE_PROPERTIES="CONNECT_SASL_JAAS_CONFIG,CONNECT_CONSUMER_SASL_JAAS_CONFIG,CONNECT_PRODUCER_SASL_JAAS_CONFIG,CONNECT_SSL_KEYSTORE_PASSWORD,CONNECT_PRODUCER_SSL_KEYSTORE_PASSWORD,CONNECT_SSL_TRUSTSTORE_PASSWORD,CONNECT_PRODUCER_SSL_TRUSTSTORE_PASSWORD,CONNECT_SSL_KEY_PASSWORD,CONNECT_PRODUCER_SSL_KEY_PASSWORD,CONNECT_CONSUMER_SSL_TRUSTSTORE_PASSWORD,CONNECT_CONSUMER_SSL_KEYSTORE_PASSWORD,CONNECT_CONSUMER_SSL_KEY_PASSWORD"
 fi
 
 if [[ -z "$BOOTSTRAP_SERVERS" ]]; then
@@ -194,9 +194,9 @@ case $1 in
         fi
         env | grep '^CONNECT_LOG4J' | while read -r VAR;
         do
-          env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
-          prop_name=`echo "$VAR" | sed -r "s/^CONNECT_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
-          prop_value=`echo "$VAR" | sed -r "s/^CONNECT_.*=(.*)/\1/g"`
+          env_var=`echo "$VAR" | sed -r "s/([^=]*)=.*/\1/g"`
+          prop_name=`echo "$VAR" | sed -r "s/^CONNECT_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
+          prop_value=`echo "$VAR" | sed -r "s/^CONNECT_[^=]*=(.*)/\1/g"`
           if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/log4j.properties; then
               #note that no config names or values may contain an '@' char
               sed -r -i "s@(^|^#)($prop_name)=(.*)@\2=${prop_value}@g" $KAFKA_HOME/config/log4j.properties
@@ -221,10 +221,10 @@ case $1 in
         #
         env | while read -r VAR;
         do
-          env_var=`echo "$VAR" | sed -r "s/(.*)=.*/\1/g"`
-          if [[ $env_var =~ ^CONNECT ]]; then
-            prop_name=`echo "$VAR" | sed -r "s/^CONNECT_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
-            prop_value=`echo "$VAR" | sed -r "s/^CONNECT_.*=(.*)/\1/g"`
+          env_var=`echo "$VAR" | sed -r "s/([^=]*)=.*/\1/g"`
+          if [[ $env_var =~ ^CONNECT_ ]]; then
+            prop_name=`echo "$VAR" | sed -r "s/^CONNECT_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
+            prop_value=`echo "$VAR" | sed -r "s/^CONNECT_[^=]*=(.*)/\1/g"`
             if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/connect-distributed.properties; then
                 #note that no config names or values may contain an '@' char
                 sed -r -i "s@(^|^#)($prop_name)=(.*)@\2=${prop_value}@g" $KAFKA_HOME/config/connect-distributed.properties
