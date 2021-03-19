@@ -7,9 +7,9 @@ LABEL maintainer="Debezium Community"
 # MD5 hash taken from http://kafka.apache.org/downloads.html for this version of Kafka
 # These argument defaults can be overruled during build time but compatibility cannot be guaranteed when the defaults are not used.
 #
-ARG KAFKA_VERSION=2.6.1
+ARG KAFKA_VERSION=2.7.0
 ARG SCALA_VERSION=2.12
-ARG SHA512HASH="105BF29E4BED9F1B7A7A3CAADF016DF8AA774F6F509E3606529F8231EA4CAB89C38236C58BE9C2E9BD3C52C2917892EA5D3A5EC0BD94BD8A5F7257522A5AF4DB"
+ARG SHA512HASH="ADAD48E6D9C9BF6577FC97DB10BFE9EF3755DA7B3060ED633EDB89EB99722DC81B111BAB2C91E7875E0A866A1020C8C31904B088D2A9F9950796EDA8ED789CCD"
 
 ENV KAFKA_VERSION=$KAFKA_VERSION \
     SCALA_VERSION=$SCALA_VERSION \
@@ -51,7 +51,7 @@ RUN mkdir $KAFKA_HOME/config.orig &&\
     chown -R kafka:kafka $KAFKA_HOME/config.orig
 
 # Remove unnecessary files
-RUN rm $KAFKA_HOME/libs/*-{sources,javadoc,scaladoc}.jar* &&\
+RUN rm -f $KAFKA_HOME/libs/*-{sources,javadoc,scaladoc}.jar* &&\
     rm -r $KAFKA_HOME/site-docs
 
 #
