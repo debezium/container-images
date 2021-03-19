@@ -120,7 +120,7 @@ fi
 #
 : ${JMXAUTH:="false"}
 : ${JMXSSL:="false"}
-if [[ -n "$JMXPORT" && -n "$JMXHOST" ]]; then
+if [[ -n "$JMXPORT"]]; then
     echo "Enabling JMX on ${JMXHOST}:${JMXPORT}"
     export KAFKA_JMX_OPTS="-Djava.rmi.server.hostname=${JMXHOST} -Dcom.sun.management.jmxremote.rmi.port=${JMXPORT} -Dcom.sun.management.jmxremote.port=${JMXPORT} -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=${JMXAUTH} -Dcom.sun.management.jmxremote.ssl=${JMXSSL} "
 fi
