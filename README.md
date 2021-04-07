@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/debezium/docker-images.svg?branch=master)](https://travis-ci.org/debezium/docker-images)
+[![Build Status](https://github.com/debezium/docker-images/actions/workflows/image-builds-auth.yml/badge.svg?branch=master)](https://github.com/debezium/docker-images/actions/workflows/image-builds-auth.yml)
 [![License](http://img.shields.io/:license-mit-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![DockerHub](http://img.shields.io/:images-dockerhub-brightgreen.svg)](https://hub.docker.com/r/debezium/)
 
