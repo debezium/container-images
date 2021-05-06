@@ -2,7 +2,7 @@ FROM debezium/connect-base:1.6
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=1.6.0
+ARG DEBEZIUM_VERSION=1.6.0.Alpha1
 ENV DEBEZIUM_VERSION=${DEBEZIUM_VERSION}
 
 # -------- testing ---------
