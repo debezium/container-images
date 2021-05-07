@@ -1,14 +1,14 @@
-[Kafka](http://kafka.apache.org/) is a distributed, partitioned, replicated commit log service. In Debezium, connectors that monitor databases write all change events to Kafka topics, and your client applications consume the relevant Kafka topics to receive and process the change events.
+[Kafka](https://kafka.apache.org/) is a distributed, partitioned, replicated commit log service. In Debezium, connectors that monitor databases write all change events to Kafka topics, and your client applications consume the relevant Kafka topics to receive and process the change events.
 
 # What is Debezium?
 
 Debezium is a distributed platform that turns your existing databases into event streams, so applications can quickly react to each row-level change in the databases. Debezium is built on top of Kafka and provides Kafka Connect compatible connectors that monitor specific database management systems. Debezium records the history of data changes in Kafka logs, so your application can be stopped and restarted at any time and can easily consume all of the events it missed while it was not running, ensuring that all events are processed correctly and completely.
 
-Running Debezium involves Zookeeper, Kafka, and services that run Debezium's connectors. For simple evaluation and experimentation, all services can all be run on a single host machine, using the recipe outlined below. Production environments, however, require properly running and networking multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines. But running Kafka in a Docker container has limitations, so for scenarios where very high throughput is required, you should run Kafka on dedicated hardware as explained in the [Kafka documentation](http://kafka.apache.org/documentation.html).
+Running Debezium involves Zookeeper, Kafka, and services that run Debezium's connectors. For simple evaluation and experimentation, all services can all be run on a single host machine, using the recipe outlined below. Production environments, however, require properly running and networking multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines. But running Kafka in a Docker container has limitations, so for scenarios where very high throughput is required, you should run Kafka on dedicated hardware as explained in the [Kafka documentation](https://kafka.apache.org/documentation.html).
 
 # How to use this image
 
-This image can be used in several different ways. All require an already-running Zookeeper service, which is either running locally via the container named `zookeeper` or with OpenShift running as a service named `zookeeper`.
+This image can be used in several different ways. Unless you are running in "KRaft" mode (see below), all require an already-running Zookeeper service, which is either running locally via the container named `zookeeper` or with OpenShift running as a service named `zookeeper`.
 
 ## Start a Kafka broker
 
@@ -21,6 +21,18 @@ This command uses this image and starts a new container named `kafka`, which run
 To start the container in _detached_ mode, simply replace the `-it` option with `-d`. No broker output will not be sent to your console, but it can be read at any time using the `docker logs` command. For example, the following command will display the output and keep following the output:
 
     $ docker logs --follow --name kafka
+
+## Running Kafka in KRaft mode
+
+Since Apache Kafka 2.8, there's experimental support for running without ZooKeeper,
+using Kafka's own implementation of the Raft consensus protocol implementation https://github.com/apache/kafka/blob/trunk/config/kraft/README.md[KRaft].
+
+To start Kafka in KRaft mode, specify the `CLUSTER_ID` environment variable with a unique id of the cluster.
+The same id must be used for all nodes of the cluster.
+Then, for each node in the cluster, specify the `NODE_ROLE` variable, with a value of 'controller' (for controller nodes), 'broker' (for broker nodes), or 'combined' (for nodes acting as both controller and broker).
+Lastly, for each node in the cluster, specify the `KAFKA_CONTROLLER_QUORUM_VOTERS`variable, referencing the controller nodes in the form:`KAFKA_CONTROLLER_QUORUM_VOTERS=id-1@controller-node-1:controller-port-1,...`, e.g. `KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093`.
+
+KRaft mode is an **experimental** feature as of Apache Kafka 2.8/3.0 and should not be used in production.
 
 ## Create a topic on a running broker
 
@@ -59,9 +71,19 @@ The container will exit (and be removed) immediately after the response is displ
 The Debezium Kafka image uses several environment variables when running a Kafka broker using this image.
 The `ZOOKEEPER_CONNECT` variable is also applied when using the `create-topic` and `list-topics` modes of this image.
 
-### `BROKER_ID`
+### `CLUSTER_ID`
+
+This environment variable must be set in order to enable KRaft mode (running Kafka without ZooKeeper).
+It must be set to the same unique value for each node in the cluster, e.g. 'oh-sxaDRTcyAr6pFRbXyzA'.
+
+### `NODE_ID`
 
 This environment variable is recommended. Set this to the unique and persistent number for the broker. This must be set for every broker in a Kafka cluster, and should be set for a single standalone broker. The default is '1', and setting this will update the Kafka configuration.
+
+### `NODE_ROLE`
+
+This environment variable is recommended when running Kafka in KRaft mode. Set its value to 'controller' (for controller nodes), 'broker' (for broker nodes), or 'combined' (for nodes acting as both controller and broker).
+The default is 'combined'.
 
 ### `ZOOKEEPER_CONNECT`
 
@@ -103,7 +125,7 @@ The value of the environment variable may not contain a '\@' character.
 # Ports
 
 Containers created using this image will expose port 9092, which is the standard port used by Kafka.  You can  use standard Docker options to map this to a different port on the host that runs the container.
-
+When using KRaft mode, port 9093 will be exposed for the controller listener, if the node has the 'controller' or 'combined' role.
 
 # Storing data
 
