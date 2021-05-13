@@ -126,6 +126,38 @@ if [[ -n "$JMXPORT" && -n "$JMXHOST" ]]; then
 fi
 
 #
+# Setup Flight Recorder
+#
+if [[ -n "$JFR_RUN_FILENAME" ]]; then
+    JFR_OPTS=""
+    opt_delimiter="-XX:StartFlightRecording="
+    for VAR in $(env); do
+      if [[ "$VAR" == JFR_RUN_* ]]; then
+        opt_name=`echo "$VAR" | sed -r "s/^JFR_RUN_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ -`
+        opt_value=`echo "$VAR" | sed -r "s/^JFR_RUN_[^=]*=(.*)/\1/g"`
+        JFR_OPTS="${JFR_OPTS}${opt_delimiter}${opt_name}=${opt_value}"
+        opt_delimiter=","
+      fi
+    done
+    opt_delimiter=" -XX:FlightRecorderOptions="
+    for VAR in $(env); do
+      if [[ "$VAR" == JFR_OPT_* ]]; then
+        opt_name=`echo "$VAR" | sed -r "s/^JFR_OPT_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ -`
+        opt_value=`echo "$VAR" | sed -r "s/^JFR_OPT_[^=]*=(.*)/\1/g"`
+        JFR_OPTS="${JFR_OPTS}${opt_delimiter}${opt_name}=${opt_value}"
+        opt_delimiter=","
+      fi
+    done
+    echo "Java Flight Recorder enabled and configured with options $JFR_OPTS"
+    if [[ -n "$KAFKA_OPTS" ]]; then
+        export KAFKA_OPTS="$KAFKA_OPTS $JFR_OPTS"
+    else
+        export KAFKA_OPTS="$JFR_OPTS"
+    fi
+    unset JFR_OPTS
+fi
+
+#
 # Make sure the directory for logs exists ...
 #
 mkdir -p $KAFKA_HOME/data/$KAFKA_BROKER_ID
