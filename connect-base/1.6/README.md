@@ -131,6 +131,14 @@ Use this to enable Debezium features that use scripting languages like Message F
 Valid values are `false` to disable (default) or `true` to enable scripting.
 Note: in order to prevent the execution of arbitrary scripting expressions, you should enable this option only if you've secured access to the Kafka Connect configuration interface appropriately.
 
+### `JFR_RUN_FILENAME`
+
+This environment variable is optional.
+When set then [Flight Recorder](https://openjdk.java.net/jeps/328) recording session is started for this run.
+This feature is useful for gathering of diagnostic information in case of performance or functional issues.
+Flight Recorder start options can be configured via `JFR_RUN_` prefixed environment variables when the variables is converted to lowercase and underscores are replaced with dashes, e.g. `JFR_RUN_PATH_TO_GC_ROOTS=true` becomes `path-to-gc-roots=true`.
+Flight Recorder control options can be configured via `JFR_OPT_` prefixed environment variables.
+
 ### Others
 
 Environment variables that start with `CONNECT_` will be used to update the Kafka Connect worker configuration file. Each environment variable name will be mapped to a configuration property name by:
