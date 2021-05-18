@@ -128,13 +128,13 @@ fi
 #
 # Setup Flight Recorder
 #
-if [[ -n "$JFR_RUN_FILENAME" ]]; then
-    JFR_OPTS=""
-    opt_delimiter="-XX:StartFlightRecording="
+if [[ "$ENABLE_JFR" == "true" ]]; then
+    JFR_OPTS="-XX:StartFlightRecording"
+    opt_delimiter="="
     for VAR in $(env); do
-      if [[ "$VAR" == JFR_RUN_* ]]; then
-        opt_name=`echo "$VAR" | sed -r "s/^JFR_RUN_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ -`
-        opt_value=`echo "$VAR" | sed -r "s/^JFR_RUN_[^=]*=(.*)/\1/g"`
+      if [[ "$VAR" == JFR_RECORDING_* ]]; then
+        opt_name=`echo "$VAR" | sed -r "s/^JFR_RECORDING_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ -`
+        opt_value=`echo "$VAR" | sed -r "s/^JFR_RECORDING_[^=]*=(.*)/\1/g"`
         JFR_OPTS="${JFR_OPTS}${opt_delimiter}${opt_name}=${opt_value}"
         opt_delimiter=","
       fi
