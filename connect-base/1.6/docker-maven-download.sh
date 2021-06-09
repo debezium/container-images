@@ -84,7 +84,7 @@ maven_apicurio_converter() {
         return
     fi
     APICURIO_CONVERTER_PACKAGE="apicurio-registry-distro-connect-converter"
-    maven_dep $MAVEN_REPO_CENTRAL "io/apicurio" "$APICURIO_CONVERTER_PACKAGE" "$1" "$APICURIO_CONVERTER_PACKAGE-$1-converter.tar.gz" "$2"
+    maven_dep $MAVEN_REPO_CENTRAL "io/apicurio" "$APICURIO_CONVERTER_PACKAGE" "$1" "$APICURIO_CONVERTER_PACKAGE-$1.tar.gz" "$2"
     mkdir "$EXTERNAL_LIBS_DIR/apicurio"
     tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR/apicurio" && rm "$DOWNLOAD_FILE"
 }
