@@ -54,7 +54,7 @@ debezium.source.database.password=postgres
 debezium.source.database.dbname=postgres
 debezium.source.database.server.name=tutorial
 debezium.source.schema.whitelist=inventory
-database.source.plugin.name=pgoutput
+debezium.source.plugin.name=pgoutput
 EOF
 ```
 
