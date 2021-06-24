@@ -15,7 +15,10 @@ ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-
 # Create a directory for Debezium Server
 #
 USER root
-RUN mkdir $SERVER_HOME && chmod 755 $SERVER_HOME
+RUN microdnf -y install gzip && \
+    microdnf clean all && \
+    mkdir $SERVER_HOME && \
+    chmod 755 $SERVER_HOME
 
 #
 # Change ownership and switch user
@@ -36,7 +39,7 @@ RUN curl -fSL -o /tmp/debezium.tar.gz "$MAVEN_REPO_CENTRAL/$SERVER_URL_PATH"
 # Verify the contents and then install ...
 #
 RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
-    tar -xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
+    tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
     rm -f /tmp/debezium.tar.gz
 
 #
