@@ -2,6 +2,9 @@ FROM debezium/kafka:1.6
 
 LABEL maintainer="Debezium Community"
 
+USER root
+RUN yum -y install libaio && yum clean all
+
 EXPOSE 8083
 VOLUME ["/kafka/data","/kafka/logs","/kafka/config"]
 
