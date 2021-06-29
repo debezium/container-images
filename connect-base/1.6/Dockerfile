@@ -5,6 +5,8 @@ LABEL maintainer="Debezium Community"
 USER root
 RUN yum -y install libaio && yum clean all
 
+USER kafka
+
 EXPOSE 8083
 VOLUME ["/kafka/data","/kafka/logs","/kafka/config"]
 
