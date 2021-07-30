@@ -17,6 +17,8 @@ ENV KAFKA_VERSION=$KAFKA_VERSION \
     SHA512HASH=$SHA512HASH \
     KAFKA_URL_PATH=kafka/$KAFKA_VERSION/kafka_$SCALA_VERSION-$KAFKA_VERSION.tgz
 
+ENV KAFKA_DATA=$KAFKA_HOME/data
+
 #
 # Create a user and home directory for Kafka
 #
@@ -24,7 +26,7 @@ USER root
 RUN yum -y install iproute && yum clean all
 RUN groupadd -r kafka -g 1001 && useradd -u 1001 -r -g kafka -m -d $KAFKA_HOME -s /sbin/nologin -c "Kafka user" kafka && \
     chmod 755 $KAFKA_HOME
-RUN mkdir $KAFKA_HOME/data && \
+RUN mkdir $KAFKA_DATA && \
     mkdir $KAFKA_HOME/logs
 
 #
