@@ -158,9 +158,17 @@ if [[ "$ENABLE_JFR" == "true" ]]; then
 fi
 
 #
+# Setup Kafka Prometheus Metrics
+#
+if [ "$ENABLE_JMX_EXPORTER" = "true" ]; then
+  KAFKA_OPTS="${KAFKA_OPTS} -javaagent:$(ls "$KAFKA_HOME"/libs/jmx_prometheus_javaagent*.jar)=9404:$KAFKA_HOME/config/metrics.yaml"
+  export KAFKA_OPTS
+fi
+
+#
 # Make sure the directory for logs exists ...
 #
-mkdir -p $KAFKA_HOME/data/$KAFKA_BROKER_ID
+mkdir -p ${KAFKA_DATA}/$KAFKA_BROKER_ID
 
 # Process the argument to this container ...
 case $1 in
