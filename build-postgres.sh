@@ -14,3 +14,8 @@ echo "****************************************************************"
 echo "** Building  debezium/postgres:$1"
 echo "****************************************************************"
 docker build -t "debezium/postgres:$1" "postgres/$1"
+
+if [ "$PUSH_IMAGES" == "true" ]; then
+    echo "Pushing the image into the registry"
+    docker push "debezium/postgres:$1"
+fi
