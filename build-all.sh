@@ -3,6 +3,9 @@
 set -eo pipefail
 
 DEBEZIUM_VERSION="1.7"
+if [ -z "$DEBEZIUM_VERSIONS" ]; then
+  DEBEZIUM_VERSIONS="$DEBEZIUM_VERSION"
+fi
 MONGO_VERSIONS="3.2 3.4 3.6 4.0 4.2"
 POSTGRES_VERSIONS="9.6 10 11 12"
 
@@ -14,4 +17,6 @@ for POSTGRES_VERSION in $POSTGRES_VERSIONS; do
   ./build-postgres.sh "$POSTGRES_VERSION"
 done
 
-./build-debezium.sh "$DEBEZIUM_VERSION"
+for DBZ in $DEBEZIUM_VERSIONS; do
+  ./build-debezium.sh "$DBZ"
+done

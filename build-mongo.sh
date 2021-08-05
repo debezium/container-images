@@ -14,3 +14,8 @@ echo "****************************************************************"
 echo "** Building  debezium/mongo-initiator:$1"
 echo "****************************************************************"
 docker build -t "debezium/mongo-initiator:$1" "mongo-initiator/$1"
+
+if [ "$PUSH_IMAGES" == "true" ]; then
+    echo "Pushing the image into the registry"
+    docker push "debezium/mongo-initiator:$1"
+fi
