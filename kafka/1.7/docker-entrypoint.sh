@@ -8,7 +8,7 @@ if [[ -z "$NODE_ID" ]]; then
         NODE_ID=1
         echo "WARNING: Using default NODE_ID=1, which is valid only for non-clustered installations."
     else
-        NODE_ID=$BROKER_ID
+        NODE_ID="$BROKER_ID"
         echo "WARNING: Using NODE_ID=$BROKER_ID, as specified via BROKER_ID variable. Please update your configuration to use the NODE_ID variable instead."
     fi
 fi
@@ -36,7 +36,6 @@ else
         NODE_ROLE='combined';
     fi
 
-    shopt -s nocasematch
     case "$NODE_ROLE" in
      'combined' ) CONFIG_FILE=config/kraft/server.properties;;
      'broker' ) CONFIG_FILE=config/kraft/broker.properties;;
@@ -84,7 +83,6 @@ fi
 if [[ -z "$CLUSTER_ID" ]]; then
     : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT}
 else
-    shopt -s nocasematch
     case "$NODE_ROLE" in
      'combined' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT,CONTROLLER://$KAFKA_HOST_NAME:$CONTROLLER_PORT};;
      'broker' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT};;
