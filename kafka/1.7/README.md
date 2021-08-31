@@ -25,7 +25,7 @@ To start the container in _detached_ mode, simply replace the `-it` option with 
 ## Running Kafka in KRaft mode
 
 Since Apache Kafka 2.8, there's experimental support for running without ZooKeeper,
-using Kafka's own implementation of the Raft consensus protocol implementation https://github.com/apache/kafka/blob/trunk/config/kraft/README.md[KRaft].
+using Kafka's own implementation of the Raft consensus protocol implementation [KRaft](https://github.com/apache/kafka/blob/trunk/config/kraft/README.md).
 
 To start Kafka in KRaft mode, specify the `CLUSTER_ID` environment variable with a unique id of the cluster.
 The same id must be used for all nodes of the cluster.
