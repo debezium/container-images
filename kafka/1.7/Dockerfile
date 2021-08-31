@@ -1,4 +1,4 @@
-FROM fabric8/java-centos-openjdk11-jdk
+FROM registry.access.redhat.com/ubi8/openjdk-11-runtime
 
 LABEL maintainer="Debezium Community"
 
@@ -23,7 +23,7 @@ ENV KAFKA_DATA=$KAFKA_HOME/data
 # Create a user and home directory for Kafka
 #
 USER root
-RUN yum -y install iproute && yum clean all
+RUN microdnf install iproute gzip && microdnf clean all
 RUN groupadd -r kafka -g 1001 && useradd -u 1001 -r -g kafka -m -d $KAFKA_HOME -s /sbin/nologin -c "Kafka user" kafka && \
     chmod 755 $KAFKA_HOME
 RUN mkdir $KAFKA_DATA && \
