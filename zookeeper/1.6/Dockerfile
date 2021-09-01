@@ -6,9 +6,9 @@ LABEL maintainer="Debezium Community"
 # Set the version, home directory, and SHA hash.
 # SHA 512 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.sha512
 #
-ENV ZK_VERSION=3.5.8 \
+ENV ZK_VERSION=3.5.9 \
     ZK_HOME=/zookeeper \
-    SHA256HASH=9f2c2293a60e02244dff64438704094b2edb167bc45aa82def49eb4a7a3084881057f5d81384926e23a1029f699e6f41bfee5e19fc1664d044ff9c56bcaa6b31
+    SHA256HASH=0e5a64713abc6f36d961dd61a06f681868171a9d9228366e512a01324806d263e05508029c94d8e18307811867cdc39d848e736c252bf56c461273ef74c66a45
 ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/apache-zookeeper-$ZK_VERSION-bin.tar.gz
 
 #
@@ -33,8 +33,8 @@ RUN mkdir $ZK_HOME/data && \
 #
 # Download and install Zookeeper
 #
-#RUN curl -fSL -o /tmp/zookeeper.tar.gz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$ZK_URL_PATH || curl -fSL -o /tmp/zookeeper.tgz https://archive.apache.org/dist/$ZK_URL_PATH
-RUN curl -fSL -o /tmp/zookeeper.tar.gz https://archive.apache.org/dist/$ZK_URL_PATH
+RUN curl -fSL -o /tmp/zookeeper.tar.gz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$ZK_URL_PATH || curl -fSL -o /tmp/zookeeper.tgz https://archive.apache.org/dist/$ZK_URL_PATH
+#RUN curl -fSL -o /tmp/zookeeper.tar.gz https://archive.apache.org/dist/$ZK_URL_PATH
 
 #
 # Verify the contents and then install ...
