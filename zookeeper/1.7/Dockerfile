@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11-runtime
+FROM debezium/base
 
 LABEL maintainer="Debezium Community"
 
@@ -15,7 +15,6 @@ ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/apache-zookeeper-$ZK_VERSION-bin
 # Create a user and home directory for Zookeeper
 #
 USER root
-RUN microdnf install gzip && microdnf clean all
 RUN groupadd -r zookeeper -g 1001 && \
     useradd -u 1001 -r -g 1001 -m -d $ZK_HOME -s /sbin/nologin -c "Zookeeper user" zookeeper && \
     chmod 755 $ZK_HOME

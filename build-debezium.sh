@@ -5,16 +5,22 @@ set -eo pipefail
 #
 # Parameter 1: image name
 # Parameter 2: path to component (if different)
+# Parameter 3: image tag if different from versioned
 #
 build_docker_image () {
     IMAGE_NAME=$1;
     IMAGE_PATH=$2;
+    IMAGE_TAG=$3;
     
     if [ -z "$IMAGE_PATH" ]; then
         IMAGE_PATH=${IMAGE_NAME};
     fi
-    
-    IMAGE_PATH="${IMAGE_PATH}/${DEBEZIUM_VERSION}"
+
+    if [ -z "$IMAGE_TAG" ]; then
+        IMAGE_TAG=${DEBEZIUM_VERSION};
+    fi
+
+    IMAGE_PATH="${IMAGE_PATH}/${IMAGE_TAG}"
 
     echo ""
     echo "****************************************************************"
@@ -24,18 +30,18 @@ build_docker_image () {
     docker run --rm -i hadolint/hadolint:latest < "${IMAGE_PATH}"
 
     echo "****************************************************************"
-    echo "** Building    debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
+    echo "** Building    debezium/${IMAGE_NAME}:${IMAGE_TAG}"
     echo "****************************************************************"
     docker build -t "debezium/${IMAGE_NAME}:latest" "${IMAGE_PATH}"
 
     if [ -z "$RELEASE_TAG" ]; then
         echo "****************************************************************"
-        echo "** Stream Tag  debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}       "
+        echo "** Stream Tag  debezium/${IMAGE_NAME}:${IMAGE_TAG}       "
         echo "****************************************************************"
-        docker tag "debezium/${IMAGE_NAME}:latest" "debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
+        docker tag "debezium/${IMAGE_NAME}:latest" "debezium/${IMAGE_NAME}:${IMAGE_TAG}"
         if [ "$PUSH_IMAGES" == "true" ]; then
             echo "Pushing the stream image into the registry"
-            docker push "debezium/${IMAGE_NAME}:${DEBEZIUM_VERSION}"
+            docker push "debezium/${IMAGE_NAME}:${IMAGE_TAG}"
             if [ "$DEBEZIUM_VERSION" == "$LATEST_STREAM" ]; then
                 echo "Pushing the latest image into the registry"
                 docker push "debezium/${IMAGE_NAME}:latest"
@@ -67,6 +73,7 @@ fi
 
 DEBEZIUM_VERSION="$1"
 
+build_docker_image base base latest
 build_docker_image zookeeper
 build_docker_image kafka
 build_docker_image connect-base
