@@ -3,7 +3,7 @@ FROM debezium/kafka:1.7
 LABEL maintainer="Debezium Community"
 
 USER root
-RUN microdnf -y install libaio findutils && microdnf clean all
+RUN microdnf -y install libaio && microdnf clean all
 
 USER kafka
 
