@@ -29,7 +29,6 @@ ADD Gemfile.lock Gemfile.lock
 RUN bundle install 
 
 WORKDIR $SITE_HOME
-VOLUME [ $SITE_HOME ]
  
 EXPOSE 4000
  
