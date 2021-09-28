@@ -1,13 +1,10 @@
 FROM ruby:2.7-alpine
-
 LABEL maintainer="Debezium Community"
-
 ENV SITE_HOME=/site
-
 RUN apk add --no-cache build-base gcc bash cmake git jq nodejs yarn
-
 # Install Antora framework
-RUN yarn global add @antora/cli@2.3.4 @antora/site-generator-default@2.3.4 \
+RUN yarn global add @antora/cli@3.0.0-alpha.9 @antora/site-generator-default@3.0.0-alpha.9 @antora/asciidoc-loader @antora/content-aggregator \
+    && yarn global add --ignore-optional --silent $(grep -o '^isomorphic-git@[^:]*' `yarn global dir`/yarn.lock) \
     && rm -rf $(yarn cache dir)/* \
     && find $(yarn global dir)/node_modules/asciidoctor.js/dist/* -maxdepth 0 -not -name node -exec rm -rf {} \; \
     && find $(yarn global dir)/node_modules/handlebars/dist/* -maxdepth 0 -not -name cjs -exec rm -rf {} \; \
@@ -32,6 +29,7 @@ ADD Gemfile.lock Gemfile.lock
 RUN bundle install 
 
 WORKDIR $SITE_HOME
+VOLUME [ $SITE_HOME ]
  
 EXPOSE 4000
  
