@@ -18,4 +18,6 @@ jobs:
       - name: Build Scripts
         run: shellcheck build-*.sh
       - name: Run Scripts
-        run: ./build-all.sh
+        run: |
+          ./build-all.sh
+          ./build-tool-images.sh latest
