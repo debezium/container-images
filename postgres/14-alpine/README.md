@@ -1,6 +1,6 @@
 The [Postgres](https://www.postgresql.org) relational database management system has a feature called [logical decoding](https://www.postgresql.org/docs/14/static/logicaldecoding-explanation.html) that allows clients to extract all persistent changes to a database's tables into a coherent, easy to understand format which can be interpreted without detailed knowledge of the database's internal state. An output plugin transform the data from the write-ahead log's internal representation into the format the consumer of a replication slot desires.
 
-This image is based upon [`postgres:12-alpine`](https://hub.docker.com/_/postgres/) and adds two logical decoding plug-ins:
+This image is based upon [`postgres:14-alpine`](https://hub.docker.com/_/postgres/) and adds two logical decoding plug-ins:
 
 * [postgres-decoderbufs](https://github.com/debezium/), based on Protocol Buffers and maintained by the Debezium community
 * [wal2json](https://github.com/eulerto/wal2json), based on JSON and maintained by the wal2json community
