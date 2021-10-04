@@ -38,7 +38,7 @@ FROM postgres:13
 
 LABEL maintainer="Debezium Community"
 
-ENV POSTGIS_VERSION=2.5
+ENV POSTGIS_VERSION=3
 
 RUN apt-get update \
     && apt-get install -f -y --no-install-recommends \
