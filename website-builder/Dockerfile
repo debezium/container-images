@@ -1,7 +1,7 @@
 FROM ruby:2.7-alpine
 LABEL maintainer="Debezium Community"
 ENV SITE_HOME=/site
-RUN apk add --no-cache build-base gcc bash cmake git jq nodejs yarn
+RUN apk add --no-cache build-base gcc bash cmake git jq nodejs yarn curl
 # Install Antora framework
 RUN yarn global add @antora/cli@3.0.0-alpha.9 @antora/site-generator-default@3.0.0-alpha.9 @antora/asciidoc-loader @antora/content-aggregator \
     && yarn global add --ignore-optional --silent $(grep -o '^isomorphic-git@[^:]*' `yarn global dir`/yarn.lock) \
@@ -24,8 +24,8 @@ RUN gem install bundler -v "~>1.0" \
 
 #Copy over the gemfile to a temporary directory and run the install command. 
 WORKDIR /tmp
-ADD Gemfile Gemfile
-ADD Gemfile.lock Gemfile.lock 
+RUN curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/debezium/debezium.github.io/develop/Gemfile >> Gemfile \
+    && curl -H 'Accept: application/vnd.github.v3.raw' https://raw.githubusercontent.com/debezium/debezium.github.io/develop/Gemfile.lock >> Gemfile.lock
 RUN bundle install 
 
 WORKDIR $SITE_HOME
