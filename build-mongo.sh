@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eo pipefail
+
 if [[ -z "$1" ]]; then
     echo ""
     echo "A version must be specified."
