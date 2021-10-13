@@ -21,15 +21,12 @@ RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,vitess}; do \
     rm -f /tmp/plugin.tar.gz; \
 done
 
-RUN for PACKAGE in {scripting,}; do \
-    SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
-    echo "Downloading and installing debezium-$PACKAGE-$SNAPSHOT_VERSION.tar.gz ..." ; \
-    curl --silent -fSL -o /tmp/package.tar.gz \
-                 $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/debezium-$PACKAGE-$SNAPSHOT_VERSION.tar.gz &&\
-    echo "Extracting debezium-$PACKAGE-$SNAPSHOT_VERSION.tar.gz ..." && \
-    tar -xzf /tmp/package.tar.gz -C $EXTERNAL_LIBS_DIR && \
-    echo "Successfully installed debezium-$PACKAGE-$SNAPSHOT_VERSION!" && \
-    rm -f /tmp/package.tar.gz; \
+RUN for PACKAGE in {api,core,scripting}; do \
+    SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>jar<\/extension>/ {getline; print $2; exit}') ; \
+    echo "Downloading and installing debezium-$PACKAGE-$SNAPSHOT_VERSION.jar ..." ; \
+    curl --silent -fSL -o $MAVEN_DEP_DESTINATION/debezium-$PACKAGE.jar \
+                     $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/debezium-$PACKAGE-$SNAPSHOT_VERSION.jar && \
+    echo "Successfully installed debezium-$PACKAGE-$SNAPSHOT_VERSION!" ; \
 done
 
 RUN for PACKAGE in {connect-rest-extension,}; do \
