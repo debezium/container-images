@@ -1,7 +1,7 @@
 FROM postgres:14-alpine
 
 LABEL maintainer="Debezium Community"
-ENV PLUGIN_VERSION=v1.6.3.Final
+ENV PLUGIN_VERSION=v1.8.0.Alpha1
 
 ENV WAL2JSON_COMMIT_ID=wal2json_2_3
 
