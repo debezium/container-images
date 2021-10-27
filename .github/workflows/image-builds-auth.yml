@@ -1,7 +1,7 @@
 name: Build Container Images Authenticated
 on:
   push:
-    branches: [ master ]
+    branches: [ main ]
 
 jobs:
   build:
