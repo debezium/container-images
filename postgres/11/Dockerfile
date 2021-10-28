@@ -4,7 +4,7 @@ ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v1.8.0.Alpha1
 ENV PROTOC_VERSION=1.3
 
-ENV WAL2JSON_COMMIT_ID=92b33c7d7c2fccbeb9f79455dafbc92e87e00ddd
+ENV WAL2JSON_COMMIT_ID=36fbee6cbb7e4bc1bf9ee4f55842ab51393e3ac0
 
 # Install the packages which will be required to get everything to compile
 RUN apt-get update \
