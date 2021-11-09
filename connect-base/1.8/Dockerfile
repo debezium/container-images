@@ -1,4 +1,4 @@
-FROM debezium/kafka:1.7
+FROM debezium/kafka:1.8
 
 LABEL maintainer="Debezium Community"
 
