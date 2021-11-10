@@ -68,6 +68,13 @@ RUN sed -i -r -e "s|(\\$\\{zookeeper.log.dir\\})|$ZK_HOME/logs|g" \
 RUN mkdir $ZK_HOME/conf.orig && mv $ZK_HOME/conf/* $ZK_HOME/conf.orig
 
 #
+# The zkEnv.sh script generates the classpath for launching ZooKeeper, with entries
+# containing the pattern "/bin/../lib", which fails to be resolved properly in some
+# environments; hence replacing this with "/lib" in the assembled classpath
+#
+RUN echo 'CLASSPATH="${CLASSPATH//bin\/\.\.\/lib\//lib/}"' >> $ZK_HOME/bin/zkEnv.sh
+
+#
 # Expose the ports and set up volumes for the data, transaction log, and configuration
 #
 EXPOSE 2181 2888 3888
