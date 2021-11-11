@@ -56,6 +56,14 @@ RUN rm -f $KAFKA_HOME/libs/*-{sources,javadoc,scaladoc}.jar* &&\
     rm -r $KAFKA_HOME/site-docs
 
 #
+# The kafka-run-class.sh script generates the classpath for launching Kafka-related JVM, with entries
+# containing the pattern "/bin/../libs", which fails to be resolved properly in some
+# environments; the CLASSPATH is filled from "base_dir" environment variable that contains the relative
+# path so it it is modified to contain absolute path using "realpath" command.
+#
+RUN sed -i 's/base_dir=\$(dirname \$0)\/../base_dir=\$(realpath \$(dirname \$0)\/..)/' $KAFKA_HOME/bin/kafka-run-class.sh
+
+#
 # Allow random UID to use Kafka
 #
 RUN chmod -R g+w,o+w $KAFKA_HOME
