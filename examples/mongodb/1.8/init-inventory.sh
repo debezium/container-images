@@ -37,6 +37,14 @@ mongo -u admin -p admin localhost:27017/admin <<-EOF
         roles: []
     });
 
+    db.runCommand({
+        createRole: "readChangeStream",
+        privileges: [
+            { resource: { db: "", collection: ""}, actions: [ "find", "changeStream" ] }
+        ],
+        roles: []
+    });
+
     db.createUser({
         user: 'debezium',
         pwd: 'dbz',
@@ -44,6 +52,7 @@ mongo -u admin -p admin localhost:27017/admin <<-EOF
             { role: "readWrite", db: "inventory" },
             { role: "read", db: "local" },
             { role: "listDatabases", db: "admin" },
+            { role: "readChangeStream", db: "admin" },
             { role: "read", db: "config" },
             { role: "read", db: "admin" }
         ]
