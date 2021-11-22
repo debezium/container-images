@@ -42,9 +42,13 @@ build_docker_image () {
         if [ "$PUSH_IMAGES" == "true" ]; then
             echo "Pushing the stream image into the registry"
             docker push "debezium/${IMAGE_NAME}:${IMAGE_TAG}"
+            docker tag "debezium/${IMAGE_NAME}:${IMAGE_TAG}" "quay.io/debezium/${IMAGE_NAME}:${IMAGE_TAG}"
+            docker push "quay.io/debezium/${IMAGE_NAME}:${IMAGE_TAG}"
             if [ "$DEBEZIUM_VERSION" == "$LATEST_STREAM" ]; then
                 echo "Pushing the latest image into the registry"
                 docker push "debezium/${IMAGE_NAME}:latest"
+                docker tag "debezium/${IMAGE_NAME}:latest" "quay.io/debezium/${IMAGE_NAME}:latest"
+                docker push "quay.io/debezium/${IMAGE_NAME}:latest"
             fi
         fi
     fi
@@ -56,6 +60,8 @@ build_docker_image () {
         docker tag "debezium/${IMAGE_NAME}:latest" "debezium/${IMAGE_NAME}:${RELEASE_TAG}"
         if [ "$PUSH_IMAGES" == "true" ]; then
             echo "Pushing the stream image into the registry"
+            docker tag "debezium/${IMAGE_NAME}:${RELEASE_TAG}" "quay.io/debezium/${IMAGE_NAME}:${RELEASE_TAG}"
+            docker push "quay.io/debezium/${IMAGE_NAME}:${RELEASE_TAG}"
             docker push "debezium/${IMAGE_NAME}:${RELEASE_TAG}"
         fi
     fi
