@@ -43,6 +43,11 @@ RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - &&\
     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
     rm -f /tmp/zookeeper.tar.gz
 
+#
+# CVE-2021-4104/DBZ-4447 CVE-2019-17571 Remove potentially exploitable classes
+#
+RUN zip -d /zookeeper/lib/log4j-1.2.17.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class
+
 # Remove unnecessary files
 RUN rm -r $ZK_HOME/docs
 
