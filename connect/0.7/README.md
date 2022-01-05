@@ -111,7 +111,7 @@ Environment variables that start with `CONNECT_` will be used to update the Kafk
 2. lowercasing all characters; and
 3. converting all '_' characters to '.' characters
 
-For example, the environment variable `CONNECT__HEARTBEAT_INTERVAL_MS` is converted to the `heartbeat.interval.ms` property. The container will then update the Kafka Connect worker configuration file to include the property's name and value.
+For example, the environment variable `CONNECT_HEARTBEAT_INTERVAL_MS` is converted to the `heartbeat.interval.ms` property. The container will then update the Kafka Connect worker configuration file to include the property's name and value.
 
 The value of the environment variable may not contain a '\@' character.
 
