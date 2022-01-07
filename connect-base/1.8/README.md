@@ -87,14 +87,6 @@ This environment variable is an advanced setting. Set this to the fully-qualifie
 
 This environment variable is an advanced setting. Set this to the fully-qualified name of the Java class that implements Kafka Connect's `Converter` class, used to convert the connector's values to the form stored in Kafka. Defaults to `org.apache.kafka.connect.json.JsonConverter`.
 
-### `INTERNAL_KEY_CONVERTER`
-
-This environment variable is an advanced setting. Set this to the fully-qualified name of the Java class that implements Kafka Connect's `Converter` class, used to convert the connector offset and configuration keys to the form stored in Kafka. Defaults to `org.apache.kafka.connect.json.JsonConverter`.
-
-### `INTERNAL_VALUE_CONVERTER`
-
-This environment variable is an advanced setting. Set this to the fully-qualified name of the Java class that implements Kafka Connect's `Converter` class, used to convert the connector offset and configuration values to the form stored in Kafka. Defaults to `org.apache.kafka.connect.json.JsonConverter`.
-
 ### `OFFSET_FLUSH_INTERVAL_MS`
 
 This environment variable is an advanced setting. Set this to the number of milliseconds defining the interval at which the service will periodically try committing offsets for tasks. The default is `60000`, or 60 seconds.
