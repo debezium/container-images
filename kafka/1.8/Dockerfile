@@ -47,9 +47,11 @@ RUN echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
     rm -f /tmp/kafka.tgz
 
 #
-# CVE-2021-4104/DBZ-4447 CVE-2019-17571 Remove potentially exploitable classes
+# Remove potentially exploitable classes
+# CVE-2021-4104/DBZ-4447 CVE-2019-17571
+# DBZ-4568: CVE-2022-23302 CVE-2022-23305 CVE-2020-9493
 #
-RUN zip -d /kafka/libs/log4j-1.2.17.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class
+RUN zip -d /kafka/libs/log4j-1.2.17.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*'
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
 RUN mkdir $KAFKA_HOME/config.orig &&\
