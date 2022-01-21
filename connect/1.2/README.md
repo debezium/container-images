@@ -135,7 +135,7 @@ Containers created using this image will expose port 8083, which is the standard
 
 # Storing data
 
-The Kafka Connect service run by this image stores no data in the econtainer, but it does produce logs. The only way to keep these files is to use volumes that map specific directories inside the container to the local file system (or to OpenShift persistent volumes).
+The Kafka Connect service run by this image stores no data in the container, but it does produce logs. The only way to keep these files is to use volumes that map specific directories inside the container to the local file system (or to OpenShift persistent volumes).
 
 ### Log files
 
