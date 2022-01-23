@@ -4,23 +4,6 @@ set -e
 # enable job control used fg 
 set -m
 
-HOSTNAME=`hostname`
-
-OPTS=`getopt -o h: --long hostname: -n 'parse-options' -- "$@"`
-if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
-
-echo "$OPTS"
-eval set -- "$OPTS"
-
-while true; do
-  case "$1" in
-    -h | --hostname )     HOSTNAME=$2;        shift; shift ;;
-    -- ) shift; break ;;
-    * ) break ;;
-  esac
-done
-echo "Using HOSTNAME='$HOSTNAME'"
-
 function wait_mongodb_upandready {
   # Wait until Mongo is ready to accept connections, exit if this does not happen within 30 seconds
   COUNTER=0
@@ -39,12 +22,13 @@ function wait_mongodb_upandready {
 function deploy_replica_set {
   wait_mongodb_upandready
   mongosh -u admin -p admin --authenticationDatabase admin localhost:27017/inventory <<-EOF
-  rs.initiate( {
-     _id : "rs0",
-     members: [
-        { _id: 0, host: "${HOSTNAME}:27017" }
-     ]
-  });
+  var repsetmembers = {_id : "rs0",members: []};
+  var arrayhosts = "${REPLICA_SET_HOSTS}".split(',');
+  for(var i = 0; i < arrayhosts.length; i++) {
+     repsetmembers['members'].push({ _id: i, host: arrayhosts[i]});
+  }
+  print("Initializing replica set:\n" + JSON.stringify(repsetmembers));
+  rs.initiate(repsetmembers);
   print('Initiated replica set');
 EOF
   echo "Successfully initialized inventory database"
