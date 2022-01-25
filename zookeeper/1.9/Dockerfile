@@ -6,9 +6,9 @@ LABEL maintainer="Debezium Community"
 # Set the version, home directory, and SHA hash.
 # SHA 512 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.sha512
 #
-ENV ZK_VERSION=3.5.9 \
+ENV ZK_VERSION=3.6.3 \
     ZK_HOME=/zookeeper \
-    SHA256HASH=0e5a64713abc6f36d961dd61a06f681868171a9d9228366e512a01324806d263e05508029c94d8e18307811867cdc39d848e736c252bf56c461273ef74c66a45
+    SHA256HASH=3f7b1b7d9cf5647d52ad0076c922e108fa956e986b5624667c493cf6d8ff09d3ca88f623c79a799fe49c72e868cb3c9d0f77cb69608de74a183b2cbad10bc827
 ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/apache-zookeeper-$ZK_VERSION-bin.tar.gz
 
 #
