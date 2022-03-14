@@ -164,7 +164,7 @@ case $1 in
                         config="--config=cleanup.policy=${topicConfig[3]}"
                     fi
                     echo "STARTUP: Creating topic ${topicConfig[0]} with ${topicConfig[1]} partitions and ${topicConfig[2]} replicas with cleanup policy ${topicConfig[3]}..."
-                    $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" ${config}
+                    $KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" ${config}
                 done
             )&
         fi
@@ -271,11 +271,11 @@ case $1 in
         fi
         TOPICNAME=$1
         echo "Creating new topic $TOPICNAME with $PARTITION partition(s), $REPLICAS replica(s) and cleanup policy set to $CLEANUP_POLICY..."
-        exec $KAFKA_HOME/bin/kafka-topics.sh --create --zookeeper $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partitions $PARTITION --topic "$TOPICNAME" --config=cleanup.policy=$CLEANUP_POLICY
+        exec $KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partitions $PARTITION --topic "$TOPICNAME" --config=cleanup.policy=$CLEANUP_POLICY
         ;;
     list-topics)
         echo "Listing topics..."
-        exec $KAFKA_HOME/bin/kafka-topics.sh --list --zookeeper $KAFKA_ZOOKEEPER_CONNECT
+        exec $KAFKA_HOME/bin/kafka-topics.sh --list --bootstrap-server $KAFKA_ZOOKEEPER_CONNECT
         ;;
 
 esac
