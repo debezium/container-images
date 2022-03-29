@@ -3,6 +3,19 @@
 # Exit immediately if a *pipeline* returns a non-zero status. (Add -x for command tracing)
 set -e
 
+get_broker_endpoint() {
+    if [[ -z "$KAFKA_BROKER" ]]; then
+        # Look for any environment variables set by Docker container linking. For example, if the container
+        # running Kafka were named 'broker' in this container, then Docker should have created several envs,
+        # such as 'BROKER_PORT_9092_TCP'. If so, then use that to automatically connect to the linked broker.
+        export KAFKA_BROKER=$(env | grep .*PORT_9092_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
+    fi
+    if [[ "x$KAFKA_BROKER" = "x" ]]; then
+        export KAFKA_BROKER=0.0.0.0:9092
+    fi
+    echo "Using KAFKA_BROKER=$KAFKA_BROKER"
+}
+
 if [[ -z "$NODE_ID" ]]; then
     if [[ -z "$BROKER_ID" ]]; then
         NODE_ID=1
@@ -164,8 +177,9 @@ case $1 in
                     if [ -n "${topicConfig[3]}" ]; then
                         config="--config=cleanup.policy=${topicConfig[3]}"
                     fi
+                    get_broker_endpoint
                     echo "STARTUP: Creating topic ${topicConfig[0]} with ${topicConfig[1]} partitions and ${topicConfig[2]} replicas with cleanup policy ${topicConfig[3]}..."
-                    $KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server $KAFKA_ZOOKEEPER_CONNECT --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" ${config}
+                    $KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server $KAFKA_BROKER --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" ${config}
                 done
             )&
         fi
@@ -218,16 +232,7 @@ case $1 in
         fi
         TOPICNAME=$1
         shift
-        if [[ -z "$KAFKA_BROKER" ]]; then
-            # Look for any environment variables set by Docker container linking. For example, if the container
-            # running Kafka were named 'broker' in this container, then Docker should have created several envs,
-            # such as 'BROKER_PORT_9092_TCP'. If so, then use that to automatically connect to the linked broker.
-            export KAFKA_BROKER=$(env | grep .*PORT_9092_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
-        fi
-        if [[ "x$KAFKA_BROKER" = "x" ]]; then
-            export KAFKA_BROKER=0.0.0.0:9092
-        fi
-        echo "Using KAFKA_BROKER=$KAFKA_BROKER"
+        get_broker_endpoint
         echo "Contents of topic $TOPICNAME:"
         exec $KAFKA_HOME/bin/kafka-console-consumer.sh --bootstrap-server $KAFKA_BROKER --property print.key=$PRINT_KEY --property fetch.min.bytes=$FETCH_MIN_BYTES --topic "$TOPICNAME" $FROM_BEGINNING $@
         ;;
@@ -265,6 +270,7 @@ case $1 in
                     ;;
             esac
         done
+        get_broker_endpoint
         shift $((OPTIND -1))
         if [[ -z $1 ]]; then
             echo "ERROR: A topic name must be specified"
@@ -272,11 +278,12 @@ case $1 in
         fi
         TOPICNAME=$1
         echo "Creating new topic $TOPICNAME with $PARTITION partition(s), $REPLICAS replica(s) and cleanup policy set to $CLEANUP_POLICY..."
-        exec $KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server $KAFKA_ZOOKEEPER_CONNECT --replication-factor $REPLICAS --partitions $PARTITION --topic "$TOPICNAME" --config=cleanup.policy=$CLEANUP_POLICY
+        exec $KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server $KAFKA_BROKER --replication-factor $REPLICAS --partitions $PARTITION --topic "$TOPICNAME" --config=cleanup.policy=$CLEANUP_POLICY
         ;;
     list-topics)
         echo "Listing topics..."
-        exec $KAFKA_HOME/bin/kafka-topics.sh --list --bootstrap-server $KAFKA_ZOOKEEPER_CONNECT
+        get_broker_endpoint
+        exec $KAFKA_HOME/bin/kafka-topics.sh --list --bootstrap-server $KAFKA_BROKER
         ;;
 
 esac
