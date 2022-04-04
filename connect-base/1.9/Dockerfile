@@ -23,7 +23,8 @@ ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \
     CONFLUENT_VERSION=7.0.1 \
     AVRO_VERSION=1.10.1 \
-    APICURIO_VERSION=2.1.5.Final
+    APICURIO_VERSION=2.1.5.Final \
+    GUAVA_VERSION=31.0.1-jre
 
 RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 
@@ -48,7 +49,8 @@ RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VER
     docker-maven-download confluent common-config "$CONFLUENT_VERSION" aab5670de446af5b6f10710e2eb86894 && \
     docker-maven-download confluent common-utils "$CONFLUENT_VERSION" 74bf5cc6de2748148f5770bccd83a37c && \
     docker-maven-download central org/apache/avro avro "$AVRO_VERSION" 35469fee6d74ecbadce4773bfe3a204c && \
-    docker-maven-download apicurio "$APICURIO_VERSION" bd7adf3f599968db4529fe4592d07bc8
+    docker-maven-download apicurio "$APICURIO_VERSION" bd7adf3f599968db4529fe4592d07bc8 && \
+    docker-maven-download central com/google/guava guava "$GUAVA_VERSION" bb811ca86cba6506cca5d415cd5559a7
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
