@@ -34,9 +34,7 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 # This will prevent the classes in the shared dependencies from appearing in multiple JARs
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
-RUN docker-maven-download confluent kafka-connect-avro-converter "$CONFLUENT_VERSION" b6b8507bdc518d8c3d7d4a62b6140977 && \
-    docker-maven-download confluent kafka-avro-serializer "$CONFLUENT_VERSION" 464857f51204412996e2bb81d67a94e8 && \
-    docker-maven-download confluent kafka-schema-registry-client "$CONFLUENT_VERSION" e3078fa805dd793e9d97d2bf395d037a && \
+RUN docker-maven-download confluent kafka-schema-registry-client "$CONFLUENT_VERSION" e3078fa805dd793e9d97d2bf395d037a && \
     docker-maven-download confluent common-config "$CONFLUENT_VERSION" 4ee0fb996cea8691196c4187876b388b && \
     docker-maven-download confluent common-utils "$CONFLUENT_VERSION" 7aef21c3824f218252b8f2383c71840f && \
     docker-maven-download central org/codehaus/jackson jackson-core-asl "$AVRO_JACKSON_VERSION" 319c49a4304e3fa9fe3cd8dcfc009d37 && \

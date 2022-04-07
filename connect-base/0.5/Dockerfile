@@ -31,8 +31,6 @@ RUN mkdir $KAFKA_CONNECT_PLUGINS_DIR;
 RUN cd $KAFKA_HOME/libs &&\
     function confluent_dep { curl -O http://packages.confluent.io/maven/io/confluent/$1/$CONFLUENT_VERSION/$1-$CONFLUENT_VERSION.jar;  echo "$2 $1-$CONFLUENT_VERSION.jar" >> sums.md5; };\
     function central_dep { curl -O http://central.maven.org/maven2/$1/$2/$3/$2-$3.jar; echo "$4 $2-$3.jar" >> sums.md5; };\
-    confluent_dep kafka-connect-avro-converter b86e57cb52ccbc0cca061f0b2ed3f000 &&\
-    confluent_dep kafka-avro-serializer 1ff69042fc7c4663725ef94dad516f83 &&\
     confluent_dep kafka-schema-registry-client 1fc1930fe6d58bb0e208cd9c4beb7e5c &&\
     confluent_dep common-config e33e5e4b485d409eab245a9cc8938dc3 &&\
     confluent_dep common-utils 09178eeff4d7ea39ab6337769cc41fd8 &&\
