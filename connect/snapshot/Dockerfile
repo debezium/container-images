@@ -1,8 +1,8 @@
-FROM debezium/connect-base:1.9
+FROM debezium/connect-base:2.0
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=1.9.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=2.0.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots"
