@@ -25,7 +25,7 @@ RUN java -version \
     && mvn -q -am dependency:go-offline -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
     && mvn -q clean package -DskipTests -DskipITs -Dquarkus.package.type=fast-jar -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
+FROM registry.access.redhat.com/ubi9/ubi-minimal
 
 ARG JAVA_PACKAGE=java-11-openjdk-headless
 ARG RUN_JAVA_VERSION=1.3.8
@@ -36,9 +36,9 @@ ENV LANG='en_US.UTF-8' \
 
 # Install java and the run-java script
 # Also set up permissions for user `1001`
-RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} \
-    && microdnf update \
-    && microdnf clean all \
+RUN microdnf -y install ca-certificates ${JAVA_PACKAGE} \
+    && microdnf -y update \
+    && microdnf -y clean all \
     && mkdir /deployments \
     && chown 1001 /deployments \
     && chmod "g+rwX" /deployments \
