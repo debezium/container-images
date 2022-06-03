@@ -3,7 +3,7 @@
 # It is derived from standard Quarkus-build Docker file but the build is
 # executed from the sources.
 ###
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1 AS builder
+FROM registry.access.redhat.com/ubi9/ubi-minimal AS builder
 
 ARG JAVA_PACKAGE=java-11-openjdk-devel
 ARG BRANCH=v2.0.0.Alpha1
@@ -14,9 +14,9 @@ ENV LANG='en_US.UTF-8' \
 
 # Install java and the run-java script
 # Also set up permissions for user `1001`
-RUN microdnf install curl ca-certificates ${JAVA_PACKAGE} git maven \
-    && microdnf update \
-    && microdnf clean all
+RUN microdnf -y install ca-certificates ${JAVA_PACKAGE} git maven \
+    && microdnf -y update \
+    && microdnf -y clean all
 
 RUN java -version \
     && mkdir -p /sources \
