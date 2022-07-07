@@ -9,7 +9,7 @@ LABEL maintainer="Debezium Community"
 #
 ARG KAFKA_VERSION=3.2.0
 ARG SCALA_VERSION=2.13
-ARG SHA512HASH="5954C1CF38187134A6E0A21520CBEF5CD5320A3E9290E630C3895990E892219917D911FABBC64DA5DB17BCAA940B8277C23344B50F2FF4256EACA78116E9FDC9"
+ARG SHA512HASH="736A129823B058DC10788D0893BDE47B6F39B9E4972F9EAC2D5C9E85E51E477344C6F1E1EBD126CE34D5FD430EB07E55FDD60D60CB541F1D48655C0EBC0A4778"
 
 ENV KAFKA_VERSION=$KAFKA_VERSION \
     SCALA_VERSION=$SCALA_VERSION \
@@ -51,7 +51,7 @@ RUN echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
 # CVE-2021-4104/DBZ-4447 CVE-2019-17571
 # CVE-2022-23302 CVE-2022-23305 CVE-2020-9493
 #
-RUN zip -d /kafka/libs/log4j-1.2.17.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*'
+RUN zip -d /kafka/libs/reload4j-1.2.19.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*'
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
 RUN mkdir $KAFKA_HOME/config.orig &&\
