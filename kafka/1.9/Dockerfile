@@ -7,7 +7,7 @@ LABEL maintainer="Debezium Community"
 # MD5 hash taken from http://kafka.apache.org/downloads.html for this version of Kafka
 # These argument defaults can be overruled during build time but compatibility cannot be guaranteed when the defaults are not used.
 #
-ARG KAFKA_VERSION=3.1.0
+ARG KAFKA_VERSION=3.2.0
 ARG SCALA_VERSION=2.13
 ARG SHA512HASH="5954C1CF38187134A6E0A21520CBEF5CD5320A3E9290E630C3895990E892219917D911FABBC64DA5DB17BCAA940B8277C23344B50F2FF4256EACA78116E9FDC9"
 
