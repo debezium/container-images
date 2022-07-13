@@ -1,8 +1,8 @@
-[![Build Status](https://github.com/debezium/docker-images/actions/workflows/image-builds-auth.yml/badge.svg?branch=main)](https://github.com/debezium/docker-images/actions/workflows/image-builds-auth.yml)
+[![Build Status](https://github.com/debezium/container-images/actions/workflows/image-builds-auth.yml/badge.svg?branch=main)](https://github.com/debezium/container-images/actions/workflows/image-builds-auth.yml)
 [![License](http://img.shields.io/:license-mit-brightgreen.svg)](https://opensource.org/licenses/MIT)
 [![DockerHub](http://img.shields.io/:images-dockerhub-brightgreen.svg)](https://hub.docker.com/r/debezium/)
 
-This repository contains the primary Docker images for Debezium, and they are automatically built and published on [DockerHub](https://hub.docker.com/r/debezium/).
+This repository contains the primary container images for Debezium, and they are automatically built and published on [DockerHub](https://hub.docker.com/r/debezium/).
 
 # What is Debezium?
 
@@ -12,7 +12,7 @@ Debezium is open source under the [Apache License, Version 2.0](http://www.apach
 
 # License
 
-The Dockerfiles, scripts, and other files in this Git repository are licensed under the [MIT license](https://opensource.org/licenses/MIT). However, the resulting Docker images contain software licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) and other licenses (see specific Docker images for details).
+The Dockerfiles, scripts, and other files in this Git repository are licensed under the [MIT license](https://opensource.org/licenses/MIT). However, the resulting container images contain software licensed under the [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0.html) and other licenses (see specific container images for details).
 
 # Tutorial for running Debezium with Docker
 
