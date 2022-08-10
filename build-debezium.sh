@@ -32,7 +32,7 @@ build_docker_image () {
     echo "****************************************************************"
     echo "** Building    debezium/${IMAGE_NAME}:${IMAGE_TAG}"
     echo "****************************************************************"
-    docker build -t "debezium/${IMAGE_NAME}:latest" "${IMAGE_PATH}"
+    docker buildx build --platform linux/amd64,linux/arm64 -t "debezium/${IMAGE_NAME}:latest" "${IMAGE_PATH}"
 
     if [ -z "$RELEASE_TAG" ]; then
         echo "****************************************************************"
