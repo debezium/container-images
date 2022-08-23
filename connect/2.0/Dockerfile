@@ -1,4 +1,5 @@
-FROM debezium/connect-base:2.0
+ARG DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME
+FROM $DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME/connect-base:2.0
 
 LABEL maintainer="Debezium Community"
 

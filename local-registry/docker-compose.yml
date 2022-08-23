@@ -1,0 +1,12 @@
+version: '3'
+services:
+  registry:
+    image: registry:2
+    ports:
+      - '5500:5000'
+  browser:
+    image: klausmeyer/docker-registry-browser:latest
+    environment:
+      - 'DOCKER_REGISTRY_URL=http://registry:5000'
+    ports:
+      - '5580:8080'
