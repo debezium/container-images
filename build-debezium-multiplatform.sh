@@ -10,6 +10,7 @@ if [ -z "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=quay.io/debezium
 fi;
 
+
 #
 # Parameter 1: image name
 # Parameter 2: path to component (if different)
@@ -19,7 +20,7 @@ build_docker_image () {
     IMAGE_NAME=$1;
     IMAGE_PATH=$2;
     IMAGE_TAG=$3;
-
+    
     if [ -z "$IMAGE_PATH" ]; then
         IMAGE_PATH=${IMAGE_NAME};
     fi
@@ -29,6 +30,12 @@ build_docker_image () {
     fi
 
     IMAGE_PATH="${IMAGE_PATH}/${IMAGE_TAG}"
+
+    PLATFORM_VAR=$(echo "$IMAGE_NAME" | tr '[:lower:]' '[:upper:]' | tr - _)_PLATFORM
+    PLATFORM=${!PLATFORM_VAR}
+    if [ -z "${PLATFORM}" ]; then
+      PLATFORM=${DEFAULT_PLATFORM};
+    fi;
 
     echo ""
     echo "****************************************************************"
@@ -40,51 +47,64 @@ build_docker_image () {
     echo "****************************************************************"
     echo "** Building    ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
     echo "****************************************************************"
-    docker build --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" \
-        -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest" "${IMAGE_PATH}"
+
+    TAGS=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest")
 
     if [ -z "$RELEASE_TAG" ]; then
         echo "****************************************************************"
         echo "** Stream Tag  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}       "
         echo "****************************************************************"
-        docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
-        if [ "$PUSH_IMAGES" == "true" ]; then
-            echo "Pushing the stream image into the registry"
-            docker push "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
-            docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}" "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
-            docker push "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
-            if [ "$DEBEZIUM_VERSION" == "$LATEST_STREAM" ]; then
-                echo "Pushing the latest image into the registry"
-                docker push "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest"
-                docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest" "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:latest"
-                docker push "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:latest"
-            fi
-        fi
-    fi
+        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}")
+        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}")
+    fi;
 
     if [ -n "$RELEASE_TAG" ]; then
         echo "****************************************************************"
         echo "** Release Tag ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}       "
         echo "****************************************************************"
-        docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}"
-        if [ "$PUSH_IMAGES" == "true" ]; then
-            echo "Pushing the stream image into the registry"
-            docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}" "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}"
-            docker push "quay.io/debezium/${IMAGE_NAME}:${RELEASE_TAG}"
-            docker push "debezium/${IMAGE_NAME}:${RELEASE_TAG}"
-        fi
+
+        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
+        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
     fi
+
+    echo "Build Image with Tags " "${TAGS[@]}" " and platform ${PLATFORM}"
+
+    # shellcheck disable=SC2068
+    docker buildx build --push --platform "${PLATFORM}" \
+      --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="$DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME" \
+        ${TAGS[@]} \
+        "${IMAGE_PATH}"
+}
+
+function usage() {
+  MSG=$1
+
+  echo ""
+  echo "$MSG"
+  echo ""
+  echo "Usage:  build-debezium <version> <platform>";
+  echo ""
+  echo "  Where platform can be for example:"
+  echo "   linux/amd64"
+  echo "   linux/amd64,linux/arm64"
+  echo "   linux/arm64"
+  echo ""
+  echo " Note that you can specify platforms for each component"
+  echo " individually by setting an env variable <component-in-uppercase>_PLATFORM"
+  echo " (for example BASE_CONNECT_PLATFORM=amd/linux64)"
+  echo ""
+  exit 1;
 }
 
 
 if [[ -z "$1" ]]; then
-    echo ""
-    echo "A version must be specified."
-    echo ""
-    echo "Usage:  build-debezium <version>";
-    echo ""
-    exit 1;
+  usage "A version must be specified."
 fi
+
+if [[ -z "$2" ]]; then
+  usage "Platform must be specified."
+fi
+DEFAULT_PLATFORM=$2
 
 DEBEZIUM_VERSION="$1"
 
