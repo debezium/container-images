@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Exit immediately if a *pipeline* returns a non-zero status. (Add -x for command tracing)
-set -eEo pipefail
+set -Eo pipefail
 
 # The names of container links are as follows, where 'n' is 1, 2, 3, etc.:
 #
@@ -24,7 +24,7 @@ else
     ARG1=$1
 fi
 
-MONGO="/usr/bin/mongo"
+MONGO="/usr/bin/mongosh"
 
 #
 # Process all MongoDB nodes by looking for environment variables that match 'MONGOn_PPORT_*_ADDR':
@@ -98,7 +98,7 @@ case $ARG1 in
 
         # Wait for the nodes to become available ...
         echo "Testing connection to MongoDB primary node at ${PRIMARY_HOST}:${PRIMARY_PORT} ..."
-        status=$($PRIMARY_MONGO --eval db)
+        status=$($PRIMARY_MONGO --eval db --quiet)
         if [ "$?" -ne 0 ]; then
             echo "Error: Unable to connect to ${PRIMARY_HOST}:${PRIMARY_PORT}"
             echo ""
@@ -107,7 +107,7 @@ case $ARG1 in
         fi
 
         # See if the replica set is not set up ...
-        rsStatus=$($PRIMARY_MONGO --eval "rs.status()")
+        rsStatus=$($PRIMARY_MONGO --eval "rs.status()" --quiet 2>&1)
         if [[ $rsStatus =~ "no replset config has been received" ]]; then
             # Set up the replica set configuration document ...
             echo "Using MongoDB primary node to initiate replica set \"${REPLICASET}\" with:"
@@ -129,9 +129,9 @@ case $ARG1 in
             CONFIGVAR="${CONFIGVAR} ] }"
 
             # Initiate the replica set with our document ...
-            $PRIMARY_MONGO --eval "${CONFIGVAR};rs.initiate(config);"
+            $PRIMARY_MONGO --eval "${CONFIGVAR};rs.initiate(config);" --quiet
 
-            rsStatus=$($PRIMARY_MONGO --eval "rs.status()")
+            rsStatus=$($PRIMARY_MONGO --eval "rs.status()" --quiet 2>&1)
             if [[ $rsStatus =~ "no replset config has been received" ]]; then
                 echo "Failed to initialize replica set"
                 exit 1
@@ -156,7 +156,7 @@ case $ARG1 in
             added=0
             while [[  $hostNum -le $ROUTER_COUNT ]]; do
                 hostAndPort="${ROUTER_HOSTS[$hostNum]}:${ROUTER_PORTS[$hostNum]}"
-                result=$($MONGO --host ${ROUTER_HOSTS[$hostNum]} --port ${ROUTER_PORTS[$hostNum]} --eval "rs.status();sh.addShard( \"${REPLICASET}/${PRIMARY_HOST}:${PRIMARY_PORT}\" )")
+                result=$($MONGO --host ${ROUTER_HOSTS[$hostNum]} --port ${ROUTER_PORTS[$hostNum]} --eval "rs.status();sh.addShard( \"${REPLICASET}/${PRIMARY_HOST}:${PRIMARY_PORT}\" )" --quiet 2>&1)
                 if [[ $result =~ "E11000 duplicate key error collection: config.shards index: _id_ dup key" ]]; then
                     echo "- ${hostAndPort} (shard exists)"
                 else
