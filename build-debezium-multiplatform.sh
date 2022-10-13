@@ -72,6 +72,7 @@ build_docker_image () {
     # shellcheck disable=SC2068
     docker buildx build --push --platform "${PLATFORM}" \
       --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="$DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME" \
+      --label "build-at=$(date +%s)" \
         ${TAGS[@]} \
         "${IMAGE_PATH}"
 }
