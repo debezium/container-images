@@ -15,6 +15,7 @@ COPY debezium-connector-oracle-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_C
 COPY debezium-connector-db2-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-db2-plugin.tar.gz
 COPY debezium-connector-vitess-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-vitess-plugin.tar.gz
 
+ADD debezium-connect-rest-extension-$DEBEZIUM_VERSION-SNAPSHOT.tar.gz $EXTERNAL_LIBS_DIR
 ADD debezium-scripting-$DEBEZIUM_VERSION-SNAPSHOT.tar.gz $EXTERNAL_LIBS_DIR
 
 RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,vitess}; do \

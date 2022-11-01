@@ -36,6 +36,7 @@ fi
 : ${KEY_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${VALUE_CONVERTER:=org.apache.kafka.connect.json.JsonConverter}
 : ${ENABLE_APICURIO_CONVERTERS:=false}
+: ${ENABLE_DEBEZIUM_KC_REST_EXTENSION:=false}
 : ${ENABLE_DEBEZIUM_SCRIPTING:=false}
 export CONNECT_REST_ADVERTISED_PORT=$ADVERTISED_PORT
 export CONNECT_REST_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
@@ -72,6 +73,60 @@ unset MD5HASH
 unset SCALA_VERSION
 
 #
+# Parameter 1: Should the extension be enabled ("true") or disabled ("false")
+#
+# When enabled, the .jar for the extension is symlinked to from the Kafka Connect plugins directory.
+function set_debezium_kc_rest_extension_availability() {
+    ENABLED=$1;
+
+    if [[ "${ENABLED}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/debezium-connect-rest-extension" ]] ; then
+        mkdir -p "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension"
+        ln -snf $EXTERNAL_LIBS_DIR/debezium-connect-rest-extension/* "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension"
+        if [ -z "${CONNECT_REST_EXTENSION_CLASSES-}" ]; then
+            export CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
+        else
+            export CONNECT_REST_EXTENSION_CLASSES=$CONNECT_REST_EXTENSION_CLASSES,io.debezium.kcrestextension.DebeziumConnectRestExtension
+        fi
+        echo Debezium Kafka Connect REST API Extension enabled!
+    else
+        if [[ -d "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension" ]] ; then
+            find "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension" -lname "$EXTERNAL_LIBS_DIR/debezium-connect-rest-extension/*" -exec rm -f {} \;
+        fi
+    fi
+}
+
+#
+# Parameter 1: Should the resource be enabled ("true") or disabled ("false")
+# Parameter 2: Folder path under $EXTERNAL_LIBS_DIR where the resorce is deployed
+# Parameter 3: A wildcard pattern matching files from the resource folder
+# Parameter 4: Name of the resource to print in log messages
+#
+# When enabled, files for the given resource are symlinked to each connector's folder.
+# The best practice is to have a class appear in no more than one JAR from all JARs
+# on the classpath to prevent errors at runtime.
+function set_connector_additonal_resource_availability() {
+    ENABLED=$1;
+    RESOURCE_FOLDER=$2;
+    FILE_WILD_CARD=$3;
+    RESOURCE_PRETTY_NAME=$4;
+
+    if [[ "${ENABLED}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/$RESOURCE_FOLDER" ]] ; then
+        plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
+        for plugin_dir in $plugin_dirs ; do
+            for plugin in $plugin_dir/*/ ; do
+                ln -snf $EXTERNAL_LIBS_DIR/$RESOURCE_FOLDER/$FILE_WILD_CARD "$plugin"
+            done
+        done
+        echo "$RESOURCE_PRETTY_NAME enabled!"
+    else
+        plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
+        for plugin_dir in $plugin_dirs ; do
+            find $plugin_dir/ -lname "$EXTERNAL_LIBS_DIR/$RESOURCE_FOLDER/$FILE_WILD_CARD" -exec rm -f {} \;
+        done
+    fi
+}
+
+#
 # Set up the classpath with all the plugins ...
 #
 if [ -z "$CONNECT_PLUGIN_PATH" ]; then
@@ -79,35 +134,16 @@ if [ -z "$CONNECT_PLUGIN_PATH" ]; then
 fi
 echo "Plugins are loaded from $CONNECT_PLUGIN_PATH"
 
-if [[ "${ENABLE_APICURIO_CONVERTERS}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/apicurio" ]] ; then
-    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
-    for plugin_dir in $plugin_dirs ; do
-        for connector in $plugin_dir/*/ ; do
-            ln -snf $EXTERNAL_LIBS_DIR/apicurio/* "$connector"
-        done
-    done
-    echo "Apicurio connectors enabled!"
-else
-    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
-    for plugin_dir in $plugin_dirs ; do
-        find $plugin_dir/ -lname "$EXTERNAL_LIBS_DIR/apicurio/*" -exec rm -f {} \;
-    done
-fi
+#
+# Set up additional resources for Kafka Connect Debezium Connectors
+#
+set_connector_additonal_resource_availability $ENABLE_APICURIO_CONVERTERS "apicurio" "*" "Apicurio connectors"
+set_connector_additonal_resource_availability $ENABLE_DEBEZIUM_SCRIPTING "debezium-scripting" "*.jar" "Debezium Scripting"
 
-if [[ "${ENABLE_DEBEZIUM_SCRIPTING}" == "true" && ! -f "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/debezium-scripting" ]] ; then
-    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
-    for plugin_dir in $plugin_dirs ; do
-        for connector in $plugin_dir/*/ ; do
-            ln -snf $EXTERNAL_LIBS_DIR/debezium-scripting/*.jar "$connector"
-        done
-    done
-    echo "Debezium Scripting enabled!"
-else
-    plugin_dirs=(${CONNECT_PLUGIN_PATH//,/ })
-    for plugin_dir in $plugin_dirs ; do
-        find $plugin_dir/ -lname "$EXTERNAL_LIBS_DIR/debezium-scripting/*" -exec rm -f {} \;
-    done
-fi
+#
+# Set up Kafka Connect plugins
+#
+set_debezium_kc_rest_extension_availability $ENABLE_DEBEZIUM_KC_REST_EXTENSION
 
 #
 # Set up the JMX options
