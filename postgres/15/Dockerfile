@@ -1,4 +1,4 @@
-FROM postgres:15 AS build
+FROM postgres:15-bullseye AS build
 
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v2.0.0.Final-postgres15
@@ -25,7 +25,7 @@ RUN git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSIO
     && rm -rf postgres-decoderbufs
 
 
-FROM postgres:15
+FROM postgres:15-bullseye
 
 LABEL maintainer="Debezium Community"
 
