@@ -1,4 +1,4 @@
-FROM postgres:12 AS build
+FROM postgres:12-bullseye AS build
 
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v1.9.7.Final
@@ -34,7 +34,7 @@ RUN git clone https://github.com/eulerto/wal2json -b master --single-branch \
     && rm -rf wal2json
 
 
-FROM postgres:12
+FROM postgres:12-bullseye
 
 LABEL maintainer="Debezium Community"
 

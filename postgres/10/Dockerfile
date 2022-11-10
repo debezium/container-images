@@ -1,4 +1,4 @@
-FROM postgres:10 AS build
+FROM postgres:10-bullseye AS build
 
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v1.9.7.Final
@@ -34,11 +34,11 @@ RUN git clone https://github.com/eulerto/wal2json -b master --single-branch \
     && rm -rf wal2json
 
 
-FROM postgres:10
+FROM postgres:10-bullseye
 
 LABEL maintainer="Debezium Community"
 
-ENV POSTGIS_VERSION=2.4
+ENV POSTGIS_VERSION=3
 
 RUN apt-get update \
     && apt-get install -f -y --no-install-recommends \
