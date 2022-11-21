@@ -1,4 +1,4 @@
-FROM debezium/postgres:14
+FROM debezium/postgres:15
 
 LABEL maintainer="Debezium Community"
 
