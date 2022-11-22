@@ -103,7 +103,7 @@ build_docker_image example-postgres examples/postgres
 build_docker_image example-mongodb examples/mongodb
 
 echo ""
-echo "**********************************"
-echo "Successfully created Docker images"
-echo "**********************************"
+echo "*************************************"
+echo "Successfully created container images"
+echo "*************************************"
 echo ""
