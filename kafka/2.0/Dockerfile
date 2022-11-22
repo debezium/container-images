@@ -36,25 +36,22 @@ RUN chown -R kafka $KAFKA_HOME && \
     chgrp -R kafka $KAFKA_HOME
 
 #
-# Download Kafka
-#
-RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$KAFKA_URL_PATH || curl -fSL -o /tmp/kafka.tgz https://archive.apache.org/dist/$KAFKA_URL_PATH
-
-#
-# Verify the contents and then install ...
-#
-RUN echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
+# 1.) Download Kafka, either from preferred host or archive
+# 2.) Verify the contents and install, remove TGZ file
+# 3.) Remove potentially exploitable classes (see CVE-2021-4104/DBZ-4447 CVE-2019-17571 CVE-2022-23302 CVE-2022-23305 CVE-2020-9493)
+# 4.) Allow random UID to use Kafka (doing this for the bulk of files here, so as to avoid overhead of doing it in a separate layer)
+RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$KAFKA_URL_PATH || curl -fSL -o /tmp/kafka.tgz https://archive.apache.org/dist/$KAFKA_URL_PATH &&\
+    echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
     tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1 &&\
-    rm -f /tmp/kafka.tgz
-
-#
-# Remove potentially exploitable classes
-# CVE-2021-4104/DBZ-4447 CVE-2019-17571
-# CVE-2022-23302 CVE-2022-23305 CVE-2020-9493
-#
-RUN zip -d /kafka/libs/reload4j-1.2.19.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*'
+    rm -f /tmp/kafka.tgz &&\
+    zip -d /kafka/libs/reload4j-1.2.19.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*' &&\
+    chmod -R g+w,o+w $KAFKA_HOME
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
+RUN chmod g+w,o+w $KAFKA_HOME/config/log4j.properties
+
+# Back up config original files; they will be brought back in
+# in docker-entrypoint.sh if no volume with user-provided config files is given
 RUN mkdir $KAFKA_HOME/config.orig &&\
     mv $KAFKA_HOME/config/* $KAFKA_HOME/config.orig &&\
     chown -R kafka:kafka $KAFKA_HOME/config.orig
@@ -70,11 +67,6 @@ RUN rm -f $KAFKA_HOME/libs/*-{sources,javadoc,scaladoc}.jar* &&\
 # path so it it is modified to contain absolute path using "realpath" command.
 #
 RUN sed -i 's/base_dir=\$(dirname \$0)\/../base_dir=\$(realpath \$(dirname \$0)\/..)/' $KAFKA_HOME/bin/kafka-run-class.sh
-
-#
-# Allow random UID to use Kafka
-#
-RUN chmod -R g+w,o+w $KAFKA_HOME
 
 USER kafka
 
