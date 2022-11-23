@@ -1,4 +1,4 @@
--- Create the schema that we'll use to populate data and watch the effect in the binlog
+-- Create the schema that we'll use to populate data and watch the effect in the WAL
 CREATE SCHEMA inventory;
 SET search_path TO inventory;
 
