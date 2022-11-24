@@ -24,6 +24,6 @@ RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" &&
     docker-maven-download debezium oracle "$DEBEZIUM_VERSION" "$ORACLE_MD5" && \
     docker-maven-download debezium-additional db2 db2 "$DEBEZIUM_VERSION" "$DB2_MD5" && \
     docker-maven-download debezium-additional vitess vitess "$DEBEZIUM_VERSION" "$VITESS_MD5" && \
-    docker-maven-download debezium-optional io/debezium debezium-connect-rest-extension "$DEBEZIUM_VERSION" "$KCRESTEXT_MD5" && \
+    docker-maven-download debezium-optional connect-rest-extension "$DEBEZIUM_VERSION" "$KCRESTEXT_MD5" && \
     docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5"
 
