@@ -22,7 +22,7 @@ ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     EXTERNAL_LIBS_DIR=$KAFKA_HOME/external_libs \
     CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR \
     MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \
-    APICURIO_VERSION=2.2.5.Final
+    APICURIO_VERSION=2.4.1.Final
 
 RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 
@@ -39,7 +39,7 @@ RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 # This will prevent the classes in the shared dependencies from appearing in multiple JARs
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
-RUN docker-maven-download apicurio "$APICURIO_VERSION" f7874b2e2a59dfa829242d9a52b44230
+RUN docker-maven-download apicurio "$APICURIO_VERSION" ead18a95038adca54e91b7f253717eb7
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
