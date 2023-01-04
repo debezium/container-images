@@ -16,7 +16,7 @@ RUN yarn global add @antora/cli@3.0.0-alpha.9 @antora/site-generator-default@3.0
 RUN gem install bundler -v "~>1.0" \
     && gem install rdoc -v 6.2.0 \
     && gem install bundler \
-    && gem install jekyll -v ">= 3.8.3" \
+    && gem install jekyll -v ">= 3.8.3, < 4.3" \
     && gem install rake
 
 
