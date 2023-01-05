@@ -25,9 +25,9 @@ function shouldBuild() {
   [[ "$COMPONENTS" =~ (" "|^)$1(" "|$) ]]
 }
 
-# A list of Debezium versions that should be built
+# A list of Debezium versions that should not be built
 # with multi platform build
-DEBEZIUM_MULTIPLATFORM_VERSIONS="1.9 2.0 latest"
+DEBEZIUM_SINGLEPLATFORM_VERSIONS="1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8"
 
 MONGO_VERSIONS="3.2"
 MONGO_MULTIPLATFORM_VERSIONS="3.4 3.6 4.0 4.2 4.4 5.0 6.0"
@@ -57,10 +57,10 @@ fi;
 
 if shouldBuild "debezium"; then
   for DBZ in $DEBEZIUM_VERSIONS; do
-    if [[ "${DEBEZIUM_MULTIPLATFORM_VERSIONS}" =~ (" "|^)${DBZ}(" "|$) ]]; then
-      ./build-debezium-multiplatform.sh "${DBZ}" "${MULTIPLATFORM_PLATFORMS}"
-    else
+    if [[ "${DEBEZIUM_SINGLEPLATFORM_VERSIONS}" =~ (" "|^)${DBZ}(" "|$) ]]; then
       ./build-debezium.sh "${DBZ}"
+    else
+      ./build-debezium-multiplatform.sh "${DBZ}" "${MULTIPLATFORM_PLATFORMS}"
     fi;
   done
 fi;
