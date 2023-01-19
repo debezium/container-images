@@ -2,7 +2,7 @@ FROM debezium/connect-base:2.2
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=2.1.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=2.2.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots"
