@@ -52,8 +52,8 @@ debezium.source.database.port=5432
 debezium.source.database.user=postgres
 debezium.source.database.password=postgres
 debezium.source.database.dbname=postgres
-debezium.source.database.server.name=tutorial
-debezium.source.schema.whitelist=inventory
+debezium.source.topic.prefix=tutorial
+debezium.source.schema.include.list=inventory
 debezium.source.plugin.name=pgoutput
 EOF
 ```
