@@ -1,8 +1,8 @@
 [![Build Status](https://github.com/debezium/container-images/actions/workflows/image-builds-auth.yml/badge.svg?branch=main)](https://github.com/debezium/container-images/actions/workflows/image-builds-auth.yml)
 [![License](http://img.shields.io/:license-mit-brightgreen.svg)](https://opensource.org/licenses/MIT)
-[![DockerHub](http://img.shields.io/:images-dockerhub-brightgreen.svg)](https://hub.docker.com/r/debezium/)
+[![Quay.io](https://img.shields.io/badge/quay.io-images-brightgreen)](https://quay.io/organization/debezium)
 
-This repository contains the primary container images for Debezium, and they are automatically built and published on [DockerHub](https://hub.docker.com/r/debezium/).
+This repository contains the primary container images for Debezium, and they are automatically built and published on [Quay.io](https://quay.io/organization/debezium).
 
 # What is Debezium?
 
