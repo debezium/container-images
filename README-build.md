@@ -27,7 +27,7 @@ export DEBEZIUM_VERSIONS="1.9 2.0"
 ./build-all-multiplatform.sh
 ```
 
-* **Note:** Images by default are pushed both to [Dockerhub](https://hub.docker.com/) and [quay.io](https://quay.io/).
+* **Note:** Images by default are pushed only to [quay.io](https://quay.io/).
 For testing purposes, you can change this behaviour (see below).
 
 ## Running the x86 build only
@@ -39,10 +39,10 @@ that builds single platform images without buildx.
 
 You can specify two environment variables that control where the images are pushed to after build:
 
-* `DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME`: name of the first registry to use. This defaults to `debezium`, so that the images are pushed to the official Docker Registry.
-* `DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME`: name to use for the second registry. This defaults to `quay.io/debezium`.
+* `DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME`: name of the first registry to use. This defaults to `quay.io/debezium`, so that the images are pushed to the Quay.io Registry.
+* `DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME`: name to use for the second registry. This defaults to `debezium`, which results into publishing the images to the Docker Registry.
 
-To run the build locally you can modify this variables.
+To run the build locally you can modify these variables.
 
 For example, you can run a [local registry](https://docs.docker.com/registry/deploying/)
 and deploy the images to your local registry.
@@ -58,8 +58,8 @@ docker-compose -f local-registry/docker-compose.yml up -d
 Then set the env variables:
 
 ```
-export DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=localhost:5500/debezium
-export DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=localhost:5500/debeziumquay
+export DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=localhost:5500/debeziumquay
+export DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=localhost:5500/debezium
 ```
 Where `localhost:5500` is the port your registry listens to.
 
