@@ -15,10 +15,6 @@ if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
 fi;
 
-if [ -z "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
-  DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=debezium
-fi;
-
 echo ""
 echo "****************************************************************"
 echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1"
@@ -28,6 +24,8 @@ docker build -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1" "postgres
 if [ "$PUSH_IMAGES" == "true" ]; then
     echo "Pushing the image into the registry"
     docker push "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1"
-    docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1" "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/postgres:$1"
-    docker push "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/postgres:$1"
+    if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
+      docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1" "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/postgres:$1"
+      docker push "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/postgres:$1"
+    fi;
 fi

@@ -6,11 +6,6 @@ if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
 fi;
 
-if [ -z "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
-  DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=debezium
-fi;
-
-
 #
 # Parameter 1: image name
 # Parameter 2: path to component (if different)
@@ -55,7 +50,9 @@ build_docker_image () {
         echo "** Stream Tag  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}       "
         echo "****************************************************************"
         TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}")
-        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}")
+	if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
+          TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}")
+	fi;
     fi;
 
     if [ -n "$RELEASE_TAG" ]; then
@@ -64,7 +61,9 @@ build_docker_image () {
         echo "****************************************************************"
 
         TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
-        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
+	if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
+            TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
+	fi;
     fi
 
     echo "Build Image with Tags " "${TAGS[@]}" " and platform ${PLATFORM}"

@@ -31,16 +31,17 @@ if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
 fi;
 
-if [ -z "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
-  DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=debezium
-fi;
-
 echo ""
 echo "****************************************************************"
 echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongo-initiator:$1 for $PLATFORM"
 echo "****************************************************************"
+TAGS=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongo-initiator:$1")
+if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
+  TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/mongo-initiator:$1")
+fi;
+
+# shellcheck disable=SC2068
 docker buildx build --push --platform "${PLATFORM}" \
       --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" \
-        -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongo-initiator:$1" \
-        -t "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/mongo-initiator:$1" \
-        "mongo-initiator/$1"
+      ${TAGS[@]} \
+      "mongo-initiator/$1"
