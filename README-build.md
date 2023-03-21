@@ -40,7 +40,7 @@ that builds single platform images without buildx.
 You can specify two environment variables that control where the images are pushed to after build:
 
 * `DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME`: name of the first registry to use. This defaults to `quay.io/debezium`, so that the images are pushed to the Quay.io Registry.
-* `DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME`: name to use for the second registry. This defaults to `debezium`, which results into publishing the images to the Docker Registry.
+* `DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME`: name to use for the second registry. By default it's not set and if not set, images are pushed only to `DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME`.
 
 To run the build locally you can modify these variables.
 
@@ -55,11 +55,10 @@ that registry on http://localhost:5580:
 docker-compose -f local-registry/docker-compose.yml up -d
 ``` 
 
-Then set the env variables:
+Then set the env variable:
 
 ```
-export DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=localhost:5500/debeziumquay
-export DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=localhost:5500/debezium
+export DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=localhost:5500/debezium
 ```
 Where `localhost:5500` is the port your registry listens to.
 
