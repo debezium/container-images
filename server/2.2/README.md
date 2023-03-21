@@ -18,7 +18,7 @@ The application itself can be configured either via environment variables or via
 
 Starting an instance of Debezium Server using this container image is simple:
 
-    $ docker run -it --name debezium -p 8080:8080 -v $PWD/conf:/debezium/conf -v $PWD/data:/debezium/data debezium/server
+    $ docker run -it --name debezium -p 8080:8080 -v $PWD/conf:/debezium/conf -v $PWD/data:/debezium/data quay.io/debezium/server
 
 
 ## Example
@@ -27,7 +27,7 @@ If you want to try the image yourself then please follow the steps to establish 
 
 Start PostgreSQL source database:
 
-    $ docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres debezium/example-postgres
+    $ docker run -d --name postgres -p 5432:5432 -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=postgres quay.io/debezium/example-postgres
 
 Start Apache Pulsar sink:
 
@@ -62,7 +62,7 @@ Note that the configuration file can be replaced with environment variables wher
 
 Start the Debezium Server:
 
-    $ docker run -it --name debezium -p 8080:8080 -v $PWD/conf:/debezium/conf -v $PWD/data:/debezium/data --link postgres --link pulsar debezium/server
+    $ docker run -it --name debezium -p 8080:8080 -v $PWD/conf:/debezium/conf -v $PWD/data:/debezium/data --link postgres --link pulsar quay.io/debezium/server
 
 
 # Environment variables

@@ -12,7 +12,7 @@ Running Debezium involves Zookeeper, Kafka, and services that run Debezium's con
 This image serves as a base image for other images that wish to use custom Kafka Connect connectors. This image provides a complete
 installation of Kafka and its Kafka Connect libraries, plus a `docker-entrypoint.sh` script that will run Kafka Connect distributed service and dynamically set the Java classpath to include connector JARs found in child directories under `$KAFKA_CONNECT_PLUGINS_DIR`, which equates to `/kafka/connect`.
 
-To add your connectors, your image should be based upon this image (e.g., using `FROM debezium/connect-base`) and should add the JAR files for one or more connectors to one or more child directories under `$KAFKA_CONNECT_PLUGINS_DIR`.
+To add your connectors, your image should be based upon this image (e.g., using `FROM quay.io/debezium/connect-base`) and should add the JAR files for one or more connectors to one or more child directories under `$KAFKA_CONNECT_PLUGINS_DIR`.
 
 The general recommendation is to create a separate child directory for each connector (e.g., "debezium-connector-mysql"), and to place that connector's JAR files and other resource files in that child directory.
 
@@ -28,7 +28,7 @@ When running a cluster of one or more Kafka Connect service instances, several i
 
 Starting an instance of Kafka Connect using this image is simple:
 
-    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e STATUS_STORAGE_TOPIC=my-connect-statuses -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper --link kafka:kafka debezium/connect
+    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e STATUS_STORAGE_TOPIC=my-connect-statuses -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper --link kafka:kafka quay.io/debezium/connect
 
 This command uses this image and starts a new container named `connect`, which runs in the foreground and attaches the console so that it display the service's output and error messages. It exposes its REST API on port 8083, which is mapped to the same port number on the local host. It uses Zookeeper in the container (or service) named `zookeeper` and Kafka brokers in the container (or service) named `kafka`. This command sets the three required environment variables, though you should replace their values with more meaningful values for your environment.
 
