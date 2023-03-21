@@ -1,4 +1,4 @@
-FROM debezium/connect-base:2.2
+FROM quay.io/debezium/connect-base:2.2
 
 LABEL maintainer="Debezium Community"
 

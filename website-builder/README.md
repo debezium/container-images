@@ -18,7 +18,7 @@ If you're using this image to develop a website other than Debezium's, obtain a 
 
 Start a container using this image that will generate the static site and run a development webserver to serve the content:
 
-    $ docker run --privileged -it --rm -p 4000:4000 -e LC_ALL=C.UTF-8 -e LANG=C.UTF-8 -v $(pwd):/site debezium/website-builder bash
+    $ docker run --privileged -it --rm -p 4000:4000 -e LC_ALL=C.UTF-8 -e LANG=C.UTF-8 -v $(pwd):/site quay.io/debezium/website-builder bash
 
 This command tells Docker to download the `debezium/website-builder` image if necessary, start up a Docker container using this image, and give you an interactive terminal (via `-it` flag) to the container so that you will see the output of the process running in the container. The `--rm` flag will remove the container when it stops, the `-p 4040` flag maps the container's 4040 port to the same port on the Docker host (which is the local machine on Linux or the virtual machine if running Boot2Docker or Docker Machine on OS X and Windows). The `-v $(pwd):/site` option mounts your current working directory into the `/site` directory within the container.
 

@@ -16,7 +16,7 @@ Production environments require running multiple instances of each service to pr
 
 Starting a Zookeeper instance using this image is simple:
 
-    $ docker run -it --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 debezium/zookeeper
+    $ docker run -it --name zookeeper -p 2181:2181 -p 2888:2888 -p 3888:3888 quay.io/debezium/zookeeper
 
 This command uses this image and starts a new container named `zookeeper`, which runs in the foreground and attaches the console so that it display Zookeeper's output and error messages. It exposes and maps port 2181to the same port on the Docker host so that code running outside of the container (e.g., like Kafka) can talk with Zookeepr; Zookeeper's other ports (2888 and 3888) are also exposed and mapped to the Docker host. See the environment variables below for additional information that can be supplied to the server on startup.
 
@@ -28,7 +28,7 @@ To start the container in _detached_ mode, simply replace the `-it` option with 
 
 If you already have one or more containers running Zookeeper, you can use this image to start _another_ container that connects to the running instance(s) and displays the status:
 
-    $ docker run -it --rm debezium/zookeeper status
+    $ docker run -it --rm quay.io/debezium/zookeeper status
 
 The container will exit as soon as the status is displayed, and because `--rm` is used the container will be immediately removed. You can run this command as many times as necessary.
 
@@ -36,7 +36,7 @@ The container will exit as soon as the status is displayed, and because `--rm` i
 
 If you already have one or more containers running Zookeeper, you can use this image to start _another_ container that connects to the running instance(s) and starts the Zookeeper CLI:
 
-    $ docker run -it --rm debezium/zookeeper cli
+    $ docker run -it --rm quay.io/debezium/zookeeper cli
 
 The container will exit as soon as you exit the CLI, and because `--rm` is used the container will be immediately removed.
 You can run this command as many times as necessary.

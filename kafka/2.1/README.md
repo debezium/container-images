@@ -14,7 +14,7 @@ This image can be used in several different ways. Unless you are running in "KRa
 
 Starting a Kafka broker using this image is simple:
 
-    $ docker run -it --name kafka -p 9092:9092 --link zookeeper:zookeeper debezium/kafka
+    $ docker run -it --name kafka -p 9092:9092 --link zookeeper:zookeeper quay.io/debezium/kafka
 
 This command uses this image and starts a new container named `kafka`, which runs in the foreground and attaches the console so that it display the broker's output and error messages. It exposes the broker on port 9092 and looks for Zookeeper in the container (or host) named `zookeeper`. See the environment variables below for additional information that can be supplied to the broker on startup.
 
@@ -38,7 +38,7 @@ KRaft mode is an **experimental** feature as of Apache Kafka 2.8/3.0 and should 
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and uses them to create a topic:
 
-    $ docker run -it --rm --link kafka:kafka debezium/kafka create-topic [-p numPartitions] [-r numReplicas] [-c cleanupPolicy] topic-name
+    $ docker run -it --rm --link kafka:kafka quay.io/debezium/kafka create-topic [-p numPartitions] [-r numReplicas] [-c cleanupPolicy] topic-name
 
 where `topic-name` is the name of the new topic, `numPartitions` is the number of partitions within the new topic, `numReplicas` is the number of replicas for each partition within the new topic and `cleanupPolicy` is the cleanup policy for the new topic (either `delete` or `compact`). The default for both `numPartitions` and `numReplicas` is '1'. The default `cleanupPolicy` is `delete`.
 
@@ -50,7 +50,7 @@ Simply run this command once for each topic you want to create.
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and watches a topic:
 
-    $ docker run -it --rm --link kafka:kafka debezium/kafka watch-topic [-a] [-k] [-m minBytes] topic-name
+    $ docker run -it --rm --link kafka:kafka quay.io/debezium/kafka watch-topic [-a] [-k] [-m minBytes] topic-name
 
 where `topic-name` is the name of the topic, and
 
@@ -62,7 +62,7 @@ where `topic-name` is the name of the topic, and
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and lists the existing topics:
 
-    $ docker run -it --rm --link kafka:kafka debezium/kafka list-topics
+    $ docker run -it --rm --link kafka:kafka quay.io/debezium/kafka list-topics
 
 The container will exit (and be removed) immediately after the response is displayed.
 
