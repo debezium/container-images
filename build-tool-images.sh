@@ -8,10 +8,15 @@ fi
 
 DEBEZIUM_TOOLS="tooling website-builder"
 
+if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
+  DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
+fi;
+
+
 for TOOL in $DEBEZIUM_TOOLS; do
   echo ""
   echo "****************************************************************"
-  echo "** Building  debezium/$TOOL:$TAG"
+  echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/$TOOL:$TAG"
   echo "****************************************************************"
   docker build -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/$TOOL:$TAG" "$TOOL"
 
