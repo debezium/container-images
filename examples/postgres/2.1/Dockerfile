@@ -1,4 +1,4 @@
-FROM quay.io/debezium/postgres:15
+FROM debezium/postgres:15
 
 LABEL maintainer="Debezium Community"
 

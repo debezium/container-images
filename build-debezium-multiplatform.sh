@@ -108,19 +108,19 @@ DEFAULT_PLATFORM=$2
 
 DEBEZIUM_VERSION="$1"
 
-build_docker_image base base latest
-build_docker_image zookeeper
-build_docker_image kafka
-build_docker_image connect-base
-build_docker_image connect
-build_docker_image server
-if [[ "$SKIP_UI" != "true" ]]; then
-    build_docker_image debezium-ui ui
-fi
-build_docker_image example-mysql examples/mysql
-build_docker_image example-mysql-gtids examples/mysql-gtids
+# build_docker_image base base latest
+# build_docker_image zookeeper
+# build_docker_image kafka
+# build_docker_image connect-base
+# build_docker_image connect
+# build_docker_image server
+# if [[ "$SKIP_UI" != "true" ]]; then
+#     build_docker_image debezium-ui ui
+# fi
+# build_docker_image example-mysql examples/mysql
+# build_docker_image example-mysql-gtids examples/mysql-gtids
 build_docker_image example-postgres examples/postgres
-build_docker_image example-mongodb examples/mongodb
+# build_docker_image example-mongodb examples/mongodb
 
 echo ""
 echo "**********************************"
