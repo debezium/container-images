@@ -32,6 +32,6 @@ jobs:
       - name: Build Component ${{ matrix.component }}
         if: matrix.component != 'tool'
         run: ./build-all-multiplatform.sh ${{ matrix.component }}
-      - name: Build Tool Images
-        if: matrix.component == 'tool'
-        run: ./build-tool-images.sh latest
+      # - name: Build Tool Images
+      #   if: matrix.component == 'tool'
+      #   run: ./build-tool-images.sh latest
