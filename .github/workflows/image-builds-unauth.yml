@@ -12,7 +12,8 @@ jobs:
         component: [ 'mongo', 'postgres', 'debezium', 'tool' ]
     runs-on: ubuntu-latest
     env:
-      DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME: localhost:5500/debezium
+      DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME: localhost:5500/debeziumquay
+      DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME: localhost:5500/debezium
     steps:
       - name: Checkout
         uses: actions/checkout@v3

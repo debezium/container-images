@@ -6,6 +6,10 @@ if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
 fi;
 
+if [ -z "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
+  DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=debezium
+fi;
+
 #
 # Parameter 1: image name
 # Parameter 2: path to component (if different)
