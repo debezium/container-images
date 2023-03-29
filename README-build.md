@@ -40,7 +40,7 @@ that builds single platform images without buildx.
 You can specify two environment variables that control where the images are pushed to after build:
 
 * `DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME`: name of the first registry to use. This defaults to `quay.io/debezium`, so that the images are pushed to the Quay.io Registry.
-* `DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME`: name to use for the second registry. By default it's not set and if not set, images are pushed only to `DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME`.
+* `DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME`: name to use for the second registry. By default it's set to `debezium`, and the images are pushed to Docker Hub.
 
 To run the build locally you can modify these variables.
 
