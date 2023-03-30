@@ -15,3 +15,10 @@ cd server
 ./deploy-server.sh
 ```
 
+# Image Location
+
+Images are built and served through [Dockerhub](https://hub.docker.com/repository/docker/artielabs/debezium-server/general)
+```Dockerfile
+FROM artielabs/debezium-server:2.2
+# Your build
+```
