@@ -1,7 +1,7 @@
 FROM postgres:15-bullseye AS build
 
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v2.0.0.Final-postgres15
+ENV PLUGIN_VERSION=v2.2.0.Beta1
 ENV PROTOC_VERSION=1.4
 
 # Install the packages which will be required to get everything to compile
