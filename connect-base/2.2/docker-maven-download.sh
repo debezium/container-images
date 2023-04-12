@@ -89,6 +89,12 @@ maven_apicurio_converter() {
     tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR/apicurio" && rm "$DOWNLOAD_FILE"
 }
 
+maven_jolokia() {
+    JOLOKIA_PACKAGE="jolokia-jvm"
+    maven_dep $MAVEN_REPO_CENTRAL "org/jolokia" "$JOLOKIA_PACKAGE" "$1" "$JOLOKIA_PACKAGE-$1.jar" "$2"
+    tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR" && rm "$DOWNLOAD_FILE"
+}
+
 case $1 in
     "central" ) shift
             maven_central_dep ${@}
@@ -110,5 +116,8 @@ case $1 in
             ;;
     "apicurio" ) shift
             maven_apicurio_converter ${@}
+            ;;
+    "jolokia" ) shift
+            maven_jolokia ${@}
             ;;
 esac

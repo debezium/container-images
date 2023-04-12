@@ -38,6 +38,7 @@ fi
 : ${ENABLE_APICURIO_CONVERTERS:=false}
 : ${ENABLE_DEBEZIUM_KC_REST_EXTENSION:=false}
 : ${ENABLE_DEBEZIUM_SCRIPTING:=false}
+: ${ENABLE_DEBEZIUM_JOLOKIA:=false}
 export CONNECT_REST_ADVERTISED_PORT=$ADVERTISED_PORT
 export CONNECT_REST_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
 export CONNECT_REST_PORT=$REST_PORT
@@ -185,6 +186,14 @@ if [[ "$ENABLE_JFR" == "true" ]]; then
         export KAFKA_OPTS="$JFR_OPTS"
     fi
     unset JFR_OPTS
+fi
+
+#
+# Setup Debezium Jolokia
+#
+if [ "$ENABLE_DEBEZIUM_JOLOKIA" = "true" ]; then
+  KAFKA_OPTS="${KAFKA_OPTS} -javaagent:$(ls "$KAFKA_HOME"/libs/jolokia-jvm-*.jar)=port=8778,host=*"
+  export KAFKA_OPTS
 fi
 
 #
