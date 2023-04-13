@@ -8,7 +8,7 @@ RUN microdnf -y install libaio && microdnf clean all
 
 USER kafka
 
-EXPOSE 8083, 8778
+EXPOSE 8083 8778
 VOLUME ["/kafka/data","/kafka/logs","/kafka/config"]
 
 COPY docker-entrypoint.sh /
@@ -41,7 +41,7 @@ RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
 RUN docker-maven-download apicurio "$APICURIO_VERSION" ead18a95038adca54e91b7f253717eb7
-RUN docker-maven-download jolokia "$JOLOKIA_VERSION" d489d62d1143e6a2e85a869a4b824a67
+RUN docker-maven-download central org/jolokia jolokia-jvm "$JOLOKIA_VERSION" d489d62d1143e6a2e85a869a4b824a67
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
