@@ -5,11 +5,7 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory, and MD5 hash.
 #
-ENV DEBEZIUM_VERSION=2.2.0.Final \
-    SERVER_HOME=/debezium \
-    MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
-ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
-    SERVER_MD5=1ebb1c7cb173a7a52496a793a50ae034
+ENV SERVER_HOME=/debezium
 
 #
 # Create a directory for Debezium Server
@@ -33,14 +29,12 @@ RUN mkdir $SERVER_HOME/conf && \
 #
 # Download and install Debezium Server
 #
-RUN curl -fSL -o /tmp/debezium.tar.gz "$MAVEN_REPO_CENTRAL/$SERVER_URL_PATH"
+COPY debezium-server-dist-2.2.0-SNAPSHOT.tar.gz /tmp/debezium.tar.gz
 
 #
 # Verify the contents and then install ...
 #
-RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
-    tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
-    rm -f /tmp/debezium.tar.gz
+RUN tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1
 
 #
 # Allow random UID to use Debezium Server
