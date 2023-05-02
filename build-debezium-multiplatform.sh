@@ -123,6 +123,8 @@ if [[ "$SKIP_UI" != "true" ]]; then
 fi
 build_docker_image example-mysql examples/mysql
 build_docker_image example-mysql-gtids examples/mysql-gtids
+build_docker_image example-mysql-master examples/mysql-replication/master
+build_docker_image example-mysql-replica examples/mysql-replication/replica
 build_docker_image example-postgres examples/postgres
 build_docker_image example-mongodb examples/mongodb
 
