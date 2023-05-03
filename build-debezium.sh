@@ -100,15 +100,15 @@ build_docker_image kafka
 build_docker_image connect-base
 build_docker_image connect
 build_docker_image server
-if [[ "$SKIP_UI" != "true" ]]; then
-    build_docker_image debezium-ui ui
-fi
 build_docker_image example-mysql examples/mysql
 build_docker_image example-mysql-gtids examples/mysql-gtids
 build_docker_image example-mysql-master examples/mysql-replication/master
 build_docker_image example-mysql-replica examples/mysql-replication/replica
 build_docker_image example-postgres examples/postgres
 build_docker_image example-mongodb examples/mongodb
+if [[ "$SKIP_UI" != "true" ]]; then
+    build_docker_image debezium-ui ui
+fi
 
 echo ""
 echo "*************************************"
