@@ -5,12 +5,12 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory, and MD5 hash.
 #
-ENV DEBEZIUM_VERSION=2.2.1.Final \
+ENV DEBEZIUM_VERSION=2.2.0.Final \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2" \
     AWS_MSK_IAM_VERSION=1.1.6
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
-    SERVER_MD5=0a1ff2c763130b1ec0d34756db19d58a
+    SERVER_MD5=1ebb1c7cb173a7a52496a793a50ae034
 
 #
 # Create a directory for Debezium Server
@@ -36,11 +36,13 @@ RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
     tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
     rm -f /tmp/debezium.tar.gz
 
+## Mount this file onto Debezium
+COPY debezium-server-kafka-2.2.0.Final.jar /debezium/lib/
+
 #
 # Download AWS IAM jar and put it in /debezium/lib
 #
 RUN curl -fSL -o "$SERVER_HOME/lib/aws-msk-iam-auth-all.jar" https://github.com/aws/aws-msk-iam-auth/releases/download/v$AWS_MSK_IAM_VERSION/aws-msk-iam-auth-$AWS_MSK_IAM_VERSION-all.jar
-COPY custom-debezium-1.0-SNAPSHOT.jar "$SERVER_HOME/lib/custom_snapshot.jar"
 #
 # Allow random UID to use Debezium Server
 #
