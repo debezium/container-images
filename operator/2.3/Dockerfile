@@ -88,7 +88,7 @@ ENV DEBEZIUM_VERSION=2.3.0.CR1 \
     OPERATOR_HOME=/operator \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 ENV OPERATOR_URL_PATH=io/debezium/debezium-operator/$DEBEZIUM_VERSION/debezium-operator-$DEBEZIUM_VERSION.tar.gz \
-    SERVER_MD5=a75bcf338f1b4894120e05061570220b
+    OPERATOR_MD5=c9f1c4e4724e0b955b9245e409184ef2
 
 USER root
 #
@@ -105,7 +105,7 @@ RUN curl -fSL -o /tmp/operator.tar.gz "$MAVEN_REPO_CENTRAL/$OPERATOR_URL_PATH"
 #
 # Verify the contents and then install ...
 #
-RUN echo "$SERVER_MD5 /tmp/operator.tar.gz" | md5sum -c - &&\
+RUN echo "$OPERATOR_MD5 /tmp/operator.tar.gz" | md5sum -c - &&\
     tar xzf /tmp/operator.tar.gz -C $OPERATOR_HOME --strip-components 1 &&\
     rm -f /tmp/operator.tar.gz
 
