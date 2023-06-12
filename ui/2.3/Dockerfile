@@ -22,8 +22,8 @@ RUN java -version \
     && mkdir -p /sources \
     && cd /sources \
     && git clone -b $BRANCH https://github.com/debezium/debezium-ui.git . \
-    && mvn -q -am dependency:go-offline -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
-    && mvn -q clean package -DskipTests -DskipITs -Dquarkus.package.type=fast-jar -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
+    && ./mvnw -am dependency:go-offline -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120 \
+    && ./mvnw clean package -DskipTests -DskipITs -Dquarkus.package.type=fast-jar -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn -Dmaven.wagon.http.pool=false -Dmaven.wagon.httpconnectionManager.ttlSeconds=120
 
 FROM registry.access.redhat.com/ubi9/ubi-minimal
 
