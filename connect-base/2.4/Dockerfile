@@ -23,7 +23,9 @@ ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR \
     MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \
     APICURIO_VERSION=2.4.1.Final \
-    JOLOKIA_VERSION=1.7.2
+    JOLOKIA_VERSION=1.7.2 \
+    OPENTELEMETRY_VERSION=1.23.1 \
+    OPENTELEMETRY_INSTRUMENTATION_VERSION=1.23.0
 
 RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 
@@ -42,6 +44,14 @@ RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 #
 RUN docker-maven-download apicurio "$APICURIO_VERSION" ead18a95038adca54e91b7f253717eb7
 RUN docker-maven-download central org/jolokia jolokia-jvm "$JOLOKIA_VERSION" d489d62d1143e6a2e85a869a4b824a67
+RUN docker-maven-download central io/opentelemetry opentelemetry-api "$OPENTELEMETRY_VERSION" e198a9568ce31a82faaa26f328388e89
+RUN docker-maven-download central io/opentelemetry opentelemetry-context "$OPENTELEMETRY_VERSION" 783594a506dbf035e686776d5bcb4bfc
+RUN docker-maven-download central io/opentelemetry opentelemetry-semconv "$OPENTELEMETRY_VERSION"-alpha dab8c00d4eaa453315d9a3da0d63c49a
+RUN docker-maven-download central io/opentelemetry/instrumentation opentelemetry-instrumentation-api "$OPENTELEMETRY_INSTRUMENTATION_VERSION" e4069a077dd8d6206c540222d08769e2
+RUN docker-maven-download central io/opentelemetry/instrumentation opentelemetry-instrumentation-api-semconv "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha f4b8065fd7b451cea6bfb3c0bf235d26
+RUN docker-maven-download central io/opentelemetry/instrumentation opentelemetry-kafka-clients-2.6 "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha 5d6e5ba9ea90adacf66e3f471596933b
+RUN docker-maven-download central io/opentelemetry/instrumentation opentelemetry-kafka-clients-common "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha f37131795d53faa6423173926629d04d
+
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
