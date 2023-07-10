@@ -32,16 +32,7 @@ RUN for PACKAGE in {scripting,}; do \
     rm -f /tmp/package.tar.gz; \
 done
 
-RUN for PACKAGE in {connect-rest-extension,}; do \
-    SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>jar<\/extension>/ {getline; print $2; exit}'); \
-    echo "Downloading and installing debezium-$PACKAGE-$SNAPSHOT_VERSION.jar ..." ; \
-    mkdir -p $KAFKA_CONNECT_PLUGINS_DIR/debezium-$PACKAGE/ ; \
-    curl --silent -fSL -o $KAFKA_CONNECT_PLUGINS_DIR/debezium-$PACKAGE/debezium-$PACKAGE.jar \
-                 $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/debezium-$PACKAGE-$SNAPSHOT_VERSION.jar && \
-    echo "Successfully installed debezium-$PACKAGE-$SNAPSHOT_VERSION!" ; \
-done
-
-RUN for PACKAGE in {interceptor,}; do \
+RUN for PACKAGE in {connect-rest-extension,interceptor}; do \
     SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>jar<\/extension>/ {getline; print $2; exit}'); \
     echo "Downloading and installing debezium-$PACKAGE-$SNAPSHOT_VERSION.jar ..." ; \
     mkdir -p $KAFKA_CONNECT_PLUGINS_DIR/debezium-$PACKAGE/ ; \
