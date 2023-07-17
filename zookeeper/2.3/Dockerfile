@@ -7,9 +7,9 @@ LABEL maintainer="Debezium Community"
 # Set the version, home directory, and SHA hash.
 # SHA 512 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.sha512
 #
-ENV ZK_VERSION=3.6.4 \
+ENV ZK_VERSION=3.6.3 \
     ZK_HOME=/zookeeper \
-    SHA256HASH=dec4835a1a23fa69599091d03b35f6c9f4e545d5fa1e149658cffdd7d1044ec31e14f41189aabbf59011dfce6609e6850209008e67cfd0f26270f1558196dcd8
+    SHA256HASH=3f7b1b7d9cf5647d52ad0076c922e108fa956e986b5624667c493cf6d8ff09d3ca88f623c79a799fe49c72e868cb3c9d0f77cb69608de74a183b2cbad10bc827
 ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/apache-zookeeper-$ZK_VERSION-bin.tar.gz
 
 #
@@ -47,7 +47,7 @@ RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - &&\
 #
 # CVE-2021-4104/DBZ-4447 CVE-2019-17571 Remove potentially exploitable classes
 #
-RUN zip -d /zookeeper/lib/reload4j-1.2.24.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class
+RUN zip -d /zookeeper/lib/log4j-1.2.17.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class
 
 # Remove unnecessary files
 RUN rm -r $ZK_HOME/docs

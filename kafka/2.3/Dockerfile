@@ -8,9 +8,9 @@ LABEL maintainer="Debezium Community"
 # MD5 hash taken from http://kafka.apache.org/downloads.html for this version of Kafka
 # These argument defaults can be overruled during build time but compatibility cannot be guaranteed when the defaults are not used.
 #
-ARG KAFKA_VERSION=3.5.0
+ARG KAFKA_VERSION=3.4.0
 ARG SCALA_VERSION=2.13
-ARG SHA512HASH="7B79BD0844DB683C06C3491955BB183D48A47FA4639D2E241B9F4FF4060C4B70814DAC7D96BEA87DFFCA0C8AE038278C4FABF68D4EA1194228D67D9C3B1D247C"
+ARG SHA512HASH="2C405149C065627CE2125088DFCCE0A4DC23AEBAA72C1157736D5829CB5CBEF273C0915EC55D2D8BA38E5E0524F0720F43E07D7D677439CD2AC7BEA618CAA65B"
 
 ENV KAFKA_VERSION=$KAFKA_VERSION \
     SCALA_VERSION=$SCALA_VERSION \
@@ -44,7 +44,7 @@ RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org
     echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
     tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1 &&\
     rm -f /tmp/kafka.tgz &&\
-    zip -d /kafka/libs/reload4j-1.2.25.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*' &&\
+    zip -d /kafka/libs/reload4j-1.2.19.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*' &&\
     chmod -R g+w,o+w $KAFKA_HOME
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
