@@ -14,7 +14,7 @@ ENV LANG='en_US.UTF-8' \
 
 # Install java and the run-java script
 # Also set up permissions for user `1001`
-RUN microdnf -y install ca-certificates make gcc-c++ ${JAVA_PACKAGE} git maven \
+RUN microdnf -y install ca-certificates make gcc-c++ ${JAVA_PACKAGE} tzdata-java git maven \
     && microdnf -y update \
     && microdnf -y clean all
 
@@ -36,7 +36,7 @@ ENV LANG='en_US.UTF-8' \
 
 # Install java and the run-java script
 # Also set up permissions for user `1001`
-RUN microdnf -y install ca-certificates ${JAVA_PACKAGE} \
+RUN microdnf -y install ca-certificates ${JAVA_PACKAGE} tzdata-java \
     && microdnf -y update \
     && microdnf -y clean all \
     && mkdir /deployments \
