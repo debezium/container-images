@@ -39,6 +39,7 @@ fi
 : ${ENABLE_DEBEZIUM_KC_REST_EXTENSION:=false}
 : ${ENABLE_DEBEZIUM_SCRIPTING:=false}
 : ${ENABLE_JOLOKIA:=false}
+: ${ENABLE_OTEL:=false}
 export CONNECT_REST_ADVERTISED_PORT=$ADVERTISED_PORT
 export CONNECT_REST_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
 export CONNECT_REST_PORT=$REST_PORT
@@ -140,6 +141,7 @@ echo "Plugins are loaded from $CONNECT_PLUGIN_PATH"
 #
 set_connector_additonal_resource_availability $ENABLE_APICURIO_CONVERTERS "apicurio" "*" "Apicurio connectors"
 set_connector_additonal_resource_availability $ENABLE_DEBEZIUM_SCRIPTING "debezium-scripting" "*.jar" "Debezium Scripting"
+set_connector_additonal_resource_availability $ENABLE_OTEL "otel" "*.jar" "OpenTelemetry"
 
 #
 # Set up Kafka Connect plugins
