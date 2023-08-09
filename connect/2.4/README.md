@@ -114,6 +114,11 @@ Use this to enable Debezium features that use scripting languages like Message F
 Valid values are `false` to disable (default) or `true` to enable scripting.
 Note: in order to prevent the execution of arbitrary scripting expressions, you should enable this option only if you've secured access to the Kafka Connect configuration interface appropriately.
 
+### `ENABLE_OTEL`
+
+This environment variable is optional. Use this to enable [OpenTelemetry](https://opentelemetry.io/) libraries by setting `ENABLE_OTEL=true` as container env var.
+Valid values are `false` to disable (default) or `true` to enable OpenTelemetry libraries.
+
 ### Others
 
 Environment variables that start with `CONNECT_` will be used to update the Kafka Connect worker configuration file. Each environment variable name will be mapped to a configuration property name by:
