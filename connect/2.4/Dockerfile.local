@@ -2,7 +2,7 @@ FROM quay.io/debezium/connect-base:2.4
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=2.4.0.CR1
+ARG DEBEZIUM_VERSION=2.4.0.Final
 ENV DEBEZIUM_VERSION=${DEBEZIUM_VERSION}
 
 # -------- testing ---------
