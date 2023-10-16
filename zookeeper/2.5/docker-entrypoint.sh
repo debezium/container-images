@@ -34,8 +34,8 @@ case $ARG1 in
         if [[ -z "$LOG_LEVEL" ]]; then
             LOG_LEVEL="INFO"
         fi
-        sed -i -r -e "s|\\$\\{zookeeper.root.logger\\}|$LOG_LEVEL, CONSOLE|g" $ZK_HOME/conf/log4j.properties
-        sed -i -r -e "s|\\$\\{zookeeper.console.threshold\\}|$LOG_LEVEL|g" $ZK_HOME/conf/log4j.properties
+        sed -i -r -e "s|name=\"zookeeper.console.threshold\" value=\".*\"|name=\"zookeeper.console.threshold\" value=\"$LOG_LEVEL\"|g" $ZK_HOME/conf/logback.xml
+        sed -i -r -e "s|root level=\".*\"|root level=\"$LOG_LEVEL\"|g" $ZK_HOME/conf/logback.xml
 
         #
         # Configure cluster settings

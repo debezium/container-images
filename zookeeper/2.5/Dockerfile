@@ -7,9 +7,9 @@ LABEL maintainer="Debezium Community"
 # Set the version, home directory, and SHA hash.
 # SHA 512 hash from https://www.apache.org/dist/zookeeper/zookeeper-$ZK_VERSION/zookeeper-$ZK_VERSION.tar.gz.sha512
 #
-ENV ZK_VERSION=3.6.4 \
+ENV ZK_VERSION=3.8.2 \
     ZK_HOME=/zookeeper \
-    SHA256HASH=dec4835a1a23fa69599091d03b35f6c9f4e545d5fa1e149658cffdd7d1044ec31e14f41189aabbf59011dfce6609e6850209008e67cfd0f26270f1558196dcd8
+    SHA256HASH=30d42364d158850700623e2b0f226335ce52a9707660c16c64ea9c163fe657c429b5f846d664bf7f381bc86abafb01cdc28d23d9f8e49b99a751e6598342a7af
 ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/apache-zookeeper-$ZK_VERSION-bin.tar.gz
 
 #
@@ -44,11 +44,6 @@ RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - &&\
     tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
     rm -f /tmp/zookeeper.tar.gz
 
-#
-# CVE-2021-4104/DBZ-4447 CVE-2019-17571 Remove potentially exploitable classes
-#
-RUN zip -d /zookeeper/lib/reload4j-1.2.24.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class
-
 # Remove unnecessary files
 RUN rm -r $ZK_HOME/docs
 
@@ -64,13 +59,9 @@ WORKDIR $ZK_HOME
 # Customize the Zookeeper and Log4J configuration files
 #
 COPY ./zoo.cfg $ZK_HOME/conf/zoo.cfg
-RUN sed -i -r -e "s|(\\$\\{zookeeper.log.dir\\})|$ZK_HOME/logs|g" \
-              -e "s|(\\$\\{zookeeper.tracelog.dir\\})|$ZK_HOME/logs|g" \
-              -e "s|(\\$\\{zookeeper.log.file\\})|zookeeper.log|g" \
-              -e "s|(\\$\\{zookeeper.tracelog.file\\})|zookeeper_trace.log|g" \
+RUN sed -i -r -e "s|name=\"zookeeper.log.dir\" value=\".\"|name=\"zookeeper.log.dir\" value=\"$ZK_HOME/logs\"|g" \
               -e "s|(\[myid\:\%X\{myid\}\]\s?)||g" \
-              -e 's|#(log4j.appender.ROLLINGFILE.MaxBackupIndex.*)|\1|g' \
-              $ZK_HOME/conf/log4j.properties
+              $ZK_HOME/conf/logback.xml
 RUN mkdir $ZK_HOME/conf.orig && mv $ZK_HOME/conf/* $ZK_HOME/conf.orig
 
 #
