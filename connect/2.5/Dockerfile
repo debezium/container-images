@@ -16,6 +16,7 @@ ENV DEBEZIUM_VERSION="2.4.0.Final" \
     SPANNER_MD5=186b07595e914e9139941889fd675044 \
     VITESS_MD5=3b4d24c8c9898df060c408a13fd3429f \
     JDBC_MD5=77c5cb9adf932ab17c041544f4ade357 \
+    INFORMIX_MD5=TBD \
     KCRESTEXT_MD5=25c0353f5a7304b3c4780a20f0f5d0af \
     SCRIPTING_MD5=53a3661e7a9877744f4a30d6483d7957
 
@@ -28,6 +29,7 @@ RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" &&
     docker-maven-download debezium-additional jdbc jdbc "$DEBEZIUM_VERSION" "$JDBC_MD5" && \
     docker-maven-download debezium-additional spanner spanner "$DEBEZIUM_VERSION" "$SPANNER_MD5" && \
     docker-maven-download debezium-additional vitess vitess "$DEBEZIUM_VERSION" "$VITESS_MD5" && \
+    docker-maven-download debezium-additional informix informix "$DEBEZIUM_VERSION" "$INFORMIX_MD5" && \
     docker-maven-download debezium-optional connect-rest-extension "$DEBEZIUM_VERSION" "$KCRESTEXT_MD5" && \
     docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5"
 
