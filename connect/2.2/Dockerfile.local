@@ -2,7 +2,7 @@ FROM quay.io/debezium/connect-base:2.2
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=2.2.0.Alpha3
+ARG DEBEZIUM_VERSION=2.2.1.Final
 ENV DEBEZIUM_VERSION=${DEBEZIUM_VERSION}
 
 # -------- testing ---------
@@ -13,12 +13,13 @@ COPY debezium-connector-sqlserver-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFK
 
 COPY debezium-connector-oracle-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-oracle-plugin.tar.gz
 COPY debezium-connector-db2-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-db2-plugin.tar.gz
+COPY debezium-connector-jdbc-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-jdbc-plugin.tar.gz
 COPY debezium-connector-spanner-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-spanner-plugin.tar.gz
 COPY debezium-connector-vitess-$DEBEZIUM_VERSION-SNAPSHOT-plugin.tar.gz $KAFKA_CONNECT_PLUGINS_DIR/debezium-vitess-plugin.tar.gz
 
 ADD debezium-connect-rest-extension-$DEBEZIUM_VERSION-SNAPSHOT.tar.gz $EXTERNAL_LIBS_DIR
 ADD debezium-scripting-$DEBEZIUM_VERSION-SNAPSHOT.tar.gz $EXTERNAL_LIBS_DIR
 
-RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,spanner,vitess}; do \
+RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,jdbc,spanner,vitess}; do \
     tar -xzf $KAFKA_CONNECT_PLUGINS_DIR/debezium-$CONNECTOR-plugin.tar.gz -C $KAFKA_CONNECT_PLUGINS_DIR; \
     done;

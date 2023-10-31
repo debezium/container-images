@@ -1,8 +1,8 @@
-FROM quay.io/debezium/connect-base:2.2
+FROM quay.io/debezium/connect-base:2.5
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=2.1.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=2.5.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots"
@@ -10,7 +10,7 @@ ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
 #
 # Download the snapshot version of the connectors and then install them into the `$KAFKA_CONNECT_PLUGINS_DIR/debezium` directory...
 #
-RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,spanner,vitess}; do \
+RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,jdbc,spanner,vitess,informix}; do \
     SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-connector-$CONNECTOR/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
     echo "Downloading and installing debezium-connector-$CONNECTOR-$SNAPSHOT_VERSION-plugin.tar.gz ..." ; \
     curl --silent -fSL -o /tmp/plugin.tar.gz \
@@ -32,7 +32,7 @@ RUN for PACKAGE in {scripting,}; do \
     rm -f /tmp/package.tar.gz; \
 done
 
-RUN for PACKAGE in {connect-rest-extension,}; do \
+RUN for PACKAGE in {connect-rest-extension,interceptor}; do \
     SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-$PACKAGE/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>jar<\/extension>/ {getline; print $2; exit}'); \
     echo "Downloading and installing debezium-$PACKAGE-$SNAPSHOT_VERSION.jar ..." ; \
     mkdir -p $KAFKA_CONNECT_PLUGINS_DIR/debezium-$PACKAGE/ ; \

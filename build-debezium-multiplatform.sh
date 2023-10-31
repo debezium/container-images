@@ -6,6 +6,10 @@ if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
 fi;
 
+if [ -z "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
+  DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME=debezium
+fi;
+
 #
 # Parameter 1: image name
 # Parameter 2: path to component (if different)
@@ -70,6 +74,7 @@ build_docker_image () {
 
     # shellcheck disable=SC2068
     docker buildx build --push --platform "${PLATFORM}" \
+      --progress=plain \
       --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="$DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME" \
       --label "build-at=$(date +%s)" \
         ${TAGS[@]} \
@@ -114,11 +119,14 @@ build_docker_image kafka
 build_docker_image connect-base
 build_docker_image connect
 build_docker_image server
+build_docker_image operator
 if [[ "$SKIP_UI" != "true" ]]; then
     build_docker_image debezium-ui ui
 fi
 build_docker_image example-mysql examples/mysql
 build_docker_image example-mysql-gtids examples/mysql-gtids
+build_docker_image example-mysql-master examples/mysql-replication/master
+build_docker_image example-mysql-replica examples/mysql-replication/replica
 build_docker_image example-postgres examples/postgres
 build_docker_image example-mongodb examples/mongodb
 

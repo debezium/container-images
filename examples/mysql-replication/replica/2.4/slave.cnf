@@ -1,0 +1,20 @@
+[mysqld]
+server-id = 2
+log_bin = /var/lib/mysql/mysql-bin.log
+relay-log = /var/lib/mysql/mysql-relay-bin.log
+binlog_do_db = inventory
+enforce_gtid_consistency = ON
+gtid_mode = ON
+
+skip-host-cache
+skip-name-resolve
+datadir=/var/lib/mysql
+socket=/var/run/mysqld/mysqld.sock
+secure-file-priv=/var/lib/mysql-files
+user=mysql
+
+pid-file=/var/run/mysqld/mysqld.pid
+
+[client]
+socket=/var/run/mysqld/mysqld.sock
+!includedir /etc/mysql/conf.d/
