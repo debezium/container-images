@@ -1,4 +1,4 @@
-FROM mysql:8.1
+FROM mysql:8.2
 
 LABEL maintainer="Debezium Community"
 
