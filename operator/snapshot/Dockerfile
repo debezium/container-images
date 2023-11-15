@@ -101,10 +101,10 @@ RUN mkdir $OPERATOR_HOME;
 #
 # Download the snapshot version of debezium-operator and then install it to the `$OPERATOR_HOME` directory...
 #
-RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-operator/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
-    echo "Downloading and installing debezium-operator-$SNAPSHOT_VERSION.tar.gz ..." ; \
+RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-operator-dist/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
+    echo "Downloading and installing debezium-operator-dist-$SNAPSHOT_VERSION.tar.gz ..." ; \
     curl --silent -fSL -o /tmp/operator.tar.gz  $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-operator/$DEBEZIUM_VERSION/debezium-operator-$SNAPSHOT_VERSION.tar.gz && \
-    echo "Extracting debezium-operator-$SNAPSHOT_VERSION.tar.gz ..." && \
+    echo "Extracting debezium-operator-dist-$SNAPSHOT_VERSION.tar.gz ..." && \
     tar xzf /tmp/operator.tar.gz -C $OPERATOR_HOME --strip-components 1 && \
     echo "Successfully installed debezium-operator-$SNAPSHOT_VERSION.tar.gz !" && \
     rm -f /tmp/operator.tar.gz; 
