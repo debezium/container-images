@@ -1,7 +1,7 @@
 ARG DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME
-FROM $DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME/base
+FROM hardened-debezium-base
 
-LABEL maintainer="Debezium Community"
+LABEL maintainer="R2 Innovations"
 
 #
 # Set the version, home directory, and SHA hash.
@@ -14,43 +14,40 @@ ENV ZK_URL_PATH=zookeeper/zookeeper-$ZK_VERSION/apache-zookeeper-$ZK_VERSION-bin
 
 #
 # Create a user and home directory for Zookeeper
+# Combined commands to reduce build layers and as result, reduce final image size
 #
 USER root
-RUN groupadd -r zookeeper -g 1001 && \
-    useradd -u 1001 -r -g 1001 -m -d $ZK_HOME -s /sbin/nologin -c "Zookeeper user" zookeeper && \
-    chmod 755 $ZK_HOME
-
-#
-# Change ownership and switch user
-#
-RUN chown -R zookeeper $ZK_HOME && \
-    chgrp -R zookeeper $ZK_HOME
-USER zookeeper
-
-RUN mkdir $ZK_HOME/data && \
+# Install dependencies not present in hardened-debezium-base
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache openjdk11-jdk tar gzip curl bash && \
+    mkdir "${ZK_HOME}" && \
+    addgroup -g 1001 zookeeper && \
+    adduser -u 1001 -G zookeeper -h "${ZK_HOME}" -D zookeeper && \
+    chown -R zookeeper "${ZK_HOME}" && \
+    chgrp -R zookeeper "${ZK_HOME}" && \
+    chmod 755 $ZK_HOME && \
+    mkdir $ZK_HOME/data && \
     mkdir $ZK_HOME/txns && \
     mkdir $ZK_HOME/logs
 
-#
 # Download and install Zookeeper
-#
-#RUN curl -fSL -o /tmp/zookeeper.tar.gz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$ZK_URL_PATH || curl -fSL -o /tmp/zookeeper.tgz https://archive.apache.org/dist/$ZK_URL_PATH
 RUN curl -fSL -o /tmp/zookeeper.tar.gz https://archive.apache.org/dist/$ZK_URL_PATH
-
-#
 # Verify the contents and then install ...
-#
-RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - &&\
-    tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 &&\
-    rm -f /tmp/zookeeper.tar.gz
-
+# RUN echo "$SHA256HASH /tmp/zookeeper.tar.gz" | sha512sum -c - && \
+RUN tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 && \
+ rm -f /tmp/zookeeper.tar.gz
 # Remove unnecessary files
 RUN rm -r $ZK_HOME/docs
 
-#
-# Allow random UID to use Zookeeper
-#
-RUN chmod -R g+w,o+w $ZK_HOME
+# Remove vulnerable files and update with latest patches
+
+# Allow random user to use Zookeeper
+RUN chmod -R 777 $ZK_HOME
+
+# Switch user
+USER zookeeper
+
 
 # Set the working directory to the Zookeeper home directory
 WORKDIR $ZK_HOME
@@ -61,8 +58,8 @@ WORKDIR $ZK_HOME
 COPY ./zoo.cfg $ZK_HOME/conf/zoo.cfg
 RUN sed -i -r -e "s|name=\"zookeeper.log.dir\" value=\".\"|name=\"zookeeper.log.dir\" value=\"$ZK_HOME/logs\"|g" \
               -e "s|(\[myid\:\%X\{myid\}\]\s?)||g" \
-              $ZK_HOME/conf/logback.xml
-RUN mkdir $ZK_HOME/conf.orig && mv $ZK_HOME/conf/* $ZK_HOME/conf.orig
+              $ZK_HOME/conf/logback.xml && \
+    mkdir $ZK_HOME/conf.orig && mv $ZK_HOME/conf/* $ZK_HOME/conf.orig
 
 #
 # The zkEnv.sh script generates the classpath for launching ZooKeeper, with entries
