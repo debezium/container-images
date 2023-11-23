@@ -1,18 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
 # Exit immediately if a *pipeline* returns a non-zero status. (Add -x for command tracing)
 set -e
 
-if [ -z "$1" ]; then
+if [[ -z $1 ]]; then
     ARG1="start"
 else
     ARG1=$1
 fi
 
-if [ -n "$JMXPORT" ]; then
+if [[ -n "$JMXPORT" ]]; then
     # Docker requires extra JMX-related JVM flags beyond what Zookeeper normally uses
     JMX_EXTRA_FLAGS="-Djava.rmi.server.hostname=${JMXHOST} -Dcom.sun.management.jmxremote.rmi.port=${JMXPORT} -Dcom.sun.management.jmxremote.port=${JMXPORT}"
-    if [ -n "$JVMFLAGS" ]; then
+    if [[ -n "$JVMFLAGS" ]]; then
         export JVMFLAGS="${JMX_EXTRA_FLAGS} ${JVMFLAGS} "
     else
         export JVMFLAGS="${JMX_EXTRA_FLAGS} "
@@ -23,10 +23,7 @@ fi
 case $ARG1 in
     start)
         # Copy config files if not provided in volume
-        for file in $ZK_HOME/conf.orig/*; do
-            dest="${ZK_HOME}/conf/$(basename $file)"
-            [ ! -f "$dest" ] && cp "$file" "$dest"
-        done
+        cp -rn $ZK_HOME/conf.orig/* $ZK_HOME/conf
 
         #
         # Process the logging-related environment variables. Zookeeper's log configuration allows *some* variables to be
@@ -34,22 +31,22 @@ case $ARG1 in
         # However, in the interest of keeping things straightforward and in the spirit of the immutable image, 
         # we don't use these and instead directly modify the Log4J configuration file (replacing the variables).
         #
-        if [ -z "$LOG_LEVEL" ]; then
+        if [[ -z "$LOG_LEVEL" ]]; then
             LOG_LEVEL="INFO"
         fi
-        sed -i -E -e "s|name=\"zookeeper.console.threshold\" value=\".*\"|name=\"zookeeper.console.threshold\" value=\"$LOG_LEVEL\"|g" $ZK_HOME/conf/logback.xml
-        sed -i -E -e "s|root level=\".*\"|root level=\"$LOG_LEVEL\"|g" $ZK_HOME/conf/logback.xml
+        sed -i -r -e "s|name=\"zookeeper.console.threshold\" value=\".*\"|name=\"zookeeper.console.threshold\" value=\"$LOG_LEVEL\"|g" $ZK_HOME/conf/logback.xml
+        sed -i -r -e "s|root level=\".*\"|root level=\"$LOG_LEVEL\"|g" $ZK_HOME/conf/logback.xml
 
         #
         # Configure cluster settings
         #
-        if [ -z "$SERVER_ID" ]; then
+        if [[ -z "$SERVER_ID" ]]; then
             SERVER_ID="1"
         fi
-        if [ -z "$SERVER_COUNT" ]; then
+        if [[ -z "$SERVER_COUNT" ]]; then
             SERVER_COUNT=1
         fi
-        if [ "$SERVER_ID" = "1" ] && [ "$SERVER_COUNT" = "1" ]; then
+        if [[ $SERVER_ID = "1" ]] && [[ $SERVER_COUNT = "1" ]]; then
             echo "Starting up in standalone mode"
         else
             echo "Starting up ${SERVER_ID} of ${SERVER_COUNT}"
@@ -58,8 +55,8 @@ case $ARG1 in
             #
             echo "" >> $ZK_HOME/conf/zoo.cfg
             echo "#Server List" >> $ZK_HOME/conf/zoo.cfg
-            for i in $(seq 1 $SERVER_COUNT); do
-                if [ "$SERVER_ID" = "$i" ]; then
+            for i in $( eval echo {1..$SERVER_COUNT});do
+                if [ "$SERVER_ID" = "$i" ];then
                     echo "server.$i=0.0.0.0:2888:3888" >> $ZK_HOME/conf/zoo.cfg
                 else
                     echo "server.$i=zookeeper-$i:2888:3888" >> $ZK_HOME/conf/zoo.cfg
