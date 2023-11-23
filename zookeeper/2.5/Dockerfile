@@ -20,7 +20,7 @@ USER root
 # Install dependencies not present in hardened-debezium-base
 RUN apk update && \
     apk upgrade && \
-    apk add --no-cache openjdk11-jdk tar gzip curl bash && \
+    apk add --no-cache openjdk11-jdk tar gzip curl bash wget && \
     mkdir "${ZK_HOME}" && \
     addgroup -g 1001 zookeeper && \
     adduser -u 1001 -G zookeeper -h "${ZK_HOME}" -D zookeeper && \
@@ -41,6 +41,57 @@ RUN tar -xzf /tmp/zookeeper.tar.gz -C $ZK_HOME --strip-components 1 && \
 RUN rm -r $ZK_HOME/docs
 
 # Remove vulnerable files and update with latest patches
+
+
+# Remove and update old jackson library files
+# jackson-annotations-2.15.2.jar
+# jackson-core-2.15.2.jar
+# jackson-databind-2.15.2.jar
+ENV JACKSON_VERSION=2.15.3
+RUN rm $ZK_HOME/lib/jackson-*.jar && \
+    wget https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/$JACKSON_VERSION/jackson-annotations-$JACKSON_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-core/$JACKSON_VERSION/jackson-core-$JACKSON_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/$JACKSON_VERSION/jackson-databind-$JACKSON_VERSION.jar -P $ZK_HOME/lib
+
+# Remove and update old jetty library files
+# jetty-http-9.4.51.v20230217.jar
+# jetty-io-9.4.51.v20230217.jar
+# jetty-security-9.4.51.v20230217.jar
+# jetty-server-9.4.51.v20230217.jar
+# jetty-servlet-9.4.51.v20230217.jar
+# jetty-util-9.4.51.v20230217.jar
+# jetty-util-ajax-9.4.51.v20230217.jar
+ENV JETTY_VERSION=9.4.53.v20231009
+RUN rm $ZK_HOME/lib/jetty-*.jar && \
+    wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-http/$JETTY_VERSION/jetty-http-$JETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-io/$JETTY_VERSION/jetty-io-$JETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-security/$JETTY_VERSION/jetty-security-$JETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-server/$JETTY_VERSION/jetty-server-$JETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-servlet/$JETTY_VERSION/jetty-servlet-$JETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util/$JETTY_VERSION/jetty-util-$JETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/org/eclipse/jetty/jetty-util-ajax/$JETTY_VERSION/jetty-util-ajax-$JETTY_VERSION.jar -P $ZK_HOME/lib
+
+# Remove and update old netty library files
+# netty-buffer-4.1.94.Final.jar
+# netty-codec-4.1.94.Final.jar
+# netty-common-4.1.94.Final.jar
+# netty-handler-4.1.94.Final.jar
+# netty-resolver-4.1.94.Final.jar
+# netty-transport-4.1.94.Final.jar
+# netty-transport-classes-epoll-4.1.94.Final.jar
+# netty-transport-native-epoll-4.1.94.Final.jar
+# netty-transport-native-unix-common-4.1.94.Final.jar
+ENV NETTY_VERSION=4.1.101.Final
+RUN rm $ZK_HOME/lib/netty-*.jar && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-buffer/$NETTY_VERSION/netty-buffer-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-codec/$NETTY_VERSION/netty-codec-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-common/$NETTY_VERSION/netty-common-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-handler/$NETTY_VERSION/netty-handler-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-resolver/$NETTY_VERSION/netty-resolver-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-transport/$NETTY_VERSION/netty-transport-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-transport-classes-epoll/$NETTY_VERSION/netty-transport-classes-epoll-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-transport-native-epoll/$NETTY_VERSION/netty-transport-native-epoll-$NETTY_VERSION.jar -P $ZK_HOME/lib && \
+    wget https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/$NETTY_VERSION/netty-transport-native-unix-common-$NETTY_VERSION.jar -P $ZK_HOME/lib
 
 # Allow random user to use Zookeeper
 RUN chmod -R 777 $ZK_HOME
