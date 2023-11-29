@@ -36,6 +36,9 @@ RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
     tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
     rm -f /tmp/debezium.tar.gz
 
+## Mount our Kafka library onto Debezium
+COPY debezium-server-kafka-2.1.0.Final.jar /debezium/lib/
+
 #
 # Download AWS IAM jar and put it in /debezium/lib
 #
