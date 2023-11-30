@@ -1,4 +1,4 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11
+FROM --platform=linux/amd64 registry.access.redhat.com/ubi8/openjdk-11
 
 LABEL maintainer="Debezium Community"
 
