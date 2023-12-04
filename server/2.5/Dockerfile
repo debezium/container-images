@@ -5,11 +5,11 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory, and MD5 hash.
 #
-ENV DEBEZIUM_VERSION=2.5.0.Alpha2 \
+ENV DEBEZIUM_VERSION=2.5.0.Beta1 \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
-    SERVER_MD5=8569d0ed83513827e6d6d7aac53e1d70
+    SERVER_MD5=c8d1e8d7a6fcdd575c9cd95fe320f3c8
 
 #
 # Create a directory for Debezium Server
