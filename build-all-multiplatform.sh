@@ -9,7 +9,7 @@ fi
 
 COMPONENTS=$*
 if [ -z "$COMPONENTS" ]; then
-  COMPONENTS="mongo postgres debezium"
+  COMPONENTS="mongo debezium"
 fi;
 
 if [ -z "$MULTIPLATFORM_PLATFORMS" ]; then

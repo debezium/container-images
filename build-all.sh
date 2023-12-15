@@ -13,10 +13,6 @@ for MONGO_VERSION in $MONGO_VERSIONS; do
   ./build-mongo.sh "$MONGO_VERSION"
 done
 
-for POSTGRES_VERSION in $POSTGRES_VERSIONS; do
-  ./build-postgres.sh "$POSTGRES_VERSION"
-done
-
 for DBZ in $DEBEZIUM_VERSIONS; do
   ./build-debezium.sh "$DBZ"
 done
