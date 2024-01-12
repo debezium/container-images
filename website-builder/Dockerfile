@@ -3,7 +3,7 @@ LABEL maintainer="Debezium Community"
 ENV SITE_HOME=/site
 RUN apk add --no-cache build-base gcc bash cmake git jq nodejs yarn curl
 # Install Antora framework
-RUN yarn global add @antora/cli@3.0.0-alpha.9 @antora/site-generator-default@3.0.0-alpha.9 @antora/asciidoc-loader @antora/content-aggregator \
+RUN yarn global add @antora/cli@3.1.7 @antora/site-generator-default@3.1.7 @antora/asciidoc-loader @antora/content-aggregator \
     && yarn global add --ignore-optional --silent $(grep -o '^isomorphic-git@[^:]*' `yarn global dir`/yarn.lock) \
     && rm -rf $(yarn cache dir)/* \
     && find $(yarn global dir)/node_modules/handlebars/dist/* -maxdepth 0 -not -name cjs -exec rm -rf {} \; \
@@ -15,7 +15,7 @@ RUN yarn global add @antora/cli@3.0.0-alpha.9 @antora/site-generator-default@3.0
 # Install Rake and Bundler. This is the minimum needed to generate the site ...
 RUN gem install bundler -v "~>1.0" \
     && gem install rdoc -v 6.2.0 \
-    && gem install bundler \
+    && gem install bundler -v 2.4.22 \
     && gem install jekyll -v ">= 3.8.3, < 4.3" \
     && gem install rake
 
