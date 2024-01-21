@@ -5,7 +5,7 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory
 #
-ARG DEBEZIUM_VERSION=2.6.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=2.3.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     SERVER_HOME=/debezium \
