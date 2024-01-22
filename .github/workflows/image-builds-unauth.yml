@@ -31,6 +31,8 @@ jobs:
             network=host
       - name: Build Component ${{ matrix.component }}
         if: matrix.component != 'tool'
+        env:
+          SKIP_UI: true
         run: ./build-all-multiplatform.sh ${{ matrix.component }}
       - name: Build Tool Images
         if: matrix.component == 'tool'

@@ -18,6 +18,8 @@ jobs:
       - name: Build Scripts
         run: shellcheck build-*.sh
       - name: Run Scripts
+        env:
+          SKIP_UI: true
         run: |
           ./build-all.sh
           ./build-tool-images.sh latest
