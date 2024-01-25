@@ -1,4 +1,5 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11
+# Stage 1: Build stage
+FROM registry.access.redhat.com/ubi8/openjdk-11 AS builder
 
 LABEL maintainer="Debezium Community"
 
@@ -46,6 +47,18 @@ RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
 # Allow random UID to use Debezium Server
 #
 RUN chmod -R g+w,o+w $SERVER_HOME
+
+# Stage 2: Final image
+FROM registry.access.redhat.com/ubi8/openjdk-11
+
+ENV SERVER_HOME=/debezium
+
+USER root
+RUN microdnf clean all
+
+USER jboss
+
+COPY --from=builder $SERVER_HOME $SERVER_HOME
 
 # Set the working directory to the Debezium Server home directory
 WORKDIR $SERVER_HOME
