@@ -51,7 +51,10 @@ RUN chmod -R g+w,o+w $SERVER_HOME
 # Stage 2: Final image
 FROM registry.access.redhat.com/ubi8/openjdk-11
 
-ENV SERVER_HOME=/debezium
+LABEL maintainer="Debezium Community"
+ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
+    SERVER_HOME=/debezium \
+    MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots" 
 
 USER root
 RUN microdnf clean all
