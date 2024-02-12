@@ -11,6 +11,8 @@ RUN apt-get update \
         build-essential \
         pkg-config \
         git \
+        clang-11 \
+        llvm-11 \
         postgresql-server-dev-$PG_MAJOR \
     && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
     && apt-get update && apt-get install -f -y --no-install-recommends \
