@@ -1,4 +1,4 @@
-FROM mongo:5.0
+FROM mongo:6.0
 
 LABEL maintainer="Debezium Community"
 
