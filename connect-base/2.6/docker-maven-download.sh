@@ -17,6 +17,7 @@ set -e
 MAVEN_REPO_CENTRAL=${MAVEN_REPO_CENTRAL:-"https://repo1.maven.org/maven2"}
 MAVEN_REPOS_ADDITIONAL=${MAVEN_REPOS_ADDITIONAL:-""}
 MAVEN_REPO_CONFLUENT=${MAVEN_REPO_CONFLUENT:-"https://packages.confluent.io/maven"}
+KAFKA_CONNECT_PLUGINS_DIR=${KAFKA_CONNECT_PLUGINS_DIR}
 MAVEN_DEP_DESTINATION=${MAVEN_DEP_DESTINATION}
 EXTERNAL_LIBS_DIR=${EXTERNAL_LIBS_DIR}
 
@@ -49,7 +50,7 @@ maven_confluent_dep() {
 
 maven_debezium_plugin() {
     maven_dep $MAVEN_REPO_CENTRAL "io/debezium" "debezium-connector-$1" $2 "debezium-connector-$1-$2-plugin.tar.gz" $3
-    tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
+    tar -xzf "$DOWNLOAD_FILE" -C "$KAFKA_CONNECT_PLUGINS_DIR" && rm "$DOWNLOAD_FILE"
 }
 
 maven_debezium_optional() {
@@ -71,7 +72,7 @@ maven_debezium_additional_plugin() {
     else
         maven_dep "${!REPO}" "io/debezium" "debezium-connector-$2" $3 "debezium-connector-$2-$3-plugin.tar.gz" $4
     fi
-    tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
+    tar -xzf "$DOWNLOAD_FILE" -C "$KAFKA_CONNECT_PLUGINS_DIR" && rm "$DOWNLOAD_FILE"
 }
 
 maven_apicurio_converter() {
