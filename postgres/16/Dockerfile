@@ -1,7 +1,7 @@
 FROM postgres:16-bullseye AS build
 
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v2.5.3.Final
+ENV PLUGIN_VERSION=v2.6.0.CR1
 ENV PROTOC_VERSION=1.4
 
 # Install the packages which will be required to get everything to compile
