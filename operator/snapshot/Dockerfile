@@ -83,7 +83,7 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory
 #
-ARG DEBEZIUM_VERSION=2.7.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=2.6.0-SNAPSHOT
 
 ENV LANGUAGE='en_US:en'
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
