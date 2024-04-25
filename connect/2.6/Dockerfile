@@ -1,24 +1,24 @@
 ARG DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME
-FROM localhost:5500/debeziumquay/connect-base:2.6
+FROM $DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME/connect-base:2.6
 
 LABEL maintainer="Debezium Community"
 
-ENV DEBEZIUM_VERSION="2.5.0.Final" \
+ENV DEBEZIUM_VERSION="2.6.1.Final" \
     MAVEN_REPO_CENTRAL="" \
     MAVEN_REPOS_ADDITIONAL="" \
-    MAVEN_DEP_DESTINATION=$KAFKA_CONNECT_PLUGINS_DIR \
-    MONGODB_MD5=fd5ca6d535108cafaef2a92a9afd97ae \
-    MYSQL_MD5=09d944f3a21bd205d9f01edde5cf3963 \
-    POSTGRES_MD5=16e95339cb27dba3a3d96bdd7b5ba3d0 \
-    SQLSERVER_MD5=64579046f37a1523e2fd27e5b9ab330c \
-    ORACLE_MD5=250d169979d2d3d8d919f8da65007634 \
-    DB2_MD5=aa5405943a493992d848679532c796a4 \
-    SPANNER_MD5=fb1c4a80c0990070497498600c1d50d6 \
-    VITESS_MD5=7462d3e3600bd98c20dd23bce5c415ea \
-    JDBC_MD5=7e3dae35120837b21e2f98a72eaf91d9 \
-    INFORMIX_MD5=5ae365d3a3ca3afaba00bd1312b69e58 \
-    KCRESTEXT_MD5=1dd7df4e6c7dd5dc4e5a74a5c887365f \
-    SCRIPTING_MD5=49163a506e826056ac2f5ef758c03f5e
+    MONGODB_MD5=4a54c681626a8e7daa541c1af7430299 \
+    MYSQL_MD5=254a736b9c42606d1cd9d5167adfe6c5 \
+    POSTGRES_MD5=19c504725ae1bde425d176c3ca3952a9 \
+    SQLSERVER_MD5=be9ce1d3929488718ad582873b9869d4 \
+    ORACLE_MD5=39e5a749fb3d7bae3ed106aec5b11561 \
+    DB2_MD5=b03f59516bbdebaedf7c974c8319981b \
+    SPANNER_MD5=3900dceaae7aed8ab2cbbeb0a452d615 \
+    VITESS_MD5=78b2ce29710ccc11f85109ce7316cd5f \
+    JDBC_MD5=027ac34413994b9b1bc8e9a5164ba4ff \
+    INFORMIX_MD5=c0b85654f2c1bac14672a1ef4f73bfcf \
+    IBMI_MD5=384bc3cc450355e18a3036d10cc06b10 \
+    KCRESTEXT_MD5=310b7b622ec06b6eb475f82b8cc3176c \
+    SCRIPTING_MD5=01e613e9ab093b32afd796fda1cc4c05
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
@@ -30,6 +30,7 @@ RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" &&
     docker-maven-download debezium-additional spanner spanner "$DEBEZIUM_VERSION" "$SPANNER_MD5" && \
     docker-maven-download debezium-additional vitess vitess "$DEBEZIUM_VERSION" "$VITESS_MD5" && \
     docker-maven-download debezium-additional informix informix "$DEBEZIUM_VERSION" "$INFORMIX_MD5" && \
+    docker-maven-download debezium-additional ibmi ibmi "$DEBEZIUM_VERSION" "$IBMI_MD5" && \
     docker-maven-download debezium-optional connect-rest-extension "$DEBEZIUM_VERSION" "$KCRESTEXT_MD5" && \
     docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5"
 

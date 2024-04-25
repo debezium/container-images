@@ -1,11 +1,12 @@
-FROM registry.access.redhat.com/ubi8/openjdk-11
+# Stage 1: Build stage
+FROM registry.access.redhat.com/ubi8/openjdk-11 AS builder
 
 LABEL maintainer="Debezium Community"
 
 #
 # Set the version, home directory
 #
-ARG DEBEZIUM_VERSION=2.3.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=2.7.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     SERVER_HOME=/debezium \
@@ -46,6 +47,21 @@ RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezi
 # Allow random UID to use Debezium Server
 #
 RUN chmod -R g+w,o+w $SERVER_HOME
+
+# Stage 2: Final image
+FROM registry.access.redhat.com/ubi8/openjdk-11
+
+LABEL maintainer="Debezium Community"
+ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
+    SERVER_HOME=/debezium \
+    MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots" 
+
+USER root
+RUN microdnf clean all
+
+USER jboss
+
+COPY --from=builder $SERVER_HOME $SERVER_HOME
 
 # Set the working directory to the Debezium Server home directory
 WORKDIR $SERVER_HOME

@@ -1,7 +1,7 @@
 FROM postgres:15-bullseye AS build
 
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v2.3.6.Final
+ENV PLUGIN_VERSION=v2.7.0.Alpha1
 ENV PROTOC_VERSION=1.4
 
 # Install the packages which will be required to get everything to compile
@@ -11,6 +11,8 @@ RUN apt-get update \
         build-essential \
         pkg-config \
         git \
+        clang-11 \
+        llvm-11 \
         postgresql-server-dev-$PG_MAJOR \
     && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
     && apt-get update && apt-get install -f -y --no-install-recommends \

@@ -16,21 +16,23 @@ jobs:
       DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME: localhost:5500/debezium
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build Scripts
         run: shellcheck build-*.sh
       - name: Start local docker registry
         run: docker run -d -p 5500:5000 --restart=always --name registry registry:2
       - name: Set up QEMU
-        uses: docker/setup-qemu-action@v2
+        uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         id: buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
         with:
           driver-opts: |
             network=host
       - name: Build Component ${{ matrix.component }}
         if: matrix.component != 'tool'
+        env:
+          SKIP_UI: true
         run: ./build-all-multiplatform.sh ${{ matrix.component }}
       - name: Build Tool Images
         if: matrix.component == 'tool'
