@@ -1,5 +1,5 @@
 ARG DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME
-FROM localhost:5500/debeziumquay/kafka:2.7
+FROM $DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME/kafka:2.7
 
 LABEL maintainer="Debezium Community"
 
