@@ -1,5 +1,5 @@
 ARG DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME
-FROM localhost:5500/debeziumquay/connect-base:2.7
+FROM $DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME/connect-base:2.7
 
 LABEL maintainer="Debezium Community"
 
