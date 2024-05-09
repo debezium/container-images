@@ -30,6 +30,15 @@ build_docker_image () {
 
     IMAGE_PATH="${IMAGE_PATH}/${IMAGE_TAG}"
 
+    if ! [ -d "$IMAGE_PATH" ]; then
+      echo ""
+      echo "****************************************************************"
+      echo "** Directory ${IMAGE_PATH} does not exist, skipping"
+      echo "****************************************************************"
+      echo ""
+      return
+    fi
+
     PLATFORM_VAR=$(echo "$IMAGE_NAME" | tr '[:lower:]' '[:upper:]' | tr - _)_PLATFORM
     PLATFORM=${!PLATFORM_VAR}
     if [ -z "${PLATFORM}" ]; then
