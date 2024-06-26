@@ -1,4 +1,4 @@
-FROM ruby:2.7-alpine
+FROM ruby:3.2-alpine
 LABEL maintainer="Debezium Community"
 ENV SITE_HOME=/site
 RUN apk add --no-cache build-base gcc bash cmake git jq nodejs yarn curl
