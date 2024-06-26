@@ -151,7 +151,7 @@ case $1 in
           env_var=`echo "$VAR" | sed "s/=.*//"`
           if [[ $env_var =~ ^KAFKA_ && $env_var != "KAFKA_VERSION" && $env_var != "KAFKA_HOME"  && $env_var != "KAFKA_LOG4J_OPTS" && $env_var != "KAFKA_JMX_OPTS" ]]; then
             prop_name=`echo "$VAR" | sed -r "s/^KAFKA_(.*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
-            if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/$CONFIG_FILE; then
+            if grep -Eq "(^|^#)$prop_name=" $KAFKA_HOME/$CONFIG_FILE; then
                 #note that no config names or values may contain an '@' char
                 sed -r -i "s%(^|^#)($prop_name)=(.*)%\2=${!env_var}%g" $KAFKA_HOME/$CONFIG_FILE
             else

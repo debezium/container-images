@@ -276,7 +276,7 @@ case $1 in
           env_var=`echo "$VAR" | sed -r "s/([^=]*)=.*/\1/g"`
           prop_name=`echo "$VAR" | sed -r "s/^CONNECT_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
           prop_value=`echo "$VAR" | sed -r "s/^CONNECT_[^=]*=(.*)/\1/g"`
-          if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/log4j.properties; then
+          if grep -Eq "(^|^#)$prop_name=" $KAFKA_HOME/config/log4j.properties; then
               #note that no config names or values may contain an '@' char
               sed -r -i "s@(^|^#)($prop_name)=(.*)@\2=${prop_value}@g" $KAFKA_HOME/config/log4j.properties
           else
@@ -304,7 +304,7 @@ case $1 in
           if [[ $env_var =~ ^CONNECT_ ]]; then
             prop_name=`echo "$VAR" | sed -r "s/^CONNECT_([^=]*)=.*/\1/g" | tr '[:upper:]' '[:lower:]' | tr _ .`
             prop_value=`echo "$VAR" | sed -r "s/^CONNECT_[^=]*=(.*)/\1/g"`
-            if egrep -q "(^|^#)$prop_name=" $KAFKA_HOME/config/connect-distributed.properties; then
+            if grep -Eq "(^|^#)$prop_name=" $KAFKA_HOME/config/connect-distributed.properties; then
                 #note that no config names or values may contain an '@' char
                 sed -r -i "s@(^|^#)($prop_name)=(.*)@\2=${prop_value}@g" $KAFKA_HOME/config/connect-distributed.properties
             else
