@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM registry.access.redhat.com/ubi8/openjdk-11 AS builder
+FROM registry.access.redhat.com/ubi8/openjdk-21 AS builder
 
 LABEL maintainer="Debezium Community"
 
@@ -49,7 +49,7 @@ RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezi
 RUN chmod -R g+w,o+w $SERVER_HOME
 
 # Stage 2: Final image
-FROM registry.access.redhat.com/ubi8/openjdk-11
+FROM registry.access.redhat.com/ubi8/openjdk-21
 
 LABEL maintainer="Debezium Community"
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
