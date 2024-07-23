@@ -8,6 +8,7 @@ ENV DEBEZIUM_VERSION="2.7.0.Final" \
     MAVEN_REPOS_ADDITIONAL="" \
     MONGODB_MD5=df1ad43f9e3ebdfa1ab4a52b7c28a49b \
     MYSQL_MD5=154efb8d280613370f0925a4ce6d2ad9 \
+    MARIADB_MD5=d8083bb14d660fa02a3fdfffdd3c3cd0 \
     POSTGRES_MD5=41bf19186ac1c2bddd3c50d6a6fd13c7 \
     SQLSERVER_MD5=7cd6d68ec4ed48dac278d496852511da \
     ORACLE_MD5=45a211d574bf1e1871733a71f2163756 \
@@ -22,6 +23,7 @@ ENV DEBEZIUM_VERSION="2.7.0.Final" \
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
+    docker-maven-download debezium mariadb "$DEBEZIUM_VERSION" "$MARIADB_MD5" && \
     docker-maven-download debezium postgres "$DEBEZIUM_VERSION" "$POSTGRES_MD5" && \
     docker-maven-download debezium sqlserver "$DEBEZIUM_VERSION" "$SQLSERVER_MD5" && \
     docker-maven-download debezium oracle "$DEBEZIUM_VERSION" "$ORACLE_MD5" && \
