@@ -41,6 +41,9 @@ RUN apt-get update \
         postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts \
         postgis; \
        fi \
+    && if [ "$USE_PGVECTOR" != "false" ]; then apt-get install -f -y --no-install-recommends \
+        postgresql-$PG_MAJOR-pgvector; \
+       fi \
     && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
     && apt-get update && apt-get install -f -y --no-install-recommends \
         libprotobuf-c1 \
