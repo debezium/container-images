@@ -1,0 +1,67 @@
+# Stage 1: Build stage
+FROM registry.access.redhat.com/ubi8/openjdk-21 AS builder
+
+LABEL maintainer="Debezium Community"
+
+#
+# Set the version, home directory, and MD5 hash.
+#
+ENV SERVER_HOME=/debezium
+
+#
+# Create a directory for Debezium Server
+#
+USER root
+RUN microdnf -y install gzip && \
+    microdnf clean all && \
+    mkdir $SERVER_HOME && \
+    chmod 755 $SERVER_HOME
+
+#
+# Change ownership and switch user
+#
+RUN chown -R jboss $SERVER_HOME && \
+    chgrp -R jboss $SERVER_HOME
+USER jboss
+
+RUN mkdir $SERVER_HOME/conf && \
+    mkdir $SERVER_HOME/data
+
+#
+# Download and install Debezium Server
+#
+COPY debezium-server-dist-2.6.0-SNAPSHOT.tar.gz /tmp/debezium.tar.gz
+
+#
+# Verify the contents and then install ...
+#
+RUN tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
+    rm -f /opt/debezium.tar.gz
+
+#
+# Allow random UID to use Debezium Server
+#
+RUN chmod -R g+w,o+w $SERVER_HOME
+
+# Stage 2: Final image
+FROM registry.access.redhat.com/ubi8/openjdk-21
+
+LABEL maintainer="Debezium Community"
+ENV SERVER_HOME=/debezium
+
+USER root
+RUN microdnf clean all
+
+USER jboss
+
+COPY --from=builder $SERVER_HOME $SERVER_HOME
+
+WORKDIR $SERVER_HOME
+
+#
+# Expose the ports and set up volumes for the data, transaction log, and configuration
+#
+EXPOSE 8080
+VOLUME ["/debezium/conf","/debezium/data"]
+
+CMD ["/debezium/run.sh"]

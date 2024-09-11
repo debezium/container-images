@@ -30,6 +30,15 @@ build_docker_image () {
 
     IMAGE_PATH="${IMAGE_PATH}/${IMAGE_TAG}"
 
+    if ! [ -d "$IMAGE_PATH" ]; then
+      echo ""
+      echo "****************************************************************"
+      echo "** Directory ${IMAGE_PATH} does not exist, skipping"
+      echo "****************************************************************"
+      echo ""
+      return
+    fi
+
     PLATFORM_VAR=$(echo "$IMAGE_NAME" | tr '[:lower:]' '[:upper:]' | tr - _)_PLATFORM
     PLATFORM=${!PLATFORM_VAR}
     if [ -z "${PLATFORM}" ]; then
@@ -127,6 +136,7 @@ build_docker_image example-mysql examples/mysql
 build_docker_image example-mysql-gtids examples/mysql-gtids
 build_docker_image example-mysql-master examples/mysql-replication/master
 build_docker_image example-mysql-replica examples/mysql-replication/replica
+build_docker_image example-mariadb examples/mariadb
 build_docker_image example-postgres examples/postgres
 build_docker_image example-mongodb examples/mongodb
 

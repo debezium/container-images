@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM registry.access.redhat.com/ubi8/openjdk-11 AS builder
+FROM registry.access.redhat.com/ubi8/openjdk-21 AS builder
 
 LABEL maintainer="Debezium Community"
 
@@ -10,7 +10,7 @@ ARG DEBEZIUM_VERSION=2.7.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     SERVER_HOME=/debezium \
-    MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots" 
+    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots" 
 
 #
 # Create a directory for Debezium Server
@@ -49,12 +49,12 @@ RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezi
 RUN chmod -R g+w,o+w $SERVER_HOME
 
 # Stage 2: Final image
-FROM registry.access.redhat.com/ubi8/openjdk-11
+FROM registry.access.redhat.com/ubi8/openjdk-21
 
 LABEL maintainer="Debezium Community"
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     SERVER_HOME=/debezium \
-    MAVEN_OSS_SNAPSHOT="https://oss.sonatype.org/content/repositories/snapshots" 
+    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots" 
 
 USER root
 RUN microdnf clean all

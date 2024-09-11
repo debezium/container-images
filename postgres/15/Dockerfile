@@ -1,7 +1,7 @@
 FROM postgres:15-bullseye AS build
 
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v2.7.0.Alpha1
+ENV PLUGIN_VERSION=v2.7.2.Final
 ENV PROTOC_VERSION=1.4
 
 # Install the packages which will be required to get everything to compile
@@ -40,6 +40,9 @@ RUN apt-get update \
         postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION \
         postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts \
         postgis; \
+       fi \
+    && if [ "$USE_PGVECTOR" != "false" ]; then apt-get install -f -y --no-install-recommends \
+        postgresql-$PG_MAJOR-pgvector; \
        fi \
     && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
     && apt-get update && apt-get install -f -y --no-install-recommends \
