@@ -30,7 +30,7 @@ RUN mkdir $SERVER_HOME/conf && \
 #
 # Download and install Debezium Server
 #
-COPY debezium-server-dist-2.6.0-SNAPSHOT.tar.gz /tmp/debezium.tar.gz
+COPY debezium-server-dist-3.0.0-SNAPSHOT.tar.gz /tmp/debezium.tar.gz
 
 #
 # Verify the contents and then install ...
@@ -62,6 +62,6 @@ WORKDIR $SERVER_HOME
 # Expose the ports and set up volumes for the data, transaction log, and configuration
 #
 EXPOSE 8080
-VOLUME ["/debezium/conf","/debezium/data"]
+VOLUME ["/debezium/config","/debezium/data"]
 
 CMD ["/debezium/run.sh"]

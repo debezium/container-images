@@ -71,6 +71,6 @@ WORKDIR $SERVER_HOME
 # Expose the ports and set up volumes for the data, transaction log, and configuration
 #
 EXPOSE 8080
-VOLUME ["/debezium/conf","/debezium/data"]
+VOLUME ["/debezium/config","/debezium/data"]
 
 CMD ["/debezium/run.sh"]
