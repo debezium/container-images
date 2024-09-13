@@ -88,6 +88,8 @@ maven_apicurio_converter() {
     maven_dep $MAVEN_REPO_CENTRAL "io/apicurio" "$APICURIO_CONVERTER_PACKAGE" "$1" "$APICURIO_CONVERTER_PACKAGE-$1.tar.gz" "$2"
     mkdir "$EXTERNAL_LIBS_DIR/apicurio"
     tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR/apicurio" && rm "$DOWNLOAD_FILE"
+    # Apicurio package contains Jackson libraries that conflict with the one provided
+    rm "$EXTERNAL_LIBS_DIR"/apicurio/jackson-{core,annotations,databind,datatype-jdk8}*
 }
 
 maven_apicurio_dep() {
