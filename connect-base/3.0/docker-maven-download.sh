@@ -90,6 +90,11 @@ maven_apicurio_converter() {
     tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR/apicurio" && rm "$DOWNLOAD_FILE"
 }
 
+maven_apicurio_dep() {
+    maven_dep $MAVEN_REPO_CENTRAL $1 $2 $3 "$2-$3.jar" $4
+    mv "$DOWNLOAD_FILE" "$EXTERNAL_LIBS_DIR/apicurio"
+}
+
 maven_otel_libs() {
     if [[ -z "$EXTERNAL_LIBS_DIR" ]] ; then
         echo "WARNING: EXTERNAL_LIBS_DIR is not set. Skipping loading OTEL libraries ..."
@@ -127,6 +132,9 @@ case $1 in
             ;;
     "apicurio" ) shift
             maven_apicurio_converter ${@}
+            ;;
+    "apicurio-dep" ) shift
+            maven_apicurio_dep ${@}
             ;;
     "otel" ) shift
             maven_otel_libs ${@}
