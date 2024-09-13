@@ -23,7 +23,6 @@ ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR \
     MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \
     APICURIO_VERSION=2.6.2.Final \
-    APICURIO_JACKSON_VERSION=2.13.4 \
     JOLOKIA_VERSION=1.7.2 \
     OPENTELEMETRY_VERSION=1.23.1 \
     OPENTELEMETRY_INSTRUMENTATION_VERSION=1.23.0
@@ -44,9 +43,6 @@ RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
 RUN docker-maven-download apicurio "$APICURIO_VERSION" 25e9ef205952c6ecb03cfb59098c229f
-RUN docker-maven-download apicurio-dep com/fasterxml/jackson/module jackson-module-afterburner "$APICURIO_JACKSON_VERSION" de5658c5e60f0953ca0a589519b4f9f5
-RUN docker-maven-download apicurio-dep com/fasterxml/jackson/module jackson-module-jaxb-annotations "$APICURIO_JACKSON_VERSION" 9bd819527055fbe2bc017021bb2fc913
-RUN docker-maven-download apicurio-dep com/fasterxml/jackson/module jackson-module-scala_2.13 "$APICURIO_JACKSON_VERSION" c4e14bbe53bd8e4d1f9f4c05858e2b61
 RUN docker-maven-download central org/jolokia jolokia-jvm "$JOLOKIA_VERSION" d489d62d1143e6a2e85a869a4b824a67
 RUN docker-maven-download otel io/opentelemetry opentelemetry-api "$OPENTELEMETRY_VERSION" e198a9568ce31a82faaa26f328388e89
 RUN docker-maven-download otel io/opentelemetry opentelemetry-context "$OPENTELEMETRY_VERSION" 783594a506dbf035e686776d5bcb4bfc
