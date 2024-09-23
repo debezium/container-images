@@ -1,4 +1,4 @@
-FROM registry.fedoraproject.org/fedora-minimal:38
+FROM registry.fedoraproject.org/fedora-minimal:40
 
 LABEL maintainer="Debezium Community"
 
