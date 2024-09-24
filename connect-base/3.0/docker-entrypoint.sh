@@ -262,7 +262,7 @@ case $1 in
         echo "      SHUTDOWN_TIMEOUT=$CONNECT_TASK_SHUTDOWN_GRACEFUL_TIMEOUT_MS"
 
         # Copy config files if not provided in volume
-        cp -rn $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
+        cp -r --update=none $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
 
         #
         # Configure the log files ...
