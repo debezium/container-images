@@ -84,11 +84,11 @@ LABEL maintainer="Debezium Community"
 # Set the version, home directory
 #
 ENV LANGUAGE='en_US:en'
-ENV DEBEZIUM_VERSION=3.0.0.CR1 \
+ENV DEBEZIUM_VERSION=3.0.0.CR2 \
     OPERATOR_HOME=/operator \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 ENV OPERATOR_URL_PATH=io/debezium/debezium-operator-dist/$DEBEZIUM_VERSION/debezium-operator-dist-$DEBEZIUM_VERSION.tar.gz \
-    OPERATOR_MD5=5315021703d8ba4779e3dc8b7fb073af
+    OPERATOR_MD5=8cf8a1dad1b2f5540734992f67eb097c
 
 USER root
 #
