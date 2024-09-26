@@ -22,8 +22,15 @@ fi
 # Process some known arguments to run Zookeeper ...
 case $ARG1 in
     start)
+	# Choose the right `cp` argument, `--update=none` is not available on RHEL
+	release=`cat /etc/redhat-release | cut -d ' ' -f1`
+	if [ $release = "Fedora" ]; then
+	    cp_arg="-r --update=none"
+	else
+	    cp_arg="-rn"
+	fi
         # Copy config files if not provided in volume
-        cp -rn $ZK_HOME/conf.orig/* $ZK_HOME/conf
+        cp $cp_arg $ZK_HOME/conf.orig/* $ZK_HOME/conf
 
         #
         # Process the logging-related environment variables. Zookeeper's log configuration allows *some* variables to be

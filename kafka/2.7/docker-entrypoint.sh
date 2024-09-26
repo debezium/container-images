@@ -122,8 +122,15 @@ if [[ -n "$JMXPORT" && -n "$JMXHOST" ]]; then
     export KAFKA_JMX_OPTS="-Djava.rmi.server.hostname=${JMXHOST} -Dcom.sun.management.jmxremote.rmi.port=${JMXPORT} -Dcom.sun.management.jmxremote.port=${JMXPORT} -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.authenticate=${JMXAUTH} -Dcom.sun.management.jmxremote.ssl=${JMXSSL} "
 fi
 
+# Choose the right `cp` argument, `--update=none` is not available on RHEL
+release=`cat /etc/redhat-release | cut -d ' ' -f1`
+if [ $release = "Fedora" ]; then
+    cp_arg="-r --update=none"
+else
+    cp_arg="-rn"
+fi
 # Copy config files if not provided in volume
-cp -rn $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
+cp $cp_arg $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
 
 # Process the argument to this container ...
 case $1 in
