@@ -33,7 +33,7 @@ MONGO_VERSIONS="3.2"
 MONGO_MULTIPLATFORM_VERSIONS="3.4 3.6 4.0 4.2 4.4 5.0 6.0"
 
 POSTGRES_VERSIONS="9.6 10 11 12 13 14"
-POSTGRES_MULTIPLATFORM_VERSIONS="15 16 9.6-alpine 10-alpine 11-alpine 12-alpine 13-alpine 14-alpine 15-alpine 16-alpine"
+POSTGRES_MULTIPLATFORM_VERSIONS="15 16 17 9.6-alpine 10-alpine 11-alpine 12-alpine 13-alpine 14-alpine 15-alpine 16-alpine 17-alpine"
 
 if shouldBuild "mongo"; then
   for MONGO_VERSION in $MONGO_VERSIONS; do
