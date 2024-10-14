@@ -1,7 +1,7 @@
 FROM postgres:17-alpine
 
 LABEL maintainer="Debezium Community"
-ENV PLUGIN_VERSION=v3.0.0.Final
+ENV PLUGIN_VERSION=main
 
 RUN apk add --no-cache protobuf-c-dev
 
