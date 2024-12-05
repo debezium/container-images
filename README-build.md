@@ -2,12 +2,12 @@
 
 Starting with version 1.9 Debezium provides multi platform Docker iamges for `linux/amd64`
 and `linux/arm64`. 
-Debeziums own Postgres and MongoDB builds are also available as multi platform, as long
+Debeziums own Postgres builds are also available as multi platform, as long
 as their base images support multi platform builds (see `build-all-multiplatform.sh`).
 
 ## Running the build
 
-You can build Debezium, Mongo and Postgres multi platform images using the `build-all-multiplatform.sh` script.
+You can build Debezium and Postgres multi platform images using the `build-all-multiplatform.sh` script.
 
 Before running the build, you need a `buildx` instance configured. You can create an instance like this:
 
@@ -74,7 +74,7 @@ appropriate runner. Note that the scripts expects the registry listening on http
 
 ## Building single images
 
-You can build a single images running either `./build-mongo-multiplatform.sh`  or `./build-postgres-multiplatform.sh`
+You can build a single images running `./build-postgres-multiplatform.sh`
 
 Both of this scripts works with the env variables described above and expect two arguments:
 
@@ -85,7 +85,6 @@ Examples:
 
 ```bash
     ./build-postgres-multiarch.sh 14-alpine "linux/amd64,linux/arm64"
-    ./build-mongo-multiarch.sh 3.2 "linux/amd64"
 ```
 
 For building a single Debezium version for multiple platforms, you can run
