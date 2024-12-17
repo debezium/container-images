@@ -28,7 +28,7 @@ RUN chown -R jboss $SERVER_HOME && \
     chgrp -R jboss $SERVER_HOME
 USER jboss
 
-RUN mkdir $SERVER_HOME/conf && \
+RUN mkdir $SERVER_HOME/config && \
     mkdir $SERVER_HOME/data
 
 #
