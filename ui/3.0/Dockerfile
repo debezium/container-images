@@ -6,7 +6,7 @@
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS builder
 
 ARG JAVA_PACKAGE=java-11-openjdk-devel
-ARG BRANCH=v3.0.5.Final
+ARG BRANCH=v3.0.6.Final
 
 ENV LANG='en_US.UTF-8' \
     LANGUAGE='en_US:en' \
