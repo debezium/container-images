@@ -1,4 +1,4 @@
-FROM postgres:14-alpine
+FROM mirror.gcr.io/library/postgres:14-alpine
 
 LABEL maintainer="Debezium Community"
 ENV PLUGIN_VERSION=v3.0.6.Final
