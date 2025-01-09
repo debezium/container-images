@@ -1,4 +1,4 @@
-FROM postgres:17-alpine
+FROM mirror.gcr.io/library/postgres:17-alpine
 
 LABEL maintainer="Debezium Community"
 ENV PLUGIN_VERSION=main

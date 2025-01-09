@@ -1,4 +1,4 @@
-FROM mongo:6.0
+FROM mirror.gcr.io/library/mongo:6.0
 
 LABEL maintainer="Debezium Community"
 

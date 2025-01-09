@@ -74,7 +74,7 @@ appropriate runner. Note that the scripts expects the registry listening on http
 
 ## Building single images
 
-You can build a single images running either `./build-mongo-multiplatform.sh`  or `./build-postgres-multiplatform.sh`
+You can build a single image running ./build-postgres-multiplatform.sh`.
 
 Both of this scripts works with the env variables described above and expect two arguments:
 
@@ -85,7 +85,6 @@ Examples:
 
 ```bash
     ./build-postgres-multiarch.sh 14-alpine "linux/amd64,linux/arm64"
-    ./build-mongo-multiarch.sh 3.2 "linux/amd64"
 ```
 
 For building a single Debezium version for multiple platforms, you can run

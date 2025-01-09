@@ -1,4 +1,4 @@
-FROM mariadb:11.1.2
+FROM mirror.gcr.io/library/mariadb:11.1.2
 
 LABEL maintainer="Debezium Community"
 

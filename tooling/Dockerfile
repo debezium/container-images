@@ -1,4 +1,4 @@
-FROM fedora:40 as kcat
+FROM registry.fedoraproject.org/fedora:40 as kcat
 RUN dnf -y install gcc which gcc-c++ wget make git cmake
 ENV KCAT_VERSION=1.7.1
 
@@ -7,7 +7,7 @@ RUN git clone https://github.com/edenhill/kcat -b $KCAT_VERSION --single-branch 
     cd kcat && \
     ./bootstrap.sh
 
-FROM fedora:40
+FROM registry.fedoraproject.org/fedora:40
 ENV KCCTL_VERSION=1.0.0.CR3
 
 RUN dnf -y install jq httpie mycli pgcli &&\
