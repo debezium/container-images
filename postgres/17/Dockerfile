@@ -1,4 +1,4 @@
-FROM postgres:17-bullseye AS build
+FROM mirror.gcr.io/library/postgres:17-bullseye AS build
 
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=main
