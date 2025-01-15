@@ -5,7 +5,7 @@ services:
     ports:
       - '5500:5000'
   browser:
-    image: klausmeyer/docker-registry-browser:latest
+    image: mirror.gcr.io/klausmeyer/docker-registry-browser:latest
     environment:
       - 'DOCKER_REGISTRY_URL=http://registry:5000'
     ports:
