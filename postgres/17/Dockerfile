@@ -27,7 +27,7 @@ RUN git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSIO
     && rm -rf postgres-decoderbufs
 
 
-FROM postgres:17-bullseye
+FROM mirror.gcr.io/library/postgres:17-bullseye
 
 LABEL maintainer="Debezium Community"
 

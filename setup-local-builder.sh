@@ -13,4 +13,4 @@
 name=debezium-container-builder
 
 docker buildx ls | grep -q $name && docker buildx rm $name
-docker buildx create --driver-opt network=host --use --name $name
+docker buildx create --driver-opt network=host --driver-opt image=mirror.gcr.io/moby/buildkit --use --name $name

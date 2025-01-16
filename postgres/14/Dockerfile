@@ -36,7 +36,7 @@ RUN git clone https://github.com/eulerto/wal2json -b master --single-branch \
     && rm -rf wal2json
 
 
-FROM postgres:14-bullseye
+FROM mirror.gcr.io/library/postgres:14-bullseye
 
 LABEL maintainer="Debezium Community"
 
