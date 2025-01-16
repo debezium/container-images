@@ -9,6 +9,7 @@ The following tools are contained:
 * httpie (https://github.com/jakubroztocil/httpie)
 * mycli (https://github.com/dbcli/mycli)
 * pgcli (https://github.com/dbcli/pgcli)
+* kcctl (https://github.com/kcctl/kcctl)
 
 The image could be used as a standalone container, part of Docker Compose deployment or can run inside an OpenShift deployment.
 

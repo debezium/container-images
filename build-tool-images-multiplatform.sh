@@ -7,7 +7,7 @@ if [[ -z "$TAG" ]]; then
 fi
 
 if [ -z "${DEBEZIUM_TOOLS_PLATFORM}" ]; then
-  DEBEZIUM_TOOLS_PLATFORM=linux/amd64
+  DEBEZIUM_TOOLS_PLATFORM=linux/amd64,linux/arm64
 fi;
 
 if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
