@@ -1,23 +1,25 @@
-FROM registry.fedoraproject.org/fedora:40 as kcat
-RUN dnf -y install gcc which gcc-c++ wget make git cmake
-ENV KCAT_VERSION=1.7.1
+FROM registry.fedoraproject.org/fedora:40 AS kcctl
 
-RUN dnf -y install cyrus-sasl-devel libcurl-devel libzstd-devel zlib-devel openssl-devel krb5-devel
-RUN git clone https://github.com/edenhill/kcat -b $KCAT_VERSION --single-branch && \
-    cd kcat && \
-    ./bootstrap.sh
+ENV KCCTL_VERSION=v1.0.0.CR4 \
+    JAVA_HOME=/usr/lib/jvm/java-21-openjdk/
+
+RUN dnf -y install git java-21-openjdk-devel && \
+    git clone https://github.com/kcctl/kcctl.git -b $KCCTL_VERSION --depth 1 && \
+    cd kcctl && ./mvnw clean install -DskipTests && \
+    cp -r ./target/quarkus-app /usr/bin/kcctl
 
 FROM registry.fedoraproject.org/fedora:40
-ENV KCCTL_VERSION=1.0.0.CR3
 
-RUN dnf -y install jq httpie mycli pgcli &&\
-    dnf clean all &&\
-    curl -SL https://github.com/kcctl/kcctl/releases/download/v$KCCTL_VERSION/kcctl-$KCCTL_VERSION-linux-x86_64.tar.gz | tar -zx &&\
-    mv kcctl-$KCCTL_VERSION-linux-x86_64/bin/kcctl /usr/bin &&\
-    rm -r kcctl-$KCCTL_VERSION-linux-x86_64*
-COPY --from=kcat /kcat/kcat /usr/bin/kcat
-RUN ln -s /usr/bin/kcat /usr/bin/kafkacat
+LABEL maintainer="Debezium Community"
 
 RUN mkdir licenses
-
 COPY LICENSE* /licenses/
+ENV JAVA_HOME=/usr/lib/jvm/java-21-openjdk/
+
+RUN dnf -y install java-21-openjdk-devel less jq httpie mycli pgcli kcat && \
+    dnf clean all && \
+    ln -s /usr/bin/kcat /usr/bin/kafkacat
+
+COPY --from=kcctl /usr/bin/kcctl /usr/bin/kcctl-dir
+RUN echo -e '#!/bin/bash\njava -jar /usr/bin/kcctl-dir/quarkus-run.jar' > /usr/bin/kcctl && \
+    chmod +x /usr/bin/kcctl
