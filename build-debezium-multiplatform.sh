@@ -46,7 +46,7 @@ build_docker_image () {
     echo "** Validating  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}"
     echo "****************************************************************"
     echo ""
-    docker run --rm -i hadolint/hadolint:latest < "${IMAGE_PATH}"
+    docker run --rm -i mirror.gcr.io/hadolint/hadolint:latest < "${IMAGE_PATH}"
 
     echo "****************************************************************"
     echo "** Building    ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
