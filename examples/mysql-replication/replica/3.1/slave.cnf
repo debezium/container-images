@@ -17,4 +17,4 @@ pid-file=/var/run/mysqld/mysqld.pid
 
 [client]
 socket=/var/run/mysqld/mysqld.sock
-!includedir /etc/mysql/conf.d/
+
