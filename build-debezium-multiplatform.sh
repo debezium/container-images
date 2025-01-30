@@ -125,6 +125,7 @@ build_docker_image connect-base
 build_docker_image connect
 build_docker_image server
 build_docker_image operator
+build_docker_image conductor
 if [[ "$SKIP_UI" != "true" ]]; then
     build_docker_image debezium-ui ui
 fi
