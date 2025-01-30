@@ -77,21 +77,46 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
-FROM registry.access.redhat.com/ubi8/openjdk-21:1.18
+FROM registry.access.redhat.com/ubi8/openjdk-21
+LABEL maintainer="Debezium Community"
+
+#
+# Set the version, home directory
+#
+ARG DEBEZIUM_VERSION=3.1.0-SNAPSHOT
 
 ENV LANGUAGE='en_US:en'
+ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
+    DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
+    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots"
 
+USER root
 
-# We make four distinct layers so if there are application changes the library layers can be re-used
-COPY --chown=185 target/quarkus-app/lib/ /deployments/lib/
-COPY --chown=185 target/quarkus-app/*.jar /deployments/
-COPY --chown=185 target/quarkus-app/app/ /deployments/app/
-COPY --chown=185 target/quarkus-app/quarkus/ /deployments/quarkus/
+#
+# Prepare environment
+#
+RUN microdnf install -y gzip
+RUN mkdir $DEBEZIUM_PLATFORM_CONDUCTOR_HOME;
+
+#
+# Download the snapshot version of debezium-operator and then install it to the `$DEBEZIUM_PLATFORM_CONDUCTOR_HOME` directory...
+#
+RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
+    echo "Downloading and installing debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." ; \
+    curl --silent -fSL -o /tmp/debezium-platform-conductor.tar.gz  $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz && \
+    echo "Extracting debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." && \
+    tar xzf /tmp/debezium-platform-conductor.tar.gz -C $DEBEZIUM_PLATFORM_CONDUCTOR_HOME --strip-components 1 && \
+    echo "Successfully installed debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz !" && \
+    rm -f /tmp/debezium-platform-conductor.tar.gz;
+
+#
+# Set the owner on `$DEBEZIUM_PLATFORM_CONDUCTOR_HOME`
+#
+RUN chown -R 185 $DEBEZIUM_PLATFORM_CONDUCTOR_HOME
+
 
 EXPOSE 8080
 USER 185
-ENV JAVA_OPTS_APPEND="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
-ENV JAVA_APP_JAR="/deployments/quarkus-run.jar"
-
-ENTRYPOINT [ "/opt/jboss/container/java/run/run-java.sh" ]
+ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
+ENV JAVA_APP_JAR="$DEBEZIUM_PLATFORM_CONDUCTOR_HOME/quarkus-run.jar"
 

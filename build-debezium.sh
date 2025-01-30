@@ -103,6 +103,8 @@ build_docker_image example-postgres examples/postgres
 build_docker_image example-mongodb examples/mongodb
 build_docker_image example-mysql-master examples/mysql-replication/master
 build_docker_image example-mysql-replica examples/mysql-replication/replica
+build_docker_image conductor
+build_docker_image operator
 if [[ "$SKIP_UI" != "true" ]]; then
     build_docker_image debezium-ui ui
 fi
