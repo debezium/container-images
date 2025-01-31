@@ -9,7 +9,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        component: [ 'mongo', 'postgres', 'debezium', 'tool' 'conductor', 'operator']
+        component: [ 'mongo', 'postgres', 'debezium', 'tool' ]
     runs-on: ubuntu-latest
     env:
       DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME: localhost:5500/debeziumquay
