@@ -33,6 +33,7 @@ jobs:
         if: matrix.component != 'tool'
         env:
           SKIP_UI: true
+          PLATFORM_STAGE_PLATFORM: linux/amd64
         run: ./build-all-multiplatform.sh ${{ matrix.component }}
       - name: Build Tool Images
         if: matrix.component == 'tool'
