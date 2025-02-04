@@ -4,6 +4,12 @@
 # However, this grant is equivalent to specifying *any* hosts, which makes this easier since the docker host
 # is not easily known to the Docker container. But don't do this in production.
 #
+
+# Oracle Docker image turn replication off while loading initial files, which breaks our replication setup.
+# See https://github.com/mysql/mysql-docker/blob/1.2.20-server/mysql-server/8.4/docker-entrypoint.sh#L109
+# Turn replication on in the init script.
+SET @@SESSION.SQL_LOG_BIN=1;
+
 CREATE USER 'replicator' IDENTIFIED BY 'replpass';
 CREATE USER 'debezium' IDENTIFIED BY 'dbz';
 GRANT REPLICATION SLAVE, REPLICATION CLIENT ON *.* TO 'replicator';
