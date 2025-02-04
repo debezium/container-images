@@ -23,7 +23,7 @@ RUN npm install -g yarn
 WORKDIR /app
 COPY --from=cloner /app/debezium-platform/debezium-platform-stage/package.json /app/
 COPY --from=cloner /app/debezium-platform/debezium-platform-stage/yarn.lock /app/
-RUN yarn install
+RUN yarn install --network-timeout=600000
 
 COPY --from=cloner /app/debezium-platform/debezium-platform-stage /app
 RUN yarn build
