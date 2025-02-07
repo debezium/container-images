@@ -2,7 +2,7 @@ FROM mirror.gcr.io/library/postgres:17-bullseye AS build
 
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=main
-ENV PROTOC_VERSION=1.4
+ENV PROTOC_VERSION=1.5
 
 # Install the packages which will be required to get everything to compile
 RUN apt-get update \
