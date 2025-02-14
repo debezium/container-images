@@ -7,10 +7,11 @@ ARG BRANCH=main
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS cloner
 ARG BRANCH
 WORKDIR /app
-RUN microdnf install -y git && \
-    git clone https://github.com/debezium/debezium-platform.git && \
-    cd debezium-platform && \
-    git checkout ${BRANCH} && \
+RUN microdnf install -y git
+# Please do not aggregate the following line with other.
+# This is explicitely leaved in a single line since it will be replace in the release pipeline
+RUN git clone -b ${BRANCH} https://github.com/debezium/debezium-platform.git
+RUN cd debezium-platform && \
     cd debezium-platform-stage 
 
 # Build the application
