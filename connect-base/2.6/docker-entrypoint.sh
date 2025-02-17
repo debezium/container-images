@@ -99,7 +99,7 @@ function set_debezium_kc_rest_extension_availability() {
 
 #
 # Parameter 1: Should the resource be enabled ("true") or disabled ("false")
-# Parameter 2: Folder path under $EXTERNAL_LIBS_DIR where the resorce is deployed
+# Parameter 2: Folder path under $EXTERNAL_LIBS_DIR where the resource is deployed
 # Parameter 3: A wildcard pattern matching files from the resource folder
 # Parameter 4: Name of the resource to print in log messages
 #
