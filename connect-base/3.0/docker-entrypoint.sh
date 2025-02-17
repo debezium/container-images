@@ -99,7 +99,7 @@ function set_debezium_kc_rest_extension_availability() {
 
 #
 # Parameter 1: Should the resource be enabled ("true") or disabled ("false")
-# Parameter 2: Folder path under $EXTERNAL_LIBS_DIR where the resorce is deployed
+# Parameter 2: Folder path under $EXTERNAL_LIBS_DIR where the resource is deployed
 # Parameter 3: A wildcard pattern matching files from the resource folder
 # Parameter 4: Name of the resource to print in log messages
 #
@@ -261,14 +261,14 @@ case $1 in
         echo "      OFFSET_FLUSH_TIMEOUT_MS=$CONNECT_OFFSET_FLUSH_TIMEOUT_MS"
         echo "      SHUTDOWN_TIMEOUT=$CONNECT_TASK_SHUTDOWN_GRACEFUL_TIMEOUT_MS"
 
-	# Choose the right `cp` argument, `--update=none` is not available on RHEL
-	release=`cat /etc/redhat-release | cut -d ' ' -f1`
-	if [ $release = "Fedora" ]; then
-	    cp_arg="-r --update=none"
-	else
-	    cp_arg="-rn"
-	fi
-	# Copy config files if not provided in volume
+        # Choose the right `cp` argument, `--update=none` is not available on RHEL
+        release=`cat /etc/redhat-release | cut -d ' ' -f1`
+        if [ $release = "Fedora" ]; then
+            cp_arg="-r --update=none"
+        else
+            cp_arg="-rn"
+        fi
+        # Copy config files if not provided in volume
         cp $cp_arg  $KAFKA_HOME/config.orig/* $KAFKA_HOME/config
 
         #
