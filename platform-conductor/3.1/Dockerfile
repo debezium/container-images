@@ -83,12 +83,12 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory
 #
-ARG DEBEZIUM_VERSION=3.1.0-SNAPSHOT
-
 ENV LANGUAGE='en_US:en'
-ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
+ENV DEBEZIUM_VERSION=3.1.0-SNAPSHOT \
     DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
-    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots"
+    MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
+ENV PLATFORM_CONDUCTOR_URL_PATH=io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$DEBEZIUM_VERSION.tar.gz \
+    PLATFORM_CONDUCTOR_MD5=''
 
 USER root
 
@@ -99,15 +99,17 @@ RUN microdnf install -y gzip
 RUN mkdir $DEBEZIUM_PLATFORM_CONDUCTOR_HOME;
 
 #
-# Download the snapshot version of debezium-operator and then install it to the `$DEBEZIUM_PLATFORM_CONDUCTOR_HOME` directory...
+# Download and install Debezium Operator
 #
-RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
-    echo "Downloading and installing debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." ; \
-    curl --silent -fSL -o /tmp/debezium-platform-conductor.tar.gz  $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz && \
-    echo "Extracting debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." && \
-    tar xzf /tmp/debezium-platform-conductor.tar.gz -C $DEBEZIUM_PLATFORM_CONDUCTOR_HOME --strip-components 1 && \
-    echo "Successfully installed debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz !" && \
-    rm -f /tmp/debezium-platform-conductor.tar.gz;
+RUN curl -fSL -o /tmp/platform-conductor.tar.gz "$MAVEN_REPO_CENTRAL/$PLATFORM_CONDUCTOR_URL_PATH"
+
+#
+# Verify the contents and then install ...
+#
+
+RUN /bin/sh -c '[ -z "$PLATFORM_CONDUCTOR_MD5" ] || echo "$PLATFORM_CONDUCTOR_MD5 /tmp/platform-conductor.tar.gz" | md5sum -c -' && \
+    tar xzf /tmp/platform-conductor.tar.gz -C $DEBEZIUM_PLATFORM_CONDUCTOR_HOME --strip-components 1 && \
+    rm -f /tmp/platform-conductor.tar.gz
 
 #
 # Set the owner on `$DEBEZIUM_PLATFORM_CONDUCTOR_HOME`
