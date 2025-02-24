@@ -125,10 +125,9 @@ build_docker_image connect-base
 build_docker_image connect
 build_docker_image server
 build_docker_image operator
-build_docker_image platform-conductor
-build_docker_image platform-stage
 if [[ "$SKIP_UI" != "true" ]]; then
-    build_docker_image debezium-ui ui
+    build_docker_image platform-conductor
+    build_docker_image platform-stage
 fi
 build_docker_image example-mysql examples/mysql
 build_docker_image example-mysql-gtids examples/mysql-gtids
