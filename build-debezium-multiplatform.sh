@@ -134,7 +134,9 @@ build_docker_image example-mysql-gtids examples/mysql-gtids
 build_docker_image example-mysql-master examples/mysql-replication/master
 build_docker_image example-mysql-replica examples/mysql-replication/replica
 build_docker_image example-mariadb examples/mariadb
-build_docker_image example-postgres examples/postgres
+if [[ "$DEFAULT_PLATFORM" != "linux/arm64" ]]; then
+    build_docker_image example-postgres examples/postgres
+fi
 build_docker_image example-mongodb examples/mongodb
 
 echo ""
