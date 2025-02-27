@@ -4,6 +4,10 @@ FROM $DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME/connect-base:3.1
 LABEL maintainer="Debezium Community"
 
 ENV DEBEZIUM_VERSION="3.1.0.Alpha2" \
+    APICURIO_VERSION=2.6.2.Final \
+    APICURIO_MD5=25e9ef205952c6ecb03cfb59098c229f \
+    JOLOKIA_VERSION=1.7.2 \
+    JOLOKIA_MD5=d489d62d1143e6a2e85a869a4b824a67 \
     MAVEN_REPO_CENTRAL="" \
     MAVEN_REPOS_ADDITIONAL="" \
     MONGODB_MD5=0d558974b57686b6b6821110cd57df43 \
@@ -19,9 +23,20 @@ ENV DEBEZIUM_VERSION="3.1.0.Alpha2" \
     INFORMIX_MD5=746323f31db9991c4183cd4e35956e06 \
     IBMI_MD5=1d0495bff573ec9e64291f86fac8d01f \
     KCRESTEXT_MD5=f0391f1efac18834768059a692caaf88 \
-    SCRIPTING_MD5=6516fc1feb86c5359031bfb05060bc36
+    SCRIPTING_MD5=6516fc1feb86c5359031bfb05060bc36 \
+    OPENTELEMETRY_VERSION=1.23.1 \
+    OPENTELEMETRY_INSTRUMENTATION_VERSION=1.23.0 \
+    OTEL_API_MD5=e198a9568ce31a82faaa26f328388e89 \
+    OTEL_CONTEXT_MD5=783594a506dbf035e686776d5bcb4bfc \
+    OTEL_SEMCONV_MD5=dab8c00d4eaa453315d9a3da0d63c49a \
+    OTEL_INSAPI_MD5=e4069a077dd8d6206c540222d08769e2 \
+    OTEL_INSAPISEM_MD5=f4b8065fd7b451cea6bfb3c0bf235d26 \
+    OTEL_KAFKA_CLIENT26_MD5=5d6e5ba9ea90adacf66e3f471596933b \
+    OTEL_KAFKA_CLIENT_COMMON_MD5=f37131795d53faa6423173926629d04d
 
-RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
+RUN docker-maven-download apicurio "$APICURIO_VERSION" "$APICURIO_MD5" && \
+    docker-maven-download central org/jolokia jolokia-jvm "$JOLOKIA_VERSION" "$JOLOKIA_MD5" && \
+    docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
     docker-maven-download debezium mariadb "$DEBEZIUM_VERSION" "$MARIADB_MD5" && \
     docker-maven-download debezium postgres "$DEBEZIUM_VERSION" "$POSTGRES_MD5" && \
@@ -34,5 +49,11 @@ RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" &&
     docker-maven-download debezium-additional informix informix "$DEBEZIUM_VERSION" "$INFORMIX_MD5" && \
     docker-maven-download debezium-additional ibmi ibmi "$DEBEZIUM_VERSION" "$IBMI_MD5" && \
     docker-maven-download debezium-optional connect-rest-extension "$DEBEZIUM_VERSION" "$KCRESTEXT_MD5" && \
-    docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5"
-
+    docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5" &&\
+    docker-maven-download otel io/opentelemetry opentelemetry-api "$OPENTELEMETRY_VERSION" "$OTEL_API_MD5"
+    docker-maven-download otel io/opentelemetry opentelemetry-context "$OPENTELEMETRY_VERSION" "$OTEL_CONTEXT_MD5"
+    docker-maven-download otel io/opentelemetry opentelemetry-semconv "$OPENTELEMETRY_VERSION"-alpha "$OTEL_SEMCONV_MD5"
+    docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-instrumentation-api "$OPENTELEMETRY_INSTRUMENTATION_VERSION" "$OTEL_INSAPI_MD5"
+    docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-instrumentation-api-semconv "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha "$OTEL_INSAPISEM_MD5"
+    docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-kafka-clients-2.6 "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha "$OTEL_KAFKA_CLIENT26_MD5"
+    docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-kafka-clients-common "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha "$OTEL_KAFKA_CLIENT_COMMON_MD5"
