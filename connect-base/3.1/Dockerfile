@@ -3,6 +3,10 @@ FROM $DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME/kafka:3.1
 
 LABEL maintainer="Debezium Community"
 
+ARG OTEL_ENABLED=yes
+ARG APICURIO_ENABLED=yes
+ARG JOLOKIA_ENABLED=yes
+
 USER root
 RUN microdnf -y install libaio && microdnf clean all
 
@@ -42,16 +46,23 @@ RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 # This will prevent the classes in the shared dependencies from appearing in multiple JARs
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
-RUN docker-maven-download apicurio "$APICURIO_VERSION" 25e9ef205952c6ecb03cfb59098c229f
-RUN docker-maven-download central org/jolokia jolokia-jvm "$JOLOKIA_VERSION" d489d62d1143e6a2e85a869a4b824a67
-RUN docker-maven-download otel io/opentelemetry opentelemetry-api "$OPENTELEMETRY_VERSION" e198a9568ce31a82faaa26f328388e89
-RUN docker-maven-download otel io/opentelemetry opentelemetry-context "$OPENTELEMETRY_VERSION" 783594a506dbf035e686776d5bcb4bfc
-RUN docker-maven-download otel io/opentelemetry opentelemetry-semconv "$OPENTELEMETRY_VERSION"-alpha dab8c00d4eaa453315d9a3da0d63c49a
-RUN docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-instrumentation-api "$OPENTELEMETRY_INSTRUMENTATION_VERSION" e4069a077dd8d6206c540222d08769e2
-RUN docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-instrumentation-api-semconv "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha f4b8065fd7b451cea6bfb3c0bf235d26
-RUN docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-kafka-clients-2.6 "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha 5d6e5ba9ea90adacf66e3f471596933b
-RUN docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-kafka-clients-common "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha f37131795d53faa6423173926629d04d
+RUN if [ "$APICURIO_ENABLED" = "yes" ]; then \
+       docker-maven-download apicurio "$APICURIO_VERSION" 25e9ef205952c6ecb03cfb59098c229f; \
+    fi
 
+RUN if [ "$JOLOKIA_ENABLED" = "yes" ]; then \
+       docker-maven-download central org/jolokia jolokia-jvm "$JOLOKIA_VERSION" d489d62d1143e6a2e85a869a4b824a67; \
+    fi
+
+RUN if [ "$OTEL_ENABLED" = "true" ]; then \
+       docker-maven-download otel io/opentelemetry opentelemetry-api "$OPENTELEMETRY_VERSION" e198a9568ce31a82faaa26f328388e89 \
+       && docker-maven-download otel io/opentelemetry opentelemetry-context "$OPENTELEMETRY_VERSION" 783594a506dbf035e686776d5bcb4bfc \
+       && docker-maven-download otel io/opentelemetry opentelemetry-semconv "$OPENTELEMETRY_VERSION"-alpha dab8c00d4eaa453315d9a3da0d63c49a \
+       && docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-instrumentation-api "$OPENTELEMETRY_INSTRUMENTATION_VERSION" e4069a077dd8d6206c540222d08769e2 \
+       && docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-instrumentation-api-semconv "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha f4b8065fd7b451cea6bfb3c0bf235d26 \
+       && docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-kafka-clients-2.6 "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha 5d6e5ba9ea90adacf66e3f471596933b \
+       && docker-maven-download otel io/opentelemetry/instrumentation opentelemetry-kafka-clients-common "$OPENTELEMETRY_INSTRUMENTATION_VERSION"-alpha f37131795d53faa6423173926629d04d; \
+    fi
 
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["start"]
