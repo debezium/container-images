@@ -21,7 +21,8 @@ echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1"
 echo "****************************************************************"
 docker build -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1" "postgres/$1"
 
-if [ "$PUSH_IMAGES" == "true" ]; then
+
+if [[ "$PUSH_IMAGES" == "true" || "$DRY_RUN" == "false" ]]; then
     echo "Pushing the image into the registry"
     docker push "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/postgres:$1"
     if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then

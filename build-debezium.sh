@@ -44,7 +44,7 @@ build_docker_image () {
         echo "** Stream Tag  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}       "
         echo "****************************************************************"
         docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
-        if [ "$PUSH_IMAGES" == "true" ]; then
+        if [[ "$PUSH_IMAGES" == "true" || "$DRY_RUN" == "false" ]]; then
             echo "Pushing the stream image into the registry"
             docker push "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
 	    if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
@@ -67,7 +67,7 @@ build_docker_image () {
         echo "** Release Tag ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}       "
         echo "****************************************************************"
         docker tag "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}"
-        if [ "$PUSH_IMAGES" == "true" ]; then
+        if [[ "$PUSH_IMAGES" == "true" || "$DRY_RUN" == "false" ]]; then
             echo "Pushing the stream image into the registry"
             docker push "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}"
 	    if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
