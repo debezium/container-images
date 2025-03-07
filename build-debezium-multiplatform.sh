@@ -77,8 +77,22 @@ build_docker_image () {
 
     echo "Build Image with Tags " "${TAGS[@]}" " and platform ${PLATFORM}"
 
+    PUSH_FLAG="--push"
+    if [[ "$DRY_RUN" == "true" ]]; then
+      PUSH_FLAG=""
+    fi
+
+    echo "****************************************************************"
+    echo "Running docker buildx build $PUSH_FLAG --platform \"${PLATFORM}\" \
+                        --progress=plain \
+                        --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=\"$DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME\" \
+                        --label build-at=$(date +%s) \
+                          ${TAGS[*]} \
+                          \"${IMAGE_PATH}\""
+    echo "****************************************************************"
+
     # shellcheck disable=SC2068
-    docker buildx build --push --platform "${PLATFORM}" \
+    docker buildx build $PUSH_FLAG --platform "${PLATFORM}" \
       --progress=plain \
       --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="$DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME" \
       --label "build-at=$(date +%s)" \

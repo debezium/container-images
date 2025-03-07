@@ -40,8 +40,21 @@ if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
   TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/postgres:$1")
 fi;
 
+PUSH_FLAG="--push"
+    if [[ "$DRY_RUN" == "true" ]]; then
+      PUSH_FLAG=""
+    fi
+
+echo "****************************************************************"
+echo "Running docker buildx build $PUSH_FLAG --platform \"${PLATFORM}\" \
+                        --progress=plain \
+                        --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=\"$DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME\" \
+                          ${TAGS[*]} \
+                          \"postgres/$1\""
+echo "****************************************************************"
+
 # shellcheck disable=SC2068
-docker buildx build --push --platform "${PLATFORM}" \
+docker buildx build $PUSH_FLAG --platform "${PLATFORM}" \
       --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" \
       ${TAGS[@]} \
       "postgres/$1"
