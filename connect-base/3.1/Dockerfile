@@ -54,7 +54,7 @@ RUN if [ "$JOLOKIA_ENABLED" = "yes" ]; then \
        docker-maven-download central org/jolokia jolokia-jvm "$JOLOKIA_VERSION" d489d62d1143e6a2e85a869a4b824a67; \
     fi
 
-RUN if [ "$OTEL_ENABLED" = "true" ]; then \
+RUN if [ "$OTEL_ENABLED" = "yes" ]; then \
        docker-maven-download otel io/opentelemetry opentelemetry-api "$OPENTELEMETRY_VERSION" e198a9568ce31a82faaa26f328388e89 \
        && docker-maven-download otel io/opentelemetry opentelemetry-context "$OPENTELEMETRY_VERSION" 783594a506dbf035e686776d5bcb4bfc \
        && docker-maven-download otel io/opentelemetry opentelemetry-semconv "$OPENTELEMETRY_VERSION"-alpha dab8c00d4eaa453315d9a3da0d63c49a \
