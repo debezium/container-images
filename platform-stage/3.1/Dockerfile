@@ -10,7 +10,7 @@ WORKDIR /app
 RUN microdnf install -y git
 # Please do not aggregate the following line with other.
 # This is explicitely leaved in a single line since it will be replace in the release pipeline
-COPY platform ./debezium-platform
+RUN git clone -b ${BRANCH} https://github.com/debezium/debezium-platform.git
 RUN cd debezium-platform && \
     cd debezium-platform-stage 
 
