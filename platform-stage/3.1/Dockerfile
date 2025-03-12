@@ -1,7 +1,7 @@
 ####
 # This Dockerfile is used in order to build a container with Debezium platform UI.
 ###
-ARG BRANCH=main
+ARG BRANCH=v3.1.0.Beta1
 
 # Clone the repository
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS cloner
@@ -10,7 +10,7 @@ WORKDIR /app
 RUN microdnf install -y git
 # Please do not aggregate the following line with other.
 # This is explicitely leaved in a single line since it will be replace in the release pipeline
-RUN git clone -b ${BRANCH} https://github.com/debezium/debezium-platform.git
+COPY platform ./debezium-platform
 RUN cd debezium-platform && \
     cd debezium-platform-stage 
 
