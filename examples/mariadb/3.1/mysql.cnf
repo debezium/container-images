@@ -42,5 +42,6 @@ server-id         = 223344
 log_bin           = mysql-bin
 binlog_expire_logs_seconds  = 86400
 binlog_format     = row
+binlog_legacy_event_pos = on
 
 default_authentication_plugin = mysql_native_password
