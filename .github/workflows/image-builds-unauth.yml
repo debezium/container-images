@@ -1,6 +1,9 @@
 name: Build Container Images as Anonymous
 on:
   pull_request:
+    paths-ignore:
+      - 'oracle/**'
+      - 'build-oracle.sh'
 
 jobs:
   build:
