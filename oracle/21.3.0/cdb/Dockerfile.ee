@@ -1,0 +1,15 @@
+FROM container-registry.oracle.com/database/enterprise:21.3.0.0
+
+LABEL maintainer="Debezium Community"
+
+ENV ORACLE_SID=ORCLCDB \
+    ORACLE_PDB=ORCLPDB1 \
+    ORACLE_PWD=top_secret \
+    ORACLE_EDITION=enterprise \
+    ENABLE_ARCHIVELOG=true \
+    DEBEZIUM_CDB=true
+
+COPY --chown=54321 scripts/setup/00-debezium-install.sh /opt/oracle/scripts/setup
+COPY --chown=54321 scripts/startup/00-debezium-restart-capture-instances.sh /opt/oracle/scripts/startup
+
+USER oracle
