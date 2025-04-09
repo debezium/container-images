@@ -41,10 +41,11 @@ build_oracle_image() {
   echo ""
   docker run -d --name oracle -p 1521:1521 --memory=4g -e DEBEZIUM_ADAPTER="${ADAPTER_NAME}" "${BASE_IMAGE_NAME}"
 
+  # Cleanup pipe if it still exists
+  rm -f .logpipe
+
   # Waits until the installation has completed within the container
   mkfifo .logpipe && (docker logs -f oracle | tee .logpipe & awk '/DATABASE SETUP WAS NOT SUCCESSFUL/ { exit 1 } /DATABASE IS READY TO USE/ { exit 0 }' < .logpipe; kill $!; rm .logpipe)
-  # (docker logs -f oracle & LOG_PID=$!; awk '/DATABASE SETUP WAS NOT SUCCESSFUL/ { print; exit 1 } /DATABASE IS READY TO USE/ { print; exit 0 } { print }'; kill $LOG_PID) < <(docker logs -f oracle)
-  # (docker logs -f oracle | tee ||: ) | sed '/DATABASE IS READY TO USE|/ q'
 
   echo ""
   echo "****************************************************************************************************************"
@@ -73,15 +74,22 @@ build_oracle_edition() {
   IMAGE_EDITION=$2;
   CONTAINERIZED=$3;
 
+  if [[ "$CONTAINERIZED" == "false" ]]; then
+    if [[ "$IMAGE_VERSION" != "19.3.0" ]]; then
+      echo "** ${IMAGE_VERSION} does not support non-CDB installation, skipped."
+      return;
+    fi
+  fi
+
   IMAGE_PATH="${IMAGE_VERSION}/cdb"
   if [[ "$CONTAINERIZED" != "true" ]]; then
     IMAGE_PATH="${IMAGE_VERSION}/noncdb"
   fi
 
   if [[ "$CONTAINERIZED" == "true" ]]; then
-    BASE_IMAGE_NAME=dbz-oracle-base:${IMAGE_VERSION}-${IMAGE_EDITION}
+    IMAGE_NAME=dbz-oracle-base:${IMAGE_VERSION}-${IMAGE_EDITION}
   else
-    BASE_IMAGE_NAME=dbz-oracle-base:${IMAGE_VERSION}-${IMAGE_EDITION}-noncdb
+    IMAGE_NAME=dbz-oracle-base:${IMAGE_VERSION}-${IMAGE_EDITION}-noncdb
   fi
 
   DOCKERFILE_SOURCE="oracle/${IMAGE_PATH}/Dockerfile.${IMAGE_EDITION}"
@@ -89,24 +97,24 @@ build_oracle_edition() {
   # The dbz-oracle-base image is one that is based on Oracle's container registry image
   # with our installation and setup scripts baked into the image.
   echo "****************************************************************************************************************"
-  echo "** Building ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${BASE_IMAGE_NAME} from ${DOCKERFILE_SOURCE}"
+  echo "** Building ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME} from ${DOCKERFILE_SOURCE}"
   echo "****************************************************************************************************************"
   echo ""
   DOCKER_BUILDKIT=0 docker build -f "${DOCKERFILE_SOURCE}" \
-    -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${BASE_IMAGE_NAME}" oracle/
+    -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}" oracle/
 
-  build_oracle_image "${IMAGE_VERSION}" "${IMAGE_EDITION}" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${BASE_IMAGE_NAME}" logminer "${CONTAINERIZED}"
-  build_oracle_image "${IMAGE_VERSION}" "${IMAGE_EDITION}" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${BASE_IMAGE_NAME}" xstream "${CONTAINERIZED}"
+  build_oracle_image "${IMAGE_VERSION}" "${IMAGE_EDITION}" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}" logminer "${CONTAINERIZED}"
+  build_oracle_image "${IMAGE_VERSION}" "${IMAGE_EDITION}" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}" xstream "${CONTAINERIZED}"
 }
 
 # Parameter 1: Oracle version path
 build_oracle() {
   # Builds Oracle Standard Editions
   build_oracle_edition "$1" se true
-  # build_oracle_edition $1 se false
+  build_oracle_edition "$1" se false
   # Builds Oracle Enterprise Editions
   build_oracle_edition "$1" ee true
-  # build_oracle_edition $1 ee false
+  build_oracle_edition "$1" ee false
 }
 
 if [[ -z "$1" ]]; then
