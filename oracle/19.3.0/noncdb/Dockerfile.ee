@@ -1,0 +1,18 @@
+FROM container-registry.oracle.com/database/enterprise:19.3.0.0
+
+LABEL maintainer="Debezium Community"
+
+ENV ORACLE_SID=ORCLCDB \
+    ORACLE_PWD=top_secret \
+    ORACLE_EDITION=enterprise \
+    ENABLE_ARCHIVELOG=true \
+    DEBEZIUM_CDB=false
+
+COPY --chown=54321 19.3.0/noncdb/dbca.rsp.tmpl /opt/oracle/dbca.rsp.tmpl
+COPY --chown=54321 19.3.0/noncdb/checkDBStatus.sh /opt/oracle/checkDBStatus.sh
+COPY --chown=54321 19.3.0/noncdb/runOracle.sh.orig /opt/oracle/runOracle.sh.orig
+
+COPY --chown=54321 scripts/setup/00-debezium-install.sh /opt/oracle/scripts/setup
+COPY --chown=54321 scripts/startup/00-debezium-restart-capture-instances.sh /opt/oracle/scripts/startup
+
+USER oracle
