@@ -1,3 +1,5 @@
+# Oracle distributes a single image for both Enterprise and Standard editions.
+# We toggle which installation gets linked and used by setting ORACLE_EDITION below.
 FROM container-registry.oracle.com/database/enterprise:21.3.0.0
 
 LABEL maintainer="Debezium Community"
