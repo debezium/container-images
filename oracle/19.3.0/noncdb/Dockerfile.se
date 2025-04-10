@@ -1,3 +1,5 @@
+# Oracle distributes a single image for both Enterprise and Standard editions.
+# We toggle which installation gets linked and used by setting ORACLE_EDITION below.
 FROM container-registry.oracle.com/database/enterprise:19.3.0.0
 
 LABEL maintainer="Debezium Community"
@@ -8,7 +10,13 @@ ENV ORACLE_SID=ORCLCDB \
     ENABLE_ARCHIVELOG=true \
     DEBEZIUM_CDB=false
 
+# Oracle images will install using a CDB environment as it has been the default since 12.2.
+# In addition, CDB installations are only supported in Oracle 19, as they're disabled in Oracle 21.
+# The DBCA response template file sets the installation to use a non-CDB configuration.
 COPY --chown=54321 19.3.0/noncdb/dbca.rsp.tmpl /opt/oracle/dbca.rsp.tmpl
+
+# There are a few bugs in the Oracle install scripts that don't work when setting the DBCA response
+# template to use a non-CDB installation, so we have tweaked the scripts to work with non-CDB installs.
 COPY --chown=54321 19.3.0/noncdb/checkDBStatus.sh /opt/oracle/checkDBStatus.sh
 COPY --chown=54321 19.3.0/noncdb/runOracle.sh.orig /opt/oracle/runOracle.sh.orig
 
