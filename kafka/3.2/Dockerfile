@@ -8,9 +8,9 @@ LABEL maintainer="Debezium Community"
 # MD5 hash taken from http://kafka.apache.org/downloads.html for this version of Kafka
 # These argument defaults can be overruled during build time but compatibility cannot be guaranteed when the defaults are not used.
 #
-ARG KAFKA_VERSION=3.9.0
+ARG KAFKA_VERSION=4.0.0
 ARG SCALA_VERSION=2.13
-ARG SHA512HASH="5324C1F44D4C84EA469712C2CC3D2D15545C3716EDBB5353722DF9C661FCC78B031FCF07D1C4F0309C5FDB32686665DFB0CFFE55210CD3A1FE2A370538CB4E6D"
+ARG SHA512HASH="00722AB0A6B954E0006994B8D589DCD8F26E1827C47F70B6E820FB45AA35945C19163B0F188CAF0CAF976C11F7AB005FD368C54E5851E899D2DE687A804A5EB9"
 
 ENV KAFKA_VERSION=$KAFKA_VERSION \
     SCALA_VERSION=$SCALA_VERSION \
@@ -40,11 +40,10 @@ RUN chown -R kafka $KAFKA_HOME && \
 # 2.) Verify the contents and install, remove TGZ file
 # 3.) Remove potentially exploitable classes (see CVE-2021-4104/DBZ-4447 CVE-2019-17571 CVE-2022-23302 CVE-2022-23305 CVE-2020-9493)
 # 4.) Allow random UID to use Kafka (doing this for the bulk of files here, so as to avoid overhead of doing it in a separate layer)
-RUN curl -fSL -o /tmp/kafka.tgz $(curl --stderr /dev/null https://www.apache.org/dyn/closer.cgi\?as_json\=1 | sed -rn 's/.*"preferred":.*"(.*)"/\1/p')$KAFKA_URL_PATH || curl -fSL -o /tmp/kafka.tgz https://archive.apache.org/dist/$KAFKA_URL_PATH &&\
+RUN curl -fSL -o /tmp/kafka.tgz https://dlcdn.apache.org/$KAFKA_URL_PATH || curl -fSL -o /tmp/kafka.tgz https://archive.apache.org/dist/$KAFKA_URL_PATH &&\
     echo "$SHA512HASH /tmp/kafka.tgz" | sha512sum -c - &&\
     tar -xzf /tmp/kafka.tgz -C $KAFKA_HOME --strip-components 1 &&\
     rm -f /tmp/kafka.tgz &&\
-    zip -d /kafka/libs/reload4j-1.2.25.jar org/apache/log4j/net/JMSAppender.class org/apache/log4j/net/SocketServer.class org/apache/log4j/net/JMSSink.class 'org/apache/log4j/jdbc/*' 'org/apache/log4j/chainsaw/*' &&\
     chmod -R g+w,o+w $KAFKA_HOME
 
 COPY ./log4j.properties $KAFKA_HOME/config/log4j.properties
