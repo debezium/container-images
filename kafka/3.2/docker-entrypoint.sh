@@ -26,38 +26,23 @@ if [[ -z "$NODE_ID" ]]; then
     fi
 fi
 
-# ZooKeeper mode
-if [[ -z "$CLUSTER_ID" ]]; then
-    CONFIG_FILE=config/server.properties
-    echo "Starting in ZooKeeper mode using NODE_ID=$NODE_ID."
-
-    if [[ -z "$ZOOKEEPER_CONNECT" ]]; then
-        # Look for any environment variables set by Docker container linking. For example, if the container
-        # running Zookeeper were named 'zoo' in this container, then Docker should have created several envs,
-        # such as 'ZOO_PORT_2181_TCP'. If so, then use that to automatically set the 'zookeeper.connect' property.
-        export ZOOKEEPER_CONNECT=$(env | grep .*PORT_2181_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
-    fi
-    if [[ "x$ZOOKEEPER_CONNECT" = "x" ]]; then
-        export ZOOKEEPER_CONNECT=0.0.0.0:2181
-    fi
-    echo "Using ZOOKEEPER_CONNECT=$ZOOKEEPER_CONNECT"
-
 # KRaft mode
-else
-
-    if [[ -z "$NODE_ROLE" ]]; then
-        NODE_ROLE='combined';
-    fi
-
-    case "$NODE_ROLE" in
-     'combined' ) CONFIG_FILE=config/kraft/server.properties;;
-     'broker' ) CONFIG_FILE=config/kraft/broker.properties;;
-     'controller' ) CONFIG_FILE=config/kraft/controller.properties;;
-     *) CONFIG_FILE=config/kraft/server.properties;;
-    esac
-
-    echo "Starting in KRaft mode (EXPERIMENTAL), using CLUSTER_ID=$CLUSTER_ID, NODE_ID=$NODE_ID and NODE_ROLE=$NODE_ROLE."
+if [[ -z "$CLUSTER_ID" ]]; then
+    CLUSTER_ID='ldlg5yhkQeWtnUrZrC6edg';
+    echo 'CLUSTER_ID not set, using default'
 fi
+if [[ -z "$NODE_ROLE" ]]; then
+    NODE_ROLE='combined';
+fi
+
+case "$NODE_ROLE" in
+ 'combined' ) CONFIG_FILE=config/server.properties;;
+ 'broker' ) CONFIG_FILE=config/broker.properties;;
+ 'controller' ) CONFIG_FILE=config/controller.properties;;
+ *) CONFIG_FILE=config/server.properties;;
+esac
+
+echo "Starting in KRaft mode, using CLUSTER_ID=$CLUSTER_ID, NODE_ID=$NODE_ID and NODE_ROLE=$NODE_ROLE."
 
 echo "Using configuration $CONFIG_FILE."
 
@@ -66,13 +51,11 @@ if [[ -n "$HEAP_OPTS" ]]; then
     unset HEAP_OPTS
 fi
 
-export KAFKA_ZOOKEEPER_CONNECT=$ZOOKEEPER_CONNECT
 export KAFKA_NODE_ID=$NODE_ID
 export KAFKA_BROKER_ID=$NODE_ID
 export KAFKA_LOG_DIRS="${KAFKA_DATA}/$KAFKA_NODE_ID"
 mkdir -p $KAFKA_LOG_DIRS
 unset NODE_ID
-unset ZOOKEEPER_CONNECT
 
 if [[ -z "$ADVERTISED_PORT" ]]; then
     ADVERTISED_PORT=9092
@@ -94,16 +77,12 @@ fi
 : ${KAFKA_PORT:=${PORT}}
 : ${KAFKA_HOST_NAME:=${HOST_NAME}}
 
-if [[ -z "$CLUSTER_ID" ]]; then
-    : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT}
-else
-    case "$NODE_ROLE" in
-     'combined' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT,CONTROLLER://$KAFKA_HOST_NAME:$CONTROLLER_PORT};;
-     'broker' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT};;
-     'controller' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$CONTROLLER_PORT};;
-     *) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT,CONTROLLER://$KAFKA_HOST_NAME:$CONTROLLER_PORT};;
-    esac
-fi
+case "$NODE_ROLE" in
+ 'combined' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT,CONTROLLER://$KAFKA_HOST_NAME:$CONTROLLER_PORT};;
+ 'broker' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT};;
+ 'controller' ) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$CONTROLLER_PORT};;
+ *) : ${KAFKA_LISTENERS:=PLAINTEXT://$KAFKA_HOST_NAME:$KAFKA_PORT,CONTROLLER://$KAFKA_HOST_NAME:$CONTROLLER_PORT};;
+esac
 
 : ${KAFKA_ADVERTISED_LISTENERS:=PLAINTEXT://$KAFKA_ADVERTISED_HOST_NAME:$KAFKA_ADVERTISED_PORT}
 
@@ -194,7 +173,7 @@ case $1 in
         if [[ ! -z "$CLUSTER_ID" && ! -f "$KAFKA_LOG_DIRS/meta.properties" ]]; then
                 echo "No meta.properties found in $KAFKA_LOG_DIRS; going to format the directory"
 
-                $KAFKA_HOME/bin/kafka-storage.sh format -t $CLUSTER_ID -c $KAFKA_HOME/$CONFIG_FILE
+                $KAFKA_HOME/bin/kafka-storage.sh format --standalone -t $CLUSTER_ID -c $KAFKA_HOME/$CONFIG_FILE
         fi
 
         exec $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/$CONFIG_FILE
