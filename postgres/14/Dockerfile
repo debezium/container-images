@@ -1,7 +1,7 @@
 FROM mirror.gcr.io/library/postgres:14-bullseye AS build
 
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v3.1.1.Final
+ENV PLUGIN_VERSION=v3.2.0.Alpha1
 ENV PROTOC_VERSION=1.5
 
 ENV WAL2JSON_COMMIT_ID=wal2json_2_3
