@@ -3,7 +3,7 @@ LABEL maintainer="Debezium Community"
 ENV SITE_HOME=/site
 RUN apk add --no-cache build-base gcc bash cmake git jq nodejs yarn curl
 # Install Antora framework
-RUN yarn global add @antora/cli@3.1.7 @antora/site-generator-default@3.1.7 @antora/asciidoc-loader @antora/content-aggregator \
+RUN yarn global add @antora/cli@3.1.10 @antora/site-generator-default@3.1.10 @antora/asciidoc-loader @antora/content-aggregator \
     && yarn global add --ignore-optional --silent $(grep -o '^isomorphic-git@[^:]*' `yarn global dir`/yarn.lock) \
     && rm -rf $(yarn cache dir)/* \
     && find $(yarn global dir)/node_modules/handlebars/dist/* -maxdepth 0 -not -name cjs -exec rm -rf {} \; \
