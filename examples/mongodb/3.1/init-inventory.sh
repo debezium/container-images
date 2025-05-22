@@ -1,29 +1,13 @@
-HOSTNAME=`hostname`
-
-  OPTS=`getopt -o h: --long hostname: -n 'parse-options' -- "$@"`
-  if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
-
-  echo "$OPTS"
-  eval set -- "$OPTS"
-
-  while true; do
-    case "$1" in
-      -h | --hostname )     HOSTNAME=$2;        shift; shift ;;
-      -- ) shift; break ;;
-      * ) break ;;
-    esac
-  done
-echo "Using HOSTNAME='$HOSTNAME'"
-
 mongosh localhost:27017/inventory --eval "
     rs.initiate({
         _id: 'rs0',
-        members: [ { _id: 0, host: '${HOSTNAME}:27017' } ]
+        members: [ { _id: 0, host: 'localhost:27017' } ]
     });"
 
 echo "Initiated replica set"
 
 sleep 3
+
 mongosh localhost:27017/admin --eval "
     db.createUser({ user: 'admin', pwd: 'admin', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });
 "
