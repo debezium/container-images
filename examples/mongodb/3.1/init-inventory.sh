@@ -1,4 +1,4 @@
-HOSTNAME=`hostname`
+HOSTNAME=${HOSTNAME:=`hostname`}
 
   OPTS=`getopt -o h: --long hostname: -n 'parse-options' -- "$@"`
   if [ $? != 0 ] ; then echo "Failed parsing options." >&2 ; exit 1 ; fi
@@ -15,7 +15,7 @@ HOSTNAME=`hostname`
   done
 echo "Using HOSTNAME='$HOSTNAME'"
 
-mongosh localhost:27017/inventory --eval "
+mongosh -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD $HOSTNAME:27017/ --eval "
     rs.initiate({
         _id: 'rs0',
         members: [ { _id: 0, host: '${HOSTNAME}:27017' } ]
@@ -24,11 +24,8 @@ mongosh localhost:27017/inventory --eval "
 echo "Initiated replica set"
 
 sleep 3
-mongosh localhost:27017/admin --eval "
-    db.createUser({ user: 'admin', pwd: 'admin', roles: [ { role: 'userAdminAnyDatabase', db: 'admin' } ] });
-"
 
-mongosh -u admin -p admin localhost:27017/admin --eval "
+mongosh -u $MONGO_INITDB_ROOT_USERNAME -p $MONGO_INITDB_ROOT_PASSWORD $HOSTNAME:27017/admin --eval "
     db.runCommand({
         createRole: 'listDatabases',
         privileges: [
@@ -61,6 +58,6 @@ mongosh -u admin -p admin localhost:27017/admin --eval "
 
 echo "Created users"
 
-mongosh -u debezium -p dbz localhost:27017 --file /usr/local/bin/insert-inventory-data.js
+mongosh -u debezium -p dbz $HOSTNAME:27017 --file /usr/local/bin/insert-inventory-data.js
 
 echo "Inserted example data"
