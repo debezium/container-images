@@ -2,6 +2,9 @@ FROM mirror.gcr.io/library/mongo:6.0
 
 LABEL maintainer="Debezium Community"
 
+ENV MONGO_INITDB_ROOT_USERNAME=admin
+ENV MONGO_INITDB_ROOT_PASSWORD=admin
+
 COPY init-inventory.sh /usr/local/bin/
 COPY insert-inventory-data.js /usr/local/bin/
 
