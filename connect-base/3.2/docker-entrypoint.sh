@@ -75,29 +75,6 @@ unset MD5HASH
 unset SCALA_VERSION
 
 #
-# Parameter 1: Should the extension be enabled ("true") or disabled ("false")
-#
-# When enabled, the .jar for the extension is symlinked to from the Kafka Connect plugins directory.
-function set_debezium_kc_rest_extension_availability() {
-    ENABLED=$1;
-
-    if [[ "${ENABLED}" == "true" && ! -z "$EXTERNAL_LIBS_DIR" && -d "$EXTERNAL_LIBS_DIR/debezium-connect-rest-extension" ]] ; then
-        mkdir -p "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension"
-        ln -snf $EXTERNAL_LIBS_DIR/debezium-connect-rest-extension/* "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension"
-        if [ -z "${CONNECT_REST_EXTENSION_CLASSES-}" ]; then
-            export CONNECT_REST_EXTENSION_CLASSES=io.debezium.kcrestextension.DebeziumConnectRestExtension
-        else
-            export CONNECT_REST_EXTENSION_CLASSES=$CONNECT_REST_EXTENSION_CLASSES,io.debezium.kcrestextension.DebeziumConnectRestExtension
-        fi
-        echo Debezium Kafka Connect REST API Extension enabled!
-    else
-        if [[ -d "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension" ]] ; then
-            find "$KAFKA_CONNECT_PLUGINS_DIR/debezium-connect-rest-extension" -lname "$EXTERNAL_LIBS_DIR/debezium-connect-rest-extension/*" -exec rm -f {} \;
-        fi
-    fi
-}
-
-#
 # Parameter 1: Should the resource be enabled ("true") or disabled ("false")
 # Parameter 2: Folder path under $EXTERNAL_LIBS_DIR where the resource is deployed
 # Parameter 3: A wildcard pattern matching files from the resource folder
@@ -142,11 +119,6 @@ echo "Plugins are loaded from $CONNECT_PLUGIN_PATH"
 set_connector_additonal_resource_availability $ENABLE_APICURIO_CONVERTERS "apicurio" "*" "Apicurio connectors"
 set_connector_additonal_resource_availability $ENABLE_DEBEZIUM_SCRIPTING "debezium-scripting" "*.jar" "Debezium Scripting"
 set_connector_additonal_resource_availability $ENABLE_OTEL "otel" "*.jar" "OpenTelemetry"
-
-#
-# Set up Kafka Connect plugins
-#
-set_debezium_kc_rest_extension_availability $ENABLE_DEBEZIUM_KC_REST_EXTENSION
 
 #
 # Set up the JMX options
