@@ -6,11 +6,11 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory, and MD5 hash.
 #
-ENV DEBEZIUM_VERSION=3.1.1.Final \
+ENV DEBEZIUM_VERSION=3.1.2.Final \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
-    SERVER_MD5=416b0f7cb19b38345cb92df5f2f1ad43
+    SERVER_MD5=385508fbbff7c809579da914d22400a9
 
 #
 # Create a directory for Debezium Server
@@ -53,7 +53,7 @@ FROM registry.access.redhat.com/ubi8/openjdk-21
 
 LABEL maintainer="Debezium Community"
 
-ENV DEBEZIUM_VERSION=3.1.1.Final \
+ENV DEBEZIUM_VERSION=3.1.2.Final \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 

@@ -84,11 +84,11 @@ LABEL maintainer="Debezium Community"
 # Set the version, home directory
 #
 ENV LANGUAGE='en_US:en'
-ENV DEBEZIUM_VERSION=3.1.1.Final \
+ENV DEBEZIUM_VERSION=3.1.2.Final \
     DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 ENV PLATFORM_CONDUCTOR_URL_PATH=io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$DEBEZIUM_VERSION.tar.gz \
-    PLATFORM_CONDUCTOR_MD5=81b91ca674626f2c8efba51c2ee13188
+    PLATFORM_CONDUCTOR_MD5=437cda02354a6f7414888ca05d4be13a
 
 USER root
 
