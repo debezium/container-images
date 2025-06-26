@@ -88,7 +88,7 @@ ARG DEBEZIUM_VERSION=3.2.0-SNAPSHOT
 ENV LANGUAGE='en_US:en'
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
-    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots"
+    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
 
 USER root
 
