@@ -10,7 +10,7 @@ ARG DEBEZIUM_VERSION=3.2.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     SERVER_HOME=/debezium \
-    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots" 
+    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots" 
 
 #
 # Create a directory for Debezium Server
@@ -54,7 +54,7 @@ FROM registry.access.redhat.com/ubi8/openjdk-21
 LABEL maintainer="Debezium Community"
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     SERVER_HOME=/debezium \
-    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots" 
+    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots" 
 
 USER root
 RUN microdnf clean all
