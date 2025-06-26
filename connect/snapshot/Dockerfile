@@ -5,7 +5,7 @@ LABEL maintainer="Debezium Community"
 ARG DEBEZIUM_VERSION=3.2.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
-    MAVEN_OSS_SNAPSHOT="https://s01.oss.sonatype.org/content/repositories/snapshots"
+    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
 
 #
 # Download the snapshot version of the connectors and then install them into the `$KAFKA_CONNECT_PLUGINS_DIR/debezium` directory...
