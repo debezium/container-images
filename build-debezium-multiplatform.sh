@@ -133,7 +133,6 @@ DEFAULT_PLATFORM=$2
 DEBEZIUM_VERSION="$1"
 
 build_docker_image base base latest
-build_docker_image zookeeper
 build_docker_image kafka
 build_docker_image connect-base
 build_docker_image connect
