@@ -2,6 +2,8 @@
 
 set -eo pipefail
 
+source ./script-functions/common.sh
+
 if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
 fi;
@@ -70,9 +72,12 @@ build_docker_image () {
         echo "****************************************************************"
 
         TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
-	if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
-            TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
-	fi;
+        if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
+                  TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/${IMAGE_NAME}:${RELEASE_TAG}")
+        fi;
+
+        SEMVER_TAG=$(convert_to_semver "$RELEASE_TAG")
+        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${SEMVER_TAG}")
     fi
 
     echo "Build Image with Tags " "${TAGS[@]}" " and platform ${PLATFORM}"

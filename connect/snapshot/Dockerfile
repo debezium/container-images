@@ -1,8 +1,8 @@
-FROM quay.io/debezium/connect-base:3.2
+FROM quay.io/debezium/connect-base:3.3
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=3.2.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=3.3.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
@@ -10,7 +10,7 @@ ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
 #
 # Download the snapshot version of the connectors and then install them into the `$KAFKA_CONNECT_PLUGINS_DIR/debezium` directory...
 #
-RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,jdbc,spanner,vitess,informix,ibmi,mariadb}; do \
+RUN for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,jdbc,spanner,vitess,informix,ibmi,mariadb,cockroachdb}; do \
     SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-connector-$CONNECTOR/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
     echo "Downloading and installing debezium-connector-$CONNECTOR-$SNAPSHOT_VERSION-plugin.tar.gz ..." ; \
     curl --silent -fSL -o /tmp/plugin.tar.gz \

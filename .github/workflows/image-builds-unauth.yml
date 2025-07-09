@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build Scripts
-        run: shellcheck build-*.sh
+        run: shellcheck build-*.sh ./script-functions/*.sh
       - name: Start local docker registry
         run: docker run -d -p 5500:5000 --restart=always --name registry registry:2
       - name: Set up QEMU
