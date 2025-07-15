@@ -19,7 +19,7 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
       - name: Build Scripts
-        run: shellcheck build-*.sh
+        run: shellcheck build-*.sh ./script-functions/*.sh
       - name: Run Scripts
         env:
           SKIP_UI: true
