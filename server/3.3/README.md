@@ -79,17 +79,22 @@ It could be used to tune memory settings etc.
 
 This environment variable is used in the same way as `JAVA_OPTS` and servers only for logical separation of Debezium Server specific settings.
 
+### `JMX_HOST`
+
+This environment variable is the JMX host set for `java.rmi.server.hostname`.
+
+### `JMX_PORT`
+
+This environment variable is the JMX port set for `com.sun.management.jmxremote.port` and `com.sun.management.jmxremote.rmi.port`.
+
 ### Source/sink Configuration options
 
 All configuration options that could be present in `application.properties` can be either added or overridden via environment variables.
 This is enabled by using [MicroProfile Config](https://github.com/eclipse/microprofile-config) in Debezium Server.
 
-
-
 # Ports
 
 Containers created using this image will expose port `8080`, which is the standard port to access [MicroProfile Health](https://github.com/eclipse/microprofile-health) endpoint.
-
 
 # Volumes
 
@@ -102,3 +107,14 @@ In this volume the configuration files (mostly `application.properties`) are loc
 ### `/debezium/data`
 
 In this volume the data files (mostly file offset storage) are located.
+
+# JMX
+
+To access JMX metrics, the `JMX_HOST` and `JMX_PORT` environment variables must be set.
+
+In addition, the `quay.io/debezium/server` image ships with default access controls for JMX, defined in the following two files:
+
+* `/debezium/jmx/jmxremote.access`
+* `/debezium/jmx/jmxremote.password`
+
+It's recommended you modify these files as a part of your build process as needed.
