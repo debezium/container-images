@@ -18,6 +18,7 @@ ENV DEBEZIUM_VERSION="3.2.0.Final" \
     JDBC_MD5=1c6b201d69c1288e21f8a453d6751052 \
     INFORMIX_MD5=756dd8b96c60e67ed99a2ec139f98bd8 \
     IBMI_MD5=188fd3549f94d69f5a7f48f1a1679681 \
+    COCKROACHDB_MD5=TBD \
     SCRIPTING_MD5=b2df7c5557cfde7420e525f66710c755
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
@@ -32,5 +33,6 @@ RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" &&
     docker-maven-download debezium-additional vitess vitess "$DEBEZIUM_VERSION" "$VITESS_MD5" && \
     docker-maven-download debezium-additional informix informix "$DEBEZIUM_VERSION" "$INFORMIX_MD5" && \
     docker-maven-download debezium-additional ibmi ibmi "$DEBEZIUM_VERSION" "$IBMI_MD5" && \
+    docker-maven-download debezium-additional cockroachdb cockroachdb "$DEBEZIUM_VERSION" "$COCKROACHDB_MD5" && \
     docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5"
 
