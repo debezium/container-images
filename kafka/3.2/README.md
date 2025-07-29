@@ -8,39 +8,44 @@ Running Debezium involves Zookeeper, Kafka, and services that run Debezium's con
 
 # How to use this image
 
-This image can be used in several different ways. Unless you are running in "KRaft" mode (see below), all require an already-running Zookeeper service, which is either running locally via the container named `zookeeper` or with OpenShift running as a service named `zookeeper`.
+This image uses [KRaft mode](https://kafka.apache.org/documentation/#kraft) to run Kafka without ZooKeeper, which is the default and only supported mode in Kafka 4.0.0 and later.
 
 ## Start a Kafka broker
 
-Starting a Kafka broker using this image is simple:
+To start Kafka you must specify the following environment variables:
 
-    $ docker run -it --name kafka -p 9092:9092 --link zookeeper:zookeeper quay.io/debezium/kafka
+* `CLUSTER_ID`: A unique, persistent ID for the cluster (same across all nodes).
+* `NODE_ID`: A unique ID for the node within the cluster.
+* `NODE_ROLE`: One of controller, broker, or combined.
+* `KAFKA_CONTROLLER_QUORUM_VOTERS`: Identifies the controller nodes.
 
-This command uses this image and starts a new container named `kafka`, which runs in the foreground and attaches the console so that it display the broker's output and error messages. It exposes the broker on port 9092 and looks for Zookeeper in the container (or host) named `zookeeper`. See the environment variables below for additional information that can be supplied to the broker on startup.
+Here is an example command:
+
+```bash
+    docker run -it --name kafka \
+        -e CLUSTER_ID=oh-sxaDRTcyAr6pFRbXyzA \
+        -e NODE_ID=1 \
+        -e NODE_ROLE=combined \
+        -e KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka:9093 \
+        -p 9092:9092 -p 9093:9093 \
+        quay.io/debezium/kafka:${DEBEZIUM_VERSION}
+```
+
+This command uses this image and starts a new container named `kafka`, which runs in the foreground and attaches the console so that it display the broker's output and error messages. It exposes the broker on port 9092 and the controller communication on port 9093. See the environment variables below for additional information that can be supplied to the broker on startup.
 
 To start the container in _detached_ mode, simply replace the `-it` option with `-d`. No broker output will not be sent to your console, but it can be read at any time using the `docker logs` command. For example, the following command will display the output and keep following the output:
 
     $ docker logs --follow --name kafka
 
-## Running Kafka in KRaft mode
-
-Since Apache Kafka 2.8, there's experimental support for running without ZooKeeper,
-using Kafka's own implementation of the Raft consensus protocol implementation [KRaft](https://github.com/apache/kafka/blob/trunk/config/kraft/README.md).
-
-To start Kafka in KRaft mode, specify the `CLUSTER_ID` environment variable with a unique id of the cluster.
-The same id must be used for all nodes of the cluster.
-Then, for each node in the cluster, specify the `NODE_ROLE` variable, with a value of 'controller' (for controller nodes), 'broker' (for broker nodes), or 'combined' (for nodes acting as both controller and broker).
-Lastly, for each node in the cluster, specify the `KAFKA_CONTROLLER_QUORUM_VOTERS`variable, referencing the controller nodes in the form:`KAFKA_CONTROLLER_QUORUM_VOTERS=id-1@controller-node-1:controller-port-1,...`, e.g. `KAFKA_CONTROLLER_QUORUM_VOTERS=1@kafka-1:9093,2@kafka-2:9093,3@kafka-3:9093`.
-
-KRaft mode is an **experimental** feature as of Apache Kafka 2.8/3.0 and should not be used in production.
-
 ## Create a topic on a running broker
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and uses them to create a topic:
 
-    $ docker run -it --rm --link kafka:kafka quay.io/debezium/kafka create-topic [-p numPartitions] [-r numReplicas] [-c cleanupPolicy] topic-name
+```bash
+    docker run -it --rm --link kafka:kafka quay.io/debezium/kafka:${DEBEZIUM_VERSION} create-topic [-p numPartitions] [-r numReplicas] [-c cleanupPolicy] topic-name
+```    
 
-where `topic-name` is the name of the new topic, `numPartitions` is the number of partitions within the new topic, `numReplicas` is the number of replicas for each partition within the new topic and `cleanupPolicy` is the cleanup policy for the new topic (either `delete` or `compact`). The default for both `numPartitions` and `numReplicas` is '1'. The default `cleanupPolicy` is `delete`.
+Where `topic-name` is the name of the new topic, `numPartitions` is the number of partitions within the new topic, `numReplicas` is the number of replicas for each partition within the new topic and `cleanupPolicy` is the cleanup policy for the new topic (either `delete` or `compact`). The default for both `numPartitions` and `numReplicas` is '1'. The default `cleanupPolicy` is `delete`.
 
 The container will exit as soon as the request to create the topic completes, and because `--rm` is used the container will be immediately removed.
 
@@ -50,9 +55,11 @@ Simply run this command once for each topic you want to create.
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and watches a topic:
 
-    $ docker run -it --rm --link kafka:kafka quay.io/debezium/kafka watch-topic [-a] [-k] [-m minBytes] topic-name
+```bash
+    docker run -it --rm --link kafka:kafka quay.io/debezium/kafka:${DEBEZIUM_VERSION} watch-topic [-a] [-k] [-m minBytes] topic-name
+```
 
-where `topic-name` is the name of the topic, and
+Where `topic-name` is the name of the topic, and
 
 * `-a` is an optional flag that specifies that all of the topic messages should be displayed (i.e. from the beginning)
 * `-k` is an optional flag that specifies whether the message key should be shown (by default, the key will not be displayed)
@@ -62,52 +69,61 @@ where `topic-name` is the name of the topic, and
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and lists the existing topics:
 
-    $ docker run -it --rm --link kafka:kafka quay.io/debezium/kafka list-topics
+```bash
+    docker run -it --rm --link kafka:kafka quay.io/debezium/kafka:${DEBEZIUM_VERSION} list-topics
+```
 
 The container will exit (and be removed) immediately after the response is displayed.
 
 # Environment variables
 
-The Debezium Kafka image uses several environment variables when running a Kafka broker using this image.
-The `ZOOKEEPER_CONNECT` variable is also applied when using the `create-topic` and `list-topics` modes of this image.
+The Debezium Kafka image uses several environment variables when running a Kafka broker using this image:
 
-### `CLUSTER_ID`
+### `CLUSTER_ID` (required)
 
-This environment variable must be set in order to enable KRaft mode (running Kafka without ZooKeeper).
+Unique identifier for the Kafka cluster. Must be the same for all nodes in the cluster. 
 It must be set to the same unique value for each node in the cluster, e.g. 'oh-sxaDRTcyAr6pFRbXyzA'.
 
-### `NODE_ID`
+### `NODE_ID` (required)
 
-This environment variable is recommended. Set this to the unique and persistent number for the broker. This must be set for every broker in a Kafka cluster, and should be set for a single standalone broker. The default is '1', and setting this will update the Kafka configuration.
+Unique, persistent numeric identifier for the node in the cluster. Set this to the unique and persistent number for the broker.
+This must be set for every broker in a Kafka cluster, and should be set for a single standalone broker. 
 
-### `NODE_ROLE`
+The default is '1', and setting this will update the Kafka configuration.
 
-This environment variable is recommended when running Kafka in KRaft mode. Set its value to 'controller' (for controller nodes), 'broker' (for broker nodes), or 'combined' (for nodes acting as both controller and broker).
+### `NODE_ROLE` (required)
+
+Specifies the node's role: controller (for controller nodes), broker (for broker nodes), or combined (for nodes acting as both controller and broker).
 The default is 'combined'.
 
-### `ZOOKEEPER_CONNECT`
+### `KAFKA_CONTROLLER_QUORUM_VOTERS` (required)
 
-This environment variable is recommended, although linking to a `zookeeper` container precludes the need to use it. Otherwise, set this to a string described in the Kafka documentation for the 'zookeeper.connect' property so that the Kafka broker can find the Zookeeper service. Setting this will update the Kafka configuration.
+Specifies the controller quorum in the format:
 
-### `HOST_NAME`
+id1@host1:port1,id2@host2:port2,...
 
-This environment variable is a recommended setting. Set this to the hostname that the broker will bind to. Defaults to the hostname of the container.
+Example:
+1@kafka1:9093,2@kafka2:9093,3@kafka3:9093
 
-### `ADVERTISED_HOST_NAME`
+### `HOST_NAME` (recommended)
 
-This environment variable is an recommended setting. The host name specified with this environment variable will be registered in Zookeeper and given out to other workers to connect with. By default the value of `HOST_NAME` is used, so specify a different value if the `HOST_NAME` value will not be useful to or reachable by clients.
+Set this to the hostname that the broker will bind to. Defaults to the container hostname.
 
-### `HEAP_OPTS`
+### `ADVERTISED_HOST_NAME` (recommended)
 
-This environment variable is recommended. Use this to set the JVM options for the Kafka broker. By default a value of '-Xmx1G -Xms1G' is used, meaning that each Kafka broker uses 1GB of memory. Using too little memory may cause performance problems, while using too much may prevent the broker from starting properly given the memory available on the machine. Obviously the container must be able to use the amount of memory defined by this environment variable.
+The hostname advertised to clients. By default the value of `HOST_NAME` is used, so specify a different value if the `HOST_NAME` value will not be useful to or reachable by clients.
 
-### `CREATE_TOPICS`
+### `HEAP_OPTS` (recommended)
 
-This environment variable is optional. Use this to specify the topic(s) that should be created as soon as the broker starts. The value should be a comma-separated list of tuples in the form of `topic:partitions:replicas:(clean-up policy)?`. For example, when this environment variable is set to `topic1:1:2,topic2:3:1:compact`, then the container will create 'topic1' with 1 partition and 2 replicas, and 'topic2' with 3 partitions, 1 replica and `cleanup.policy` set to `compact`.
+Use this to set the JVM options for the Kafka broker. By default a value of '-Xmx1G -Xms1G' is used, meaning that each Kafka broker uses 1GB of memory. Using too little memory may cause performance problems, while using too much may prevent the broker from starting properly given the memory available on the machine. Obviously the container must be able to use the amount of memory defined by this environment variable.
 
-### `LOG_LEVEL`
+### `CREATE_TOPICS` (optional)
 
-This environment variable is optional. Use this to set the level of detail for Kafka's application log written to STDOUT and STDERR. Valid values are `INFO` (default), `WARN`, `ERROR`, `DEBUG`, or `TRACE`."
+Use this to specify the topic(s) that should be created as soon as the broker starts. The value should be a comma-separated list of tuples in the form of `topic:partitions:replicas:(clean-up policy)?`. For example, when this environment variable is set to `topic1:1:2,topic2:3:1:compact`, then the container will create 'topic1' with 1 partition and 2 replicas, and 'topic2' with 3 partitions, 1 replica and `cleanup.policy` set to `compact`.
+
+### `LOG_LEVEL` (optional)
+
+Use this to set the level of detail for Kafka's application log written to STDOUT and STDERR. Valid values are `INFO` (default), `WARN`, `ERROR`, `DEBUG`, or `TRACE`."
 
 ### Others
 
@@ -121,13 +137,11 @@ For example, the environment variable `KAFKA_ADVERTISED_HOST_NAME` is converted 
 
 The value of the environment variable may not contain a '\@' character.
 
-
 # Ports
 
-Containers created using this image will expose port 9092, which is the standard port used by Kafka.  You can  use standard Docker options to map this to a different port on the host that runs the container.
-When using KRaft mode, port 9093 will be exposed for the controller listener, if the node has the 'controller' or 'combined' role.
+Containers created using this image will expose port 9092, which is the standard port used by Kafka.  You can  use standard Docker options to map this to a different port on the host that runs the container. Also the port 9093 will be exposed for the controller listener, if the node has the 'controller' or 'combined' role.
 
-# Storing data
+# Data Persistence
 
 The Kafka broker run by this image writes data to the local file system, and the only way to keep this data is to use volumes that map specific directories inside the container to the local file system (or to OpenShift persistent volumes).
 
