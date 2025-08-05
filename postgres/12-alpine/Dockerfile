@@ -1,7 +1,7 @@
 FROM mirror.gcr.io/library/postgres:12-alpine
 
 LABEL maintainer="Debezium Community"
-ENV PLUGIN_VERSION=v3.2.0.Final
+ENV PLUGIN_VERSION=v3.3.0.Alpha1
 
 ENV WAL2JSON_COMMIT_ID=92b33c7d7c2fccbeb9f79455dafbc92e87e00ddd
 
