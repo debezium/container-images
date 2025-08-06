@@ -3,7 +3,7 @@
 SRC_REGISTRY='debezium'
 DEST_REGISTRY='quay.io/debezium'
 
-IMAGES='zookeeper kafka connect-base connect postgres mongo-initiator example-mysql example-mysql-gtids example-postgres example-mongodb'
+IMAGES='kafka connect-base connect postgres mongo-initiator example-mysql example-mysql-gtids example-postgres example-mongodb'
 
 for IMAGE in $IMAGES; do
   TAGS="$(skopeo inspect docker://debezium/$IMAGE | jq -r .RepoTags[])"
