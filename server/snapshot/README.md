@@ -18,7 +18,7 @@ The application itself can be configured either via environment variables or via
 
 Starting an instance of Debezium Server using this container image is simple:
 
-    $ docker run -it --name debezium -p 8080:8080 -v $PWD/conf:/debezium/conf -v $PWD/data:/debezium/data quay.io/debezium/server
+    $ docker run -it --name debezium -p 8080:8080 -v $PWD/config:/debezium/config -v $PWD/data:/debezium/data quay.io/debezium/server
 
 
 ## Example
@@ -40,8 +40,8 @@ Wait for Pulsar sink to start:
 Prepare Debezium Server deployment:
 
 ```
-    $ mkdir {data,conf}; chmod 777 {data,conf}
-    $ cat <<-EOF > conf/application.properties
+    $ mkdir {data,config}; chmod 777 {data,config}
+    $ cat <<-EOF > config/application.properties
 debezium.sink.type=pulsar
 debezium.sink.pulsar.client.serviceUrl=pulsar://pulsar:6650
 debezium.source.connector.class=io.debezium.connector.postgresql.PostgresConnector
@@ -62,7 +62,7 @@ Note that the configuration file can be replaced with environment variables wher
 
 Start the Debezium Server:
 
-    $ docker run -it --name debezium -p 8080:8080 -v $PWD/conf:/debezium/conf -v $PWD/data:/debezium/data --link postgres --link pulsar quay.io/debezium/server
+    $ docker run -it --name debezium -p 8080:8080 -v $PWD/confing:/debezium/confing -v $PWD/data:/debezium/data --link postgres --link pulsar quay.io/debezium/server
 
 
 # Environment variables
@@ -95,7 +95,7 @@ Containers created using this image will expose port `8080`, which is the standa
 
 The container image exposes two volumes:
 
-### `/debezium/conf`
+### `/debezium/confing`
 
 In this volume the configuration files (mostly `application.properties`) are located.
 
