@@ -1,7 +1,7 @@
 FROM mirror.gcr.io/library/postgres:15-alpine
 
 LABEL maintainer="Debezium Community"
-ENV PLUGIN_VERSION=v3.3.0.Beta1
+ENV PLUGIN_VERSION=v3.3.0.CR1
 
 RUN apk add --no-cache protobuf-c-dev
 
