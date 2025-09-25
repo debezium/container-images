@@ -1,7 +1,7 @@
 FROM mirror.gcr.io/library/postgres:15-bookworm AS build
 
 ARG USE_POSTGIS=true
-ENV PLUGIN_VERSION=v3.3.0.CR1
+ENV PLUGIN_VERSION=v3.2.3.Final
 ENV PROTOC_VERSION=1.5
 
 # Install the packages which will be required to get everything to compile
