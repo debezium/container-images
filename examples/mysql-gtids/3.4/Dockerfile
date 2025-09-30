@@ -4,3 +4,4 @@ LABEL maintainer="Debezium Community"
 
 COPY mysql.cnf /etc/mysql/conf.d/
 COPY inventory.sql /docker-entrypoint-initdb.d/
+RUN echo '!includedir /etc/mysql/conf.d/' >> /etc/my.cnf
