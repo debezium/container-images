@@ -15,6 +15,8 @@ PORT=27017
 : "${RS_NAME:=rs0}"
 : "${HOSTNAME:=$(hostname)}"
 : "${MONGODB_KEYFILE:=/etc/mongodb.keyfile}"
+: "${MONGO_INITDB_ROOT_USERNAME:=admin}"
+: "${MONGO_INITDB_ROOT_PASSWORD:=admin}"
 
 
 if command -v mongosh >/dev/null 2>&1; then
