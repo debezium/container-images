@@ -92,8 +92,8 @@ if [ ! -f "$REPLICA_FILE" ]; then
   mongod --shutdown
 
   echo "=> Starting MongoDB normally..."
-  exec mongod --keyFile "$MONGODB_KEYFILE" --replSet "$RS_NAME" --shardsvr --dbpath "$DB_PATH" --port "$PORT" --bind_ip_all
+  exec mongod --auth --keyFile "$MONGODB_KEYFILE" --replSet "$RS_NAME" --dbpath "$DB_PATH" --port "$PORT" --bind_ip_all
 else
   echo "=> MongoDB already initialized, starting normally..."
-  exec mongod --keyFile "$MONGODB_KEYFILE" --replSet "$RS_NAME" --shardsvr --dbpath "$DB_PATH" --port "$PORT" --bind_ip_all
+  exec mongod --auth --keyFile "$MONGODB_KEYFILE" --replSet "$RS_NAME" --dbpath "$DB_PATH" --port "$PORT" --bind_ip_all
 fi
