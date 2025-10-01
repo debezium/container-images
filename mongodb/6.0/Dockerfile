@@ -7,9 +7,7 @@ RUN openssl rand -base64 756 > /etc/mongodb.keyfile &&\
     chmod 400 /etc/mongodb.keyfile
 
 # Copy custom entrypoint script
-COPY mongodb-debezium-entrypoint.sh /usr/local/bin/mongodb-debezium-entrypoint.sh
-
-RUN chmod +x /usr/local/bin/mongodb-debezium-entrypoint.sh
+COPY --chmod=+x mongodb-debezium-entrypoint.sh /usr/local/bin/mongodb-debezium-entrypoint.sh
 
 # Switch to non-root user
 USER mongodb
