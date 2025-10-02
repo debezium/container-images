@@ -1,6 +1,6 @@
 # When changed, update also build-all-multiplatform.sh to make
 # sure give debezim/postgres version is built also for ARM.
-FROM quay.io/debezium/postgres:16
+FROM quay.io/debezium/postgres:18
 
 LABEL maintainer="Debezium Community"
 
