@@ -37,7 +37,7 @@ if [ ! -f "$REPLICA_FILE" ]; then
   tries=30
   while true; do
     if ! { [ -s "$PIDFILE" ] && ps "$(cat "$PIDFILE")" > /dev/null 2>&1; }; then
-      echo "❌ mongod process did not stay running. Check logs for errors."
+      echo "ERROR: mongod process did not stay running. Check logs for errors."
       exit 1
     fi
 
@@ -47,7 +47,7 @@ if [ ! -f "$REPLICA_FILE" ]; then
 
     tries=$((tries - 1))
     if [ "$tries" -le 0 ]; then
-      echo "❌ mongod did not accept connections quickly enough. Check logs for errors."
+      echo "ERROR: mongod did not accept connections quickly enough. Check logs for errors."
       exit 1
     fi
 
