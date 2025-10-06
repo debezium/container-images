@@ -17,6 +17,7 @@ PORT=27017
 : "${MONGODB_KEYFILE:=/etc/mongodb.keyfile}"
 : "${MONGO_INITDB_ROOT_USERNAME:=admin}"
 : "${MONGO_INITDB_ROOT_PASSWORD:=admin}"
+: "${RETRIES:=30}"
 
 
 if command -v mongosh >/dev/null 2>&1; then
@@ -34,7 +35,7 @@ if [ ! -f "$REPLICA_FILE" ]; then
   mongod --fork --dbpath "$DB_PATH" --port "$PORT" --logpath "$LOG_PATH" --pidfilepath "$PIDFILE"
 
   echo "=> Waiting for MongoDB to start..."
-  tries=30
+
   while true; do
     if ! { [ -s "$PIDFILE" ] && ps "$(cat "$PIDFILE")" > /dev/null 2>&1; }; then
       echo "ERROR: mongod process did not stay running. Check logs for errors."
@@ -45,8 +46,8 @@ if [ ! -f "$REPLICA_FILE" ]; then
       break
     fi
 
-    tries=$((tries - 1))
-    if [ "$tries" -le 0 ]; then
+    RETRIES=$((RETRIES - 1))
+    if [ "$RETRIES" -le 0 ]; then
       echo "ERROR: mongod did not accept connections quickly enough. Check logs for errors."
       exit 1
     fi
