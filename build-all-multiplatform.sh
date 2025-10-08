@@ -9,7 +9,7 @@ fi
 
 COMPONENTS=$*
 if [ -z "$COMPONENTS" ]; then
-  COMPONENTS="postgres debezium"
+  COMPONENTS="postgres debezium mongodb"
 fi;
 
 if [ -z "$MULTIPLATFORM_PLATFORMS" ]; then
@@ -31,6 +31,8 @@ DEBEZIUM_SINGLEPLATFORM_VERSIONS="1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8"
 
 POSTGRES_VERSIONS="14"
 POSTGRES_MULTIPLATFORM_VERSIONS="15 16 17 18 14-alpine 15-alpine 16-alpine 17-alpine 18-alpine"
+MONGODB_VERSIONS="6"
+MONGODB_MULTIPLATFORM_VERSIONS="6"
 
 docker buildx prune -f || true
 if shouldBuild "postgres"; then
@@ -50,5 +52,15 @@ if shouldBuild "debezium"; then
     else
       ./build-debezium-multiplatform.sh "${DBZ}" "${MULTIPLATFORM_PLATFORMS}"
     fi;
+  done
+fi;
+
+if shouldBuild "mongodb"; then
+  for MONGODB_VERSION in $MONGODB_MULTIPLATFORM_VERSIONS; do
+    ./build-mongodb-multiplatform.sh "$MONGODB_VERSION" "${MULTIPLATFORM_PLATFORMS}"
+  done
+
+  for MONGODB_VERSION in $MONGODB_VERSIONS; do
+    ./build-mongodb-multiplatform.sh "$MONGODB_VERSION" "linux/amd64"
   done
 fi;
