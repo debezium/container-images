@@ -30,7 +30,7 @@ function shouldBuild() {
 DEBEZIUM_SINGLEPLATFORM_VERSIONS="1.0 1.1 1.2 1.3 1.4 1.5 1.6 1.7 1.8"
 
 POSTGRES_VERSIONS="12 13 14"
-POSTGRES_MULTIPLATFORM_VERSIONS="15 16 17 18 12-alpine 13-alpine 14-alpine 15-alpine 16-alpine 17-alpine 18-alpine"
+POSTGRES_MULTIPLATFORM_VERSIONS="15 16 17 18 14-alpine 15-alpine 16-alpine 17-alpine 18-alpine"
 
 docker buildx prune -f || true
 if shouldBuild "postgres"; then
