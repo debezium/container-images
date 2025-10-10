@@ -8,7 +8,7 @@ function usage() {
   echo ""
   echo "$MSG"
   echo ""
-  echo "Usage:  build-mongodb-multiplatform <version> <platform>";
+  echo "Usage:  build-mongodb-multiplatform <release version> <base version> <platform>";
   echo ""
   echo "  Where platform can be for example:"
   echo "   linux/amd64"
@@ -19,13 +19,18 @@ function usage() {
 }
 
 if [[ -z "$1" ]]; then
-  usage "A version must be specified."
+  usage "A release version must be specified."
 fi
 
 if [[ -z "$2" ]]; then
+  usage "A base version must be specified."
+fi
+
+if [[ -z "$3" ]]; then
   usage "Platform must be specified."
 fi
-PLATFORM=$2
+
+PLATFORM=$3
 
 if [ -z "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" ]; then
   DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=quay.io/debezium
@@ -33,7 +38,7 @@ fi;
 
 echo ""
 echo "****************************************************************"
-echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongodb:$1 for $PLATFORM"
+echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongodb:$1 based on mongodb version $2 for $PLATFORM"
 echo "****************************************************************"
 TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongodb:$1")
 if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
@@ -48,13 +53,13 @@ PUSH_FLAG="--push"
 echo "****************************************************************"
 echo "Running docker buildx build $PUSH_FLAG --platform \"${PLATFORM}\" \
                         --progress=plain \
-                        --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME=\"$DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME\" \
+                        --build-arg IMAGE_TAG=\"$2\" \
                           ${TAGS[*]} \
                           \"mongodb/$1\""
 echo "****************************************************************"
 
 # shellcheck disable=SC2068
 docker buildx build $PUSH_FLAG --platform "${PLATFORM}" \
-      --build-arg DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME="${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}" \
+      --build-arg IMAGE_TAG="$2" \
       ${TAGS[@]} \
       "mongodb/$1"

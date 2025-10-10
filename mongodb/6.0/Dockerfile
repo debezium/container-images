@@ -1,4 +1,5 @@
-FROM mirror.gcr.io/library/mongo:6.0
+ARG IMAGE_TAG=6.0
+FROM mirror.gcr.io/library/mongo:$IMAGE_TAG
 
 LABEL maintainer="Debezium Community"
 
