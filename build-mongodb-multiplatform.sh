@@ -38,11 +38,11 @@ fi;
 
 echo ""
 echo "****************************************************************"
-echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongodb:$1 based on mongodb version $2 for $PLATFORM"
+echo "** Building  ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongo:$1 based on mongo version $2 for $PLATFORM"
 echo "****************************************************************"
-TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongodb:$1")
+TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/mongo:$1")
 if [ -n "${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}" ]; then
-  TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/mongodb:$1")
+  TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME}/mongo:$1")
 fi;
 
 PUSH_FLAG="--push"
@@ -55,11 +55,11 @@ echo "Running docker buildx build $PUSH_FLAG --platform \"${PLATFORM}\" \
                         --progress=plain \
                         --build-arg IMAGE_TAG=\"$2\" \
                           ${TAGS[*]} \
-                          \"mongodb/$1\""
+                          \"mongo/$1\""
 echo "****************************************************************"
 
 # shellcheck disable=SC2068
 docker buildx build $PUSH_FLAG --platform "${PLATFORM}" \
       --build-arg IMAGE_TAG="$2" \
       ${TAGS[@]} \
-      "mongodb/$1"
+      "mongo/$1"
