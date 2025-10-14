@@ -28,6 +28,13 @@ build_oracle_image() {
     TARGET_IMAGE_NAME=${TARGET_IMAGE_NAME}-se
   fi
 
+  if [[ "$IMAGE_EDITION" == "adb" ]]; then
+    TARGET_IMAGE_NAME=dbz-oracle:${IMAGE_VERSION}
+    if [[ "$ADAPTER_NAME" == "xstream" ]]; then
+      TARGET_IMAGE_NAME=${TARGET_IMAGE_NAME}-xs
+    fi
+  fi
+
   if [[ "$CONTAINERIZED" != "true" ]]; then
     TARGET_IMAGE_NAME=${TARGET_IMAGE_NAME}-noncdb
   fi
@@ -39,13 +46,24 @@ build_oracle_image() {
   echo "** Running ${BASE_IMAGE_NAME} Oracle installation (Containerized ${CONTAINERIZED} Adapter ${ADAPTER_NAME})"
   echo "****************************************************************************************************************"
   echo ""
-  docker run -d --name oracle -p 1521:1521 --memory=4g -e DEBEZIUM_ADAPTER="${ADAPTER_NAME}" "${BASE_IMAGE_NAME}"
+  
+  if [[ "$IMAGE_EDITION" == "adb" ]]; then
+    docker run -d --name oracle -p 1521:1522 --cap-add SYS_ADMIN --device /dev/fuse -e DEBEZIUM_ADAPTER="${ADAPTER_NAME}" "${BASE_IMAGE_NAME}"
+  else
+    docker run -d --name oracle -p 1521:1521 -e DEBEZIUM_ADAPTER="${ADAPTER_NAME}" "${BASE_IMAGE_NAME}"
+  fi
 
   # Cleanup pipe if it still exists
   rm -f .logpipe
 
   # Waits until the installation has completed within the container
-  mkfifo .logpipe && (docker logs -f oracle | tee .logpipe & awk '/DATABASE SETUP WAS NOT SUCCESSFUL/ { exit 1 } /DATABASE IS READY TO USE/ { exit 0 }' < .logpipe; kill $!; rm .logpipe)
+  if [[ "$IMAGE_EDITION" == "adb" ]]; then
+    SUCCESS_MESSAGE="Oracle REST Data Services initialized"
+  else
+    SUCCESS_MESSAGE="DATABASE IS READY TO USE"
+  fi
+
+  mkfifo .logpipe && (docker logs -f oracle | tee .logpipe & awk -v msg="$SUCCESS_MESSAGE" '/DATABASE SETUP WAS NOT SUCCESSFUL/ { exit 1 } $0 ~ msg { exit 0 }' < .logpipe; kill $!; rm .logpipe)
 
   echo ""
   echo "****************************************************************************************************************"
@@ -117,9 +135,33 @@ build_oracle() {
   build_oracle_edition "$1" ee false
 }
 
+# Parameter 1: Oracle version path (should be "adb")
+build_oracle_adb() {
+  IMAGE_VERSION=$1;
+  IMAGE_EDITION="adb";
+  CONTAINERIZED="true";
+
+  IMAGE_PATH="${IMAGE_VERSION}"
+  IMAGE_NAME=dbz-oracle-base:${IMAGE_VERSION}
+
+  DOCKERFILE_SOURCE="oracle/${IMAGE_PATH}/Dockerfile.${IMAGE_EDITION}"
+
+  # The dbz-oracle-base image is one that is based on Oracle's container registry image
+  # with our installation and setup scripts baked into the image.
+  echo "****************************************************************************************************************"
+  echo "** Building ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME} from ${DOCKERFILE_SOURCE}"
+  echo "****************************************************************************************************************"
+  echo ""
+  DOCKER_BUILDKIT=0 docker build -f "${DOCKERFILE_SOURCE}" \
+    -t "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}" oracle/
+
+  # ADB only supports LogMiner, not XStream
+  build_oracle_image "${IMAGE_VERSION}" "${IMAGE_EDITION}" "${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}" logminer "${CONTAINERIZED}"
+}
+
 if [[ -z "$1" ]]; then
   echo ""
-  echo "An Oracle version must be specified, i.e. \"19.3.0\""
+  echo "An Oracle version must be specified, i.e. \"19.3.0\" or \"adb\""
   echo ""
   echo "Usage:  build-oracle <oracle-version>";
   echo ""
@@ -128,4 +170,8 @@ fi
 
 ORACLE_VERSION="$1"
 
-build_oracle "${ORACLE_VERSION}"
+if [[ "${ORACLE_VERSION}" == "adb" ]]; then
+  build_oracle_adb "${ORACLE_VERSION}"
+else
+  build_oracle "${ORACLE_VERSION}"
+fi
