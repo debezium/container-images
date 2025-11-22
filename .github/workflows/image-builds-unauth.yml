@@ -19,7 +19,7 @@ jobs:
       DEBEZIUM_DOCKER_REGISTRY_SECONDARY_NAME: localhost:5500/debezium
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Build Scripts
         run: shellcheck build-*.sh ./script-functions/*.sh
       - name: Start local docker registry

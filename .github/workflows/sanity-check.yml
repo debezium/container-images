@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Commit messages in format DBZ-xxx
         env:
           BASE_REF: ${{ github.base_ref }}
