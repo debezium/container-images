@@ -33,16 +33,17 @@ Standard MongoDB images require manual replica set initialization. This image au
 ```bash
 docker run -d \
   --name mongodb \
+  --hostname mongodb \
   -p 27017:27017 \
   -e MONGO_INITDB_ROOT_USERNAME=admin \
   -e MONGO_INITDB_ROOT_PASSWORD=admin \
+  -e MONGO_INITDB_DATABASE=inventory \
   quay.io/debezium/mongodb:8.0
 ```
 
 ### Port-Forwarding
 
 ```yaml
-version: '3'
 services:
   mongodb:
     image: quay.io/debezium/mongodb:8.0
@@ -52,7 +53,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=admin
       - MONGO_INITDB_ROOT_PASSWORD=admin
-      - HOSTNAME=127.0.0.1
+      - MONGO_INITDB_DATABASE=inventory
 ```
 ### Data Persistence
 
@@ -61,8 +62,7 @@ Mount a volume to persist data:
 ```bash
 docker run -d \
   -v mongodb-data:/data/db \
-  -e MONGO_INITDB_ROOT_USERNAME=admin \
-  -e MONGO_INITDB_ROOT_PASSWORD=admin \
+  ... \
   quay.io/debezium/mongodb:8.0
 ```
 
@@ -73,8 +73,7 @@ Place scripts in `/docker-entrypoint-initdb.d/`:
 ```bash
 docker run -d \
   -v ./init-scripts:/docker-entrypoint-initdb.d \
-  -e MONGO_INITDB_ROOT_USERNAME=admin \
-  -e MONGO_INITDB_ROOT_PASSWORD=admin \
+  ... \
   quay.io/debezium/mongodb:8.0
 ```
 
