@@ -1,7 +1,7 @@
 ####
 # This Dockerfile is used in order to build a container with Debezium platform UI.
 ###
-ARG BRANCH=v3.4.0.Final
+ARG BRANCH=v3.4.1.Final
 
 # Clone the repository
 FROM registry.access.redhat.com/ubi9/ubi-minimal AS cloner
