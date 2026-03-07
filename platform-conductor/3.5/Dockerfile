@@ -77,45 +77,37 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
-FROM registry.access.redhat.com/ubi8/openjdk-21
-LABEL maintainer="Debezium Community"
 
 #
-# Set the version, home directory
+# Builder stage: Download and extract the platform-conductor tarball
 #
-ENV LANGUAGE='en_US:en'
+FROM registry.access.redhat.com/ubi8/ubi-minimal AS builder
+
 ENV DEBEZIUM_VERSION=3.5.0.Beta1 \
     DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 ENV PLATFORM_CONDUCTOR_URL_PATH=io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$DEBEZIUM_VERSION.tar.gz \
     PLATFORM_CONDUCTOR_MD5=72e3602a66535a2e405496cf9d0ed872
 
-USER root
-
-#
-# Prepare environment
-#
-RUN microdnf install -y gzip
-RUN mkdir $DEBEZIUM_PLATFORM_CONDUCTOR_HOME;
-
-#
-# Download and install Debezium Operator
-#
-RUN curl -fSL -o /tmp/platform-conductor.tar.gz "$MAVEN_REPO_CENTRAL/$PLATFORM_CONDUCTOR_URL_PATH"
-
-#
-# Verify the contents and then install ...
-#
-
-RUN /bin/sh -c '[ -z "$PLATFORM_CONDUCTOR_MD5" ] || echo "$PLATFORM_CONDUCTOR_MD5 /tmp/platform-conductor.tar.gz" | md5sum -c -' && \
+RUN microdnf install -y curl gzip tar && \
+    mkdir -p $DEBEZIUM_PLATFORM_CONDUCTOR_HOME && \
+    curl -fSL -o /tmp/platform-conductor.tar.gz "$MAVEN_REPO_CENTRAL/$PLATFORM_CONDUCTOR_URL_PATH" && \
+    /bin/sh -c '[ -z "$PLATFORM_CONDUCTOR_MD5" ] || echo "$PLATFORM_CONDUCTOR_MD5 /tmp/platform-conductor.tar.gz" | md5sum -c -' && \
     tar xzf /tmp/platform-conductor.tar.gz -C $DEBEZIUM_PLATFORM_CONDUCTOR_HOME --strip-components 1 && \
     rm -f /tmp/platform-conductor.tar.gz
 
 #
-# Set the owner on `$DEBEZIUM_PLATFORM_CONDUCTOR_HOME`
+# Final stage
 #
-RUN chown -R 185 $DEBEZIUM_PLATFORM_CONDUCTOR_HOME
+FROM registry.access.redhat.com/ubi8/openjdk-21
+LABEL maintainer="Debezium Community"
 
+ENV LANGUAGE='en_US:en'
+ENV DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor
+
+USER root
+
+COPY --from=builder --chown=185:root $DEBEZIUM_PLATFORM_CONDUCTOR_HOME $DEBEZIUM_PLATFORM_CONDUCTOR_HOME
 
 EXPOSE 8080
 USER 185
