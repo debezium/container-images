@@ -77,43 +77,42 @@
 #   accessed directly. (example: "foo.example.com,bar.example.com")
 #
 ###
+
+#
+# Builder stage: Download and extract the platform-conductor snapshot tarball
+#
+FROM registry.access.redhat.com/ubi8/ubi-minimal AS builder
+
+ARG DEBEZIUM_VERSION=3.4.3-SNAPSHOT
+
+ENV DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
+    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
+
+RUN microdnf install -y curl gzip tar gawk && \
+    mkdir -p $DEBEZIUM_PLATFORM_CONDUCTOR_HOME && \
+    SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}') && \
+    echo "Downloading and installing debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." && \
+    curl --silent -fSL -o /tmp/debezium-platform-conductor.tar.gz $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz && \
+    echo "Extracting debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." && \
+    tar xzf /tmp/debezium-platform-conductor.tar.gz -C $DEBEZIUM_PLATFORM_CONDUCTOR_HOME --strip-components 1 && \
+    echo "Successfully installed debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz !" && \
+    rm -f /tmp/debezium-platform-conductor.tar.gz
+
+#
+# Final stage
+#
 FROM registry.access.redhat.com/ubi8/openjdk-21
 LABEL maintainer="Debezium Community"
 
-#
-# Set the version, home directory
-#
 ARG DEBEZIUM_VERSION=3.4.3-SNAPSHOT
 
 ENV LANGUAGE='en_US:en'
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
-    DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
-    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
+    DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor
 
 USER root
 
-#
-# Prepare environment
-#
-RUN microdnf install -y gzip
-RUN mkdir $DEBEZIUM_PLATFORM_CONDUCTOR_HOME;
-
-#
-# Download the snapshot version of debezium-operator and then install it to the `$DEBEZIUM_PLATFORM_CONDUCTOR_HOME` directory...
-#
-RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
-    echo "Downloading and installing debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." ; \
-    curl --silent -fSL -o /tmp/debezium-platform-conductor.tar.gz  $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz && \
-    echo "Extracting debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." && \
-    tar xzf /tmp/debezium-platform-conductor.tar.gz -C $DEBEZIUM_PLATFORM_CONDUCTOR_HOME --strip-components 1 && \
-    echo "Successfully installed debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz !" && \
-    rm -f /tmp/debezium-platform-conductor.tar.gz;
-
-#
-# Set the owner on `$DEBEZIUM_PLATFORM_CONDUCTOR_HOME`
-#
-RUN chown -R 185 $DEBEZIUM_PLATFORM_CONDUCTOR_HOME
-
+COPY --from=builder --chown=185:root $DEBEZIUM_PLATFORM_CONDUCTOR_HOME $DEBEZIUM_PLATFORM_CONDUCTOR_HOME
 
 EXPOSE 8080
 USER 185
