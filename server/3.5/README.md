@@ -65,6 +65,43 @@ Start the Debezium Server:
     $ docker run -it --name debezium -p 8080:8080 -v $PWD/config:/debezium/config -v $PWD/data:/debezium/data --link postgres --link pulsar quay.io/debezium/server
 
 
+# OpenTelemetry (OTEL) support
+
+The image ships with the [OpenTelemetry Java agent](https://github.com/open-telemetry/opentelemetry-java-instrumentation) bundled at `/debezium/otel/opentelemetry-javaagent.jar`.
+
+## Enabling / disabling the agent
+
+The agent is **enabled by default** (`OTEL_ENABLED=yes` at image build time).
+To build an image without the agent, pass `--build-arg OTEL_ENABLED=no` to `docker build`.
+
+When the agent is enabled it is wired into `JAVA_OPTS` at build time, so it is always active at runtime.
+Passing `-e JAVA_OPTS=...` at `docker run` will add to — not replace — the agent flag.
+
+## Configuring the agent at runtime
+
+The agent is configured exclusively through environment variables passed to the container.
+See the [OpenTelemetry SDK environment variable reference](https://opentelemetry.io/docs/languages/java/configuration/) for the full list.
+
+Common variables:
+
+| Variable | Description | Example |
+|---|---|---|
+| `OTEL_SERVICE_NAME` | Service name reported in traces/metrics | `debezium-server` |
+| `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint | `http://otel-collector:4317` |
+| `OTEL_TRACES_EXPORTER` | Traces exporter (`otlp`, `logging`, `none`) | `otlp` |
+| `OTEL_METRICS_EXPORTER` | Metrics exporter (`otlp`, `logging`, `none`) | `otlp` |
+| `OTEL_LOGS_EXPORTER` | Logs exporter (`otlp`, `logging`, `none`) | `otlp` |
+
+### Example — send telemetry to an OTLP collector
+
+    $ docker run -it --name debezium -p 8080:8080 \
+        -v $PWD/config:/debezium/config \
+        -v $PWD/data:/debezium/data \
+        -e OTEL_SERVICE_NAME=debezium-server \
+        -e OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317 \
+        quay.io/debezium/server
+
+
 # Environment variables
 
 The Debezium Server image uses several environment variables to configure JVM and source/sink when running this image.
