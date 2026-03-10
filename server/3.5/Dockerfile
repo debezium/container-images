@@ -3,12 +3,15 @@ FROM registry.access.redhat.com/ubi8/openjdk-21 AS builder
 
 LABEL maintainer="Debezium Community"
 
+ARG OTEL_ENABLED=yes
+
 #
 # Set the version, home directory, and MD5 hash.
 #
 ENV DEBEZIUM_VERSION=3.5.0.Beta1 \
     SERVER_HOME=/debezium \
-    MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
+    MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2" \
+    OPENTELEMETRY_AGENT_VERSION=2.25.0
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
     SERVER_MD5=bf8b9fe208878d1d6500b7112a6faad1
 
@@ -42,6 +45,17 @@ RUN curl -fSL -o /tmp/debezium.tar.gz "$MAVEN_REPO_CENTRAL/$SERVER_URL_PATH"
 RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
     tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
     rm -f /tmp/debezium.tar.gz
+
+#
+# Download the OpenTelemetry Java agent and wire it into run.sh via JAVA_OPTS
+#
+RUN if [ "$OTEL_ENABLED" = "yes" ]; then \
+       mkdir $SERVER_HOME/otel \
+       && curl -fSL -o $SERVER_HOME/otel/opentelemetry-javaagent.jar \
+           $MAVEN_REPO_CENTRAL/io/opentelemetry/javaagent/opentelemetry-javaagent/$OPENTELEMETRY_AGENT_VERSION/opentelemetry-javaagent-$OPENTELEMETRY_AGENT_VERSION.jar \
+       && echo "a7f1cbab5448e61d93e71ffdff9175b6  $SERVER_HOME/otel/opentelemetry-javaagent.jar" | md5sum -c - \
+       && sed -i "/^exec/i JAVA_OPTS=\"\$JAVA_OPTS -javaagent:$SERVER_HOME/otel/opentelemetry-javaagent.jar\"" $SERVER_HOME/run.sh; \
+    fi
 
 #
 # Allow random UID to use Debezium Server
