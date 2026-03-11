@@ -15,5 +15,6 @@ ENV SIZE=small \
 RUN sed -Ei 's/^(USEOSTIME)\s+\S/\1 1/' /opt/ibm/informix/etc/onconfig.std
 
 # Copy initialization script
-COPY --chmod=755 --chown=informix:informix ./files/informix_post_init.sh /opt/ibm/scripts/
-COPY --chmod=755 --chown=informix:informix ./files/testdb.sql /opt/ibm/informix/etc/
+COPY --chmod=755 --chown=informix:informix ./files/informix_post_init.sh /opt/ibm/config/informix_post_init.sh
+COPY --chmod=755 --chown=informix:informix ./files/testdb.sql /opt/ibm/informix/etc/testdb.sql
+
