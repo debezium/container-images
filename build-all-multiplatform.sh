@@ -9,7 +9,7 @@ fi
 
 COMPONENTS=$*
 if [ -z "$COMPONENTS" ]; then
-  COMPONENTS="postgres debezium mongodb"
+  COMPONENTS="postgres debezium mongodb informix"
 fi;
 
 if [ -z "$MULTIPLATFORM_PLATFORMS" ]; then
@@ -33,6 +33,7 @@ POSTGRES_VERSIONS="14"
 POSTGRES_MULTIPLATFORM_VERSIONS="15 16 17 18 14-alpine 15-alpine 16-alpine 17-alpine 18-alpine"
 MONGODB_VERSIONS="6.0-6.0"
 MONGODB_MULTIPLATFORM_VERSIONS="6.0-6.0 7.0-7.0 8.0-8.0"
+INFORMIX_VERSIONS="12 14 15" 
 
 docker buildx prune -f || true
 if shouldBuild "postgres"; then
@@ -66,5 +67,11 @@ if shouldBuild "mongodb"; then
     RELEASE_VERSION="${MONGODB_VERSION%-*}"
     BASE_VERSION="${MONGODB_VERSION#*-}"
     ./build-mongodb-multiplatform.sh "$RELEASE_VERSION" "$BASE_VERSION" "linux/amd64"
+  done
+fi;
+
+if shouldBuild "informix"; then
+  for INFORMIX_VERSION in $INFORMIX_VERSIONS; do
+    ./build-informix-multiplatform.sh "$INFORMIX_VERSION" "${MULTIPLATFORM_PLATFORMS}"
   done
 fi;
