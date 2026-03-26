@@ -42,6 +42,25 @@ case "$NODE_ROLE" in
  *) CONFIG_FILE=config/server.properties;;
 esac
 
+#
+# KRaft version 4.1.1 deprecated controller.quorum.voters in favor of controller.quorum.bootstrap.servers
+# Support both properties with automatic migration for backward compatibility
+#
+if [[ -n "$KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS" ]]; then
+    echo "Using KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS=$KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS (recommended for Kafka 4.1.1+)"
+elif [[ -n "$KAFKA_CONTROLLER_QUORUM_VOTERS" ]]; then
+    echo "WARNING: KAFKA_CONTROLLER_QUORUM_VOTERS is deprecated in Kafka 4.1.1+ (KRaft version 1)"
+    echo "Automatically converting KAFKA_CONTROLLER_QUORUM_VOTERS=$KAFKA_CONTROLLER_QUORUM_VOTERS"
+
+    # Extract bootstrap server address from voters (format: id@host:port -> host:port)
+    KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS=$(echo "$KAFKA_CONTROLLER_QUORUM_VOTERS" | sed 's/\[//g;s/\]//g' | sed 's/[0-9]*@//g' | cut -d',' -f1)
+    export KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS
+    echo "Migrated to KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS=$KAFKA_CONTROLLER_QUORUM_BOOTSTRAP_SERVERS"
+
+    # Unset the old variable to prevent it from being added to config during env var processing
+    unset KAFKA_CONTROLLER_QUORUM_VOTERS
+fi
+
 echo "Starting in KRaft mode, using CLUSTER_ID=$CLUSTER_ID, NODE_ID=$NODE_ID and NODE_ROLE=$NODE_ROLE."
 
 echo "Using configuration $CONFIG_FILE."
@@ -130,6 +149,15 @@ case $1 in
         echo "" >> $KAFKA_HOME/$CONFIG_FILE
 
         #
+        # Format storage BEFORE processing environment variables (Kafka 4.1.1+ compatibility)
+        #
+        if [[ ! -z "$CLUSTER_ID" && ! -f "$KAFKA_LOG_DIRS/meta.properties" ]]; then
+                echo "No meta.properties found in $KAFKA_LOG_DIRS; going to format the directory"
+                sed -i "s|^log.dirs=.*|log.dirs=$KAFKA_LOG_DIRS|g" $KAFKA_HOME/$CONFIG_FILE
+                $KAFKA_HOME/bin/kafka-storage.sh format --standalone -t $CLUSTER_ID -c $KAFKA_HOME/$CONFIG_FILE
+        fi
+
+        #
         # Process all environment variables that start with 'KAFKA_' (but not 'KAFKA_HOME' or 'KAFKA_VERSION'):
         #
         for VAR in `env`
@@ -168,12 +196,6 @@ case $1 in
                     $KAFKA_HOME/bin/kafka-topics.sh --create --bootstrap-server $KAFKA_BROKER --replication-factor ${topicConfig[2]} --partitions ${topicConfig[1]} --topic "${topicConfig[0]}" ${config}
                 done
             )&
-        fi
-
-        if [[ ! -z "$CLUSTER_ID" && ! -f "$KAFKA_LOG_DIRS/meta.properties" ]]; then
-                echo "No meta.properties found in $KAFKA_LOG_DIRS; going to format the directory"
-
-                $KAFKA_HOME/bin/kafka-storage.sh format --standalone -t $CLUSTER_ID -c $KAFKA_HOME/$CONFIG_FILE
         fi
 
         exec $KAFKA_HOME/bin/kafka-server-start.sh $KAFKA_HOME/$CONFIG_FILE
