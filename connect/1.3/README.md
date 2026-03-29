@@ -109,6 +109,15 @@ This environment variable is optional. Use this to set the level of detail for K
 This environment variable is optional. Use this to enable [Apicur.io](https://www.apicur.io/) converters with 
 Apicurio Schema Registry by setting `ENABLE_APICURIO_CONVERTERS=true` as container env var. Valid values are `false` to disable (default) or `true` to enable Apicurio converters.
 
+### `SCHEMA_REGISTRY`
+
+This environment variable is optional. 
+Use this to intuitively configure Avro serialization over the default JSON converters. 
+When the `SCHEMA_REGISTRY` URL is detected (`e.g. SCHEMA_REGISTRY=http://my-registry:8081`), 
+the container automatically enables Apicurio converters (`ENABLE_APICURIO_CONVERTERS=true`) 
+and injects the necessary properties to assign both `key.converter` and `value.converter` 
+to the Apicurio `AvroConverter` class. 
+
 ### `ENABLE_DEBEZIUM_SCRIPTING`
 
 This environment variable is optional.
