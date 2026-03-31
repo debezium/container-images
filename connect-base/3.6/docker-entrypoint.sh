@@ -40,6 +40,24 @@ fi
 : ${ENABLE_DEBEZIUM_SCRIPTING:=false}
 : ${ENABLE_JOLOKIA:=false}
 : ${ENABLE_OTEL:=false}
+ 
+if [[ -n "$APICURIO_REGISTRY" ]]; then
+    ENABLE_APICURIO_CONVERTERS=true
+    
+    # Overwrite the default JSON converters to use Avro via Apicurio
+    KEY_CONVERTER="io.apicurio.registry.utils.converter.AvroConverter"
+    VALUE_CONVERTER="io.apicurio.registry.utils.converter.AvroConverter"
+    
+    # Pass the user's Schema Registry URL right into the converter config
+    export CONNECT_KEY_CONVERTER_APICURIO_REGISTRY_URL="$APICURIO_REGISTRY"
+    export CONNECT_VALUE_CONVERTER_APICURIO_REGISTRY_URL="$APICURIO_REGISTRY"
+    
+    export CONNECT_KEY_CONVERTER_APICURIO_REGISTRY_AUTO_REGISTER="true"
+    export CONNECT_VALUE_CONVERTER_APICURIO_REGISTRY_AUTO_REGISTER="true"
+    export CONNECT_KEY_CONVERTER_APICURIO_REGISTRY_FIND_LATEST="true"
+    export CONNECT_VALUE_CONVERTER_APICURIO_REGISTRY_FIND_LATEST="true"
+fi
+
 export CONNECT_REST_ADVERTISED_PORT=$ADVERTISED_PORT
 export CONNECT_REST_ADVERTISED_HOST_NAME=$ADVERTISED_HOST_NAME
 export CONNECT_REST_PORT=$REST_PORT
