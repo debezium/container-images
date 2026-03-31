@@ -83,7 +83,7 @@
 #
 FROM registry.access.redhat.com/ubi8/ubi-minimal AS builder
 
-ARG DEBEZIUM_VERSION=3.4.4-SNAPSHOT
+ARG DEBEZIUM_VERSION=3.6.0-SNAPSHOT
 
 ENV DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
     MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
