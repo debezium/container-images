@@ -3,7 +3,7 @@ FROM registry.access.redhat.com/ubi8/openjdk-21 AS builder
 
 LABEL maintainer="Debezium Community"
 
-ARG OTEL_ENABLED=false
+ARG OTEL_ENABLED=true
 
 #
 # Set the version, home directory, and MD5 hash.
@@ -70,7 +70,8 @@ LABEL maintainer="Debezium Community"
 
 ENV DEBEZIUM_VERSION=3.5.0.Final \
     SERVER_HOME=/debezium \
-    MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
+    MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2" \
+    OTEL_SDK_DISABLED=true
 
 USER root
 RUN microdnf clean all
