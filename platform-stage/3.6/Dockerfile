@@ -15,7 +15,7 @@ RUN cd debezium-platform && \
     cd debezium-platform-stage 
 
 # Build the application
-FROM registry.access.redhat.com/ubi9/nodejs-20 AS builder
+FROM registry.access.redhat.com/ubi9/nodejs-22 AS builder
 USER root
 RUN mkdir -p /app && chown 1001:1001 /app
 USER 1001
@@ -30,7 +30,7 @@ COPY --from=cloner /app/debezium-platform/debezium-platform-stage /app
 RUN yarn build
 
 # Final image
-FROM mirror.gcr.io/library/node:20-alpine
+FROM mirror.gcr.io/library/node:22-alpine
 RUN yarn global add serve
 
 WORKDIR /app
