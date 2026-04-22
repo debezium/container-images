@@ -8,13 +8,13 @@ ARG OTEL_ENABLED=true
 #
 # Set the version, home directory, and MD5 hash.
 #
-ENV DEBEZIUM_VERSION=3.5.0.Final \
+ENV DEBEZIUM_VERSION=3.6.0.Alpha1 \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2" \
     OPENTELEMETRY_AGENT_VERSION=2.25.0 \
     OPENTELEMETRY_MD5=a7f1cbab5448e61d93e71ffdff9175b6
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
-    SERVER_MD5=c1860c1765a49c3ed9a74a574ca3dbc7
+    SERVER_MD5=6f88172d63aede70eaee23f0dd0603bb
 
 #
 # Create a directory for Debezium Server
@@ -68,7 +68,7 @@ FROM registry.access.redhat.com/ubi8/openjdk-21
 
 LABEL maintainer="Debezium Community"
 
-ENV DEBEZIUM_VERSION=3.5.0.Final \
+ENV DEBEZIUM_VERSION=3.6.0.Alpha1 \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2" \
     OTEL_SDK_DISABLED=true
