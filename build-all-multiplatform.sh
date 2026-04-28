@@ -33,7 +33,9 @@ POSTGRES_VERSIONS="14"
 POSTGRES_MULTIPLATFORM_VERSIONS="15 16 17 18 14-alpine 15-alpine 16-alpine 17-alpine 18-alpine"
 MONGODB_VERSIONS="6.0-6.0"
 MONGODB_MULTIPLATFORM_VERSIONS="6.0-6.0 7.0-7.0 8.0-8.0"
-INFORMIX_VERSIONS="12 14 15" 
+INFORMIX_VERSIONS="12 14 15"
+COPY_RYUK_VERSIONS="0.12.0 0.13.0 0.14.0"
+COPY_MONGO_VERSIONS="7 7.0 7.0.31 8 8.0 8.2"
 
 docker buildx prune -f || true
 if shouldBuild "postgres"; then
@@ -73,5 +75,17 @@ fi;
 if shouldBuild "informix"; then
   for INFORMIX_VERSION in $INFORMIX_VERSIONS; do
     ./build-informix-multiplatform.sh "$INFORMIX_VERSION" "${MULTIPLATFORM_PLATFORMS}"
+  done
+fi;
+
+if shouldBuild "copyRyuk"; then
+  for RYUK_VERSION in $COPY_RYUK_VERSIONS; do
+    ./copy-image.sh testcontainers/ryuk "$RYUK_VERSION" quay.io/debezium/testcontainers-ryuk amd64,arm64
+  done
+fi;
+
+if shouldBuild "copyMongo"; then
+  for MONGO_VERSION in $COPY_MONGO_VERSIONS; do
+    ./copy-image.sh docker.io/library/mongo "$MONGO_VERSION" quay.io/debezium/official-mongo amd64,arm64
   done
 fi;
