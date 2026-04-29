@@ -5,6 +5,7 @@ set -eo pipefail
 # Usage examples:
 #   ./copy-image.sh docker.io/library/mongo 8 quay.io/debezium/official-mongo amd64,arm64
 #   ./copy-image.sh testcontainers/ryuk 0.14.0 quay.io/debezium/testcontainers-ryuk amd64,arm64
+#   ./copy-image.sh mirror.gcr.io/library/mariadb 11.4.3 quay.io/debezium/official-mariadb amd64,arm64
 
 function usage() {
   MSG=$1
@@ -59,11 +60,12 @@ echo "****************************************************************"
 # Using skopeo to copy the images into owned registry
 COPIED_IMAGES=()
 for ARCH in ${PLATFORMS//,/ }; do
+    TEMP_TAG="temp-${ARCH}-$(date +%s)"
     skopeo copy --override-arch "${ARCH}" \
       "docker://${SRC_IMAGE}:${SRC_VERSION}" \
-      "docker://${DST_IMAGE}:temp-${ARCH}"
+      "docker://${DST_IMAGE}:${TEMP_TAG}"
 
-    COPIED_IMAGES+=("${DST_IMAGE}:temp-${ARCH}")
+    COPIED_IMAGES+=("${DST_IMAGE}:${TEMP_TAG}")
 done
 
 # Building image with multiple architectures and pushing into registry
