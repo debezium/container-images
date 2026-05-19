@@ -146,6 +146,17 @@ This feature is useful for gathering of diagnostic information in case of perfor
 Flight Recorder start options can be configured via `JFR_RECORDING_` prefixed environment variables when the variables is converted to lowercase and underscores are replaced with dashes, e.g. `JFR_RECORDING_PATH_TO_GC_ROOTS=true` becomes `path-to-gc-roots=true`.
 Flight Recorder control options can be configured via `JFR_OPT_` prefixed environment variables.
 
+### `ENABLE_CHRONICLE_QUEUE`
+
+This environment variable is optional.
+Use this to enable Debezium's Chronicle Queue storage module, providing disk-based persistence for the change event queue during high-volume dispatch by setting `ENABLE_CHRONICLE_QUEUE=true` as a container environment variable.
+Valid values are `false` to disable (the default) or `true` to enable disk-based persistence.
+
+Note: Chronicle Queue requires the mounted path to not be a network-based file system.
+This includes NFS, AFS, SAN_based storage, or similar.
+The reason is those systems do not provide all the required primitives for memory-mapped files that Chronicle Queue requires.
+If any networking is needed to make the files accessible to the container, then Chronicle Queue cannot be used.
+
 ### Others
 
 Environment variables that start with `CONNECT_` will be used to update the Kafka Connect worker configuration file. Each environment variable name will be mapped to a configuration property name by:
