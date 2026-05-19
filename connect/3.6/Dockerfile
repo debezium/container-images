@@ -19,7 +19,8 @@ ENV DEBEZIUM_VERSION="3.6.0.Alpha2" \
     INFORMIX_MD5=72f05d727a7b6448a34e1626e73d9591 \
     IBMI_MD5=cd97144bb6157bc7efbeddbd3e51903e \
     COCKROACHDB_MD5=73a92c86006bb22782f281f15c848970 \
-    SCRIPTING_MD5=d1afe6663661cf78ca31e0a7f3e6436e
+    SCRIPTING_MD5=d1afe6663661cf78ca31e0a7f3e6436e \
+    CHRONICLE_QUEUE_MD5=TBD
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
@@ -34,5 +35,6 @@ RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" &&
     docker-maven-download debezium-additional informix informix "$DEBEZIUM_VERSION" "$INFORMIX_MD5" && \
     docker-maven-download debezium-additional ibmi ibmi "$DEBEZIUM_VERSION" "$IBMI_MD5" && \
     docker-maven-download debezium-additional cockroachdb cockroachdb "$DEBEZIUM_VERSION" "$COCKROACHDB_MD5" && \
-    docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5"
+    docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5" && \
+    docker-maven-download debezium-optional storage-chronicle-queue "$DEBEZIUM_VERSION" "$CHRONICLE_QUEUE_MD5"
 

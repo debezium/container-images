@@ -40,6 +40,7 @@ fi
 : ${ENABLE_DEBEZIUM_SCRIPTING:=false}
 : ${ENABLE_JOLOKIA:=false}
 : ${ENABLE_OTEL:=false}
+: ${ENABLE_CHRONICLE_QUEUE:=false}
  
 if [[ -n "$APICURIO_REGISTRY" ]]; then
     ENABLE_APICURIO_CONVERTERS=true
@@ -137,6 +138,7 @@ echo "Plugins are loaded from $CONNECT_PLUGIN_PATH"
 set_connector_additonal_resource_availability $ENABLE_APICURIO_CONVERTERS "apicurio" "*" "Apicurio connectors"
 set_connector_additonal_resource_availability $ENABLE_DEBEZIUM_SCRIPTING "debezium-scripting" "*.jar" "Debezium Scripting"
 set_connector_additonal_resource_availability $ENABLE_OTEL "otel" "*.jar" "OpenTelemetry"
+set_connector_additonal_resource_availability $ENABLE_CHRONICLE_QUEUE "debezium-storage-chronicle-queue" "*.jar" "Chronicle Queue"
 
 #
 # Set up the JMX options
@@ -186,6 +188,19 @@ fi
 if [ "$ENABLE_JOLOKIA" = "true" ]; then
   KAFKA_OPTS="${KAFKA_OPTS} -javaagent:$(ls "$KAFKA_HOME"/libs/jolokia-jvm-*.jar)=port=8778,host=*"
   export KAFKA_OPTS
+fi
+
+#
+# Setup Chronicle Queue
+#
+if [ "$ENABLE_CHRONICLE_QUEUE" = "true" ]; then
+  KAFKA_OPTS="${KAFKA_OPTS} --add-opens=java.base/sun.nio.ch=ALL-UNNAMED"
+  KAFKA_OPTS="${KAFKA_OPTS} --add-opens=java.base/java.lang=ALL-UNNAMED"
+  KAFKA_OPTS="${KAFKA_OPTS} --add-opens=java.base/java.lang.reflect=ALL-UNNAMED"
+  KAFKA_OPTS="${KAFKA_OPTS} --add-opens=java.base/java.io=ALL-UNNAMED"
+  KAFKA_OPTS="${KAFKA_OPTS} --add-opens=java.base/java.util=ALL-UNNAMED"
+  export KAFKA_OPTS
+  echo "Chronicle Queue enabled!"
 fi
 
 #
