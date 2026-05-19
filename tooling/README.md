@@ -10,6 +10,7 @@ The following tools are contained:
 * mycli (https://github.com/dbcli/mycli)
 * pgcli (https://github.com/dbcli/pgcli)
 * kcctl (https://github.com/kcctl/kcctl)
+* debezium-oracle-query-tool (https://github.com/Naros/debezium-oracle-query-tool)
 
 The image could be used as a standalone container, part of Docker Compose deployment or can run inside an OpenShift deployment.
 
