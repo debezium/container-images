@@ -124,6 +124,18 @@ This environment variable is the JMX host set for `java.rmi.server.hostname`.
 
 This environment variable is the JMX port set for `com.sun.management.jmxremote.port` and `com.sun.management.jmxremote.rmi.port`.
 
+### `ENABLE_CHRONICLE_QUEUE`
+
+This environment variable is optional.
+Use this to enable Debezium's Chronicle Queue storage module, providing disk-based persistence for the change event queue during high-volume dispatch by setting `ENABLE_CHRONICLE_QUEUE=true` as a container environment variable.
+Valid values are `false` to disable (the default) or `true` to enable disk-based persistence.
+
+Note: Chronicle Queue requires the mounted path to not be a network-based file system.
+This includes NFS, AFS, SAN_based storage, or similar.
+The reason is those systems do not provide all the required primitives for memory-mapped files that Chronicle Queue requires.
+If any networking is needed to make the files accessible to the container, then Chronicle Queue cannot be used.
+
+
 ### Source/sink Configuration options
 
 All configuration options that could be present in `application.properties` can be either added or overridden via environment variables.
