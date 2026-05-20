@@ -34,11 +34,9 @@ RUN dnf -y install java-21-openjdk-devel less jq httpie mycli pgcli kcat && \
     ln -s /usr/bin/kcat /usr/bin/kafkacat
 
 COPY --from=kcctl /usr/bin/kcctl /usr/bin/kcctl-dir
-
-COPY --from=oracle-tool /opt/debezium-oracle-query-tool/target/quarkus-app /opt/debezium-oracle-query-tool
-
-RUN echo -e '#!/bin/bash\njava -jar /opt/debezium-oracle-query-tool/quarkus-run.jar' > /usr/bin/dbzoqt && \
-    chmod +x /usr/bin/dbzoqt
-
 RUN echo -e '#!/bin/bash\njava -jar /usr/bin/kcctl-dir/quarkus-run.jar' > /usr/bin/kcctl && \
     chmod +x /usr/bin/kcctl
+
+COPY --from=oracle-tool /opt/debezium-oracle-query-tool/target/quarkus-app /opt/debezium-oracle-query-tool
+RUN echo -e '#!/bin/bash\njava -jar /opt/debezium-oracle-query-tool/quarkus-run.jar' > /usr/bin/dbzoqt && \
+    chmod +x /usr/bin/dbzoqt
