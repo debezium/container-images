@@ -20,7 +20,7 @@ ENV DEBEZIUM_VERSION="3.6.0.Alpha2" \
     IBMI_MD5=cd97144bb6157bc7efbeddbd3e51903e \
     COCKROACHDB_MD5=73a92c86006bb22782f281f15c848970 \
     SCRIPTING_MD5=d1afe6663661cf78ca31e0a7f3e6436e \
-    CHRONICLE_QUEUE_MD5=TBD
+    CHRONICLE_QUEUE_MD5=33967e127dfe963f94b9feb5b26964ed
 
 RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" && \
     docker-maven-download debezium mysql "$DEBEZIUM_VERSION" "$MYSQL_MD5" && \
