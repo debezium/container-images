@@ -58,6 +58,11 @@ maven_debezium_optional() {
     tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR" && rm "$DOWNLOAD_FILE"
 }
 
+maven_debezium_store() {
+    maven_dep $MAVEN_REPO_CENTRAL "io/debezium" "debezium-$1" $2 "debezium-$1-$2-store.tar.gz" $3
+    tar -xzf "$DOWNLOAD_FILE" -C "$EXTERNAL_LIBS_DIR" && rm "$DOWNLOAD_FILE"
+}
+
 maven_camel_kafka() {
     maven_dep $MAVEN_REPO_CENTRAL "org/apache/camel/kafkaconnector" "camel-$1-kafka-connector" $2 "camel-$1-kafka-connector-$2-package.tar.gz" $3
     tar -xzf "$DOWNLOAD_FILE" -C "$MAVEN_DEP_DESTINATION" && rm "$DOWNLOAD_FILE"
