@@ -26,7 +26,7 @@ ENV KAFKA_CONNECT_PLUGINS_DIR=$KAFKA_HOME/connect \
     EXTERNAL_LIBS_DIR=$KAFKA_HOME/external_libs \
     CONNECT_PLUGIN_PATH=$KAFKA_CONNECT_PLUGINS_DIR \
     MAVEN_DEP_DESTINATION=$KAFKA_HOME/libs \
-    APICURIO_VERSION=2.6.13.Final \
+    APICURIO_VERSION=3.2.5 \
     JOLOKIA_VERSION=1.7.2 \
     OPENTELEMETRY_VERSION=1.23.1 \
     OPENTELEMETRY_INSTRUMENTATION_VERSION=1.23.0
@@ -47,7 +47,7 @@ RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
 RUN if [ "$APICURIO_ENABLED" = "yes" ]; then \
-       docker-maven-download apicurio "$APICURIO_VERSION" 9e6c645c93b960066a06508729c0a744; \
+       docker-maven-download apicurio "$APICURIO_VERSION" 3a4a081823f248f333d38b3013377939; \
     fi
 
 RUN if [ "$JOLOKIA_ENABLED" = "yes" ]; then \
