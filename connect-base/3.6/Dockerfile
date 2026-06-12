@@ -47,7 +47,7 @@ RUN mkdir "$KAFKA_CONNECT_PLUGINS_DIR" "$EXTERNAL_LIBS_DIR"
 # on the classpath, which results in arcane NoSuchMethodError exceptions.
 #
 RUN if [ "$APICURIO_ENABLED" = "yes" ]; then \
-       docker-maven-download apicurio "$APICURIO_VERSION" 3a4a081823f248f333d38b3013377939; \
+       docker-maven-download apicurio "$APICURIO_VERSION" 0dc4bef6a31301d1a8da01812e6555bd; \
     fi
 
 RUN if [ "$JOLOKIA_ENABLED" = "yes" ]; then \
