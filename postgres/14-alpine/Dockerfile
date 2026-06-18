@@ -2,18 +2,20 @@ FROM mirror.gcr.io/library/postgres:14-alpine
 
 LABEL maintainer="Debezium Community"
 ENV PLUGIN_VERSION=v3.3.1.Final
+ENV LLVM_VERSION=22
 
 ENV WAL2JSON_COMMIT_ID=wal2json_2_3
 
 RUN apk add --no-cache protobuf-c-dev
 
 # Compile the plugins from sources and install
-RUN apk add --no-cache --virtual .debezium-build-deps gcc clang19 llvm19 git make musl-dev pkgconf \
+RUN apk add --no-cache --virtual .debezium-build-deps gcc clang llvm git make musl-dev pkgconf \
+    && export CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin \
     && git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSION --single-branch \
-    && (cd /postgres-decoderbufs && make && make install) \
+    && (cd /postgres-decoderbufs && make CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin && make install CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin) \
     && rm -rf postgres-decoderbufs \
     && git clone https://github.com/eulerto/wal2json -b master --single-branch \
-    && (cd /wal2json && git checkout $WAL2JSON_COMMIT_ID && make && make install) \
+    && (cd /wal2json && git checkout $WAL2JSON_COMMIT_ID && make CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin && make install CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin) \
     && rm -rf wal2json \
     && apk del .debezium-build-deps
 
