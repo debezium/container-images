@@ -2,13 +2,15 @@ FROM mirror.gcr.io/library/postgres:16-alpine
 
 LABEL maintainer="Debezium Community"
 ENV PLUGIN_VERSION=v3.3.1.Final
+ENV LLVM_VERSION=22
 
 RUN apk add --no-cache protobuf-c-dev
 
 # Compile the plugins from sources and install
-RUN apk add --no-cache --virtual .debezium-build-deps gcc clang19 llvm19 git make musl-dev pkgconf \
+RUN apk add --no-cache --virtual .debezium-build-deps gcc clang llvm git make musl-dev pkgconf \
+    && export CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin \
     && git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSION --single-branch \
-    && (cd /postgres-decoderbufs && make && make install) \
+    && (cd /postgres-decoderbufs && make CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin && make install CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin) \
     && rm -rf postgres-decoderbufs \
     && apk del .debezium-build-deps
 
