@@ -14,9 +14,12 @@ RUN apt-get update \
         clang-14 \
         llvm-14 \
         postgresql-server-dev-$PG_MAJOR \
-    && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+RUN add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
     && apt-get update && apt-get install -f -y --no-install-recommends \
         libprotobuf-c-dev=$PROTOC_VERSION.* \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 # Compile the plugin from sources and install it
