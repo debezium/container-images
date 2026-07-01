@@ -1,8 +1,8 @@
-FROM quay.io/debezium/connect-base:3.6
+FROM quay.io/debezium/connect-base:3.7
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=3.6.0-SNAPSHOT
+ARG DEBEZIUM_VERSION=3.7.0-SNAPSHOT
 
 ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
     MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
