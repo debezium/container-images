@@ -54,7 +54,10 @@ build_docker_image () {
     echo "** Building    ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:${IMAGE_TAG}"
     echo "****************************************************************"
 
-    TAGS=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest")
+    TAGS=()
+    if [ "${DEBEZIUM_VERSION}" = "${LATEST_STREAM}" ]; then
+        TAGS+=("-t ${DEBEZIUM_DOCKER_REGISTRY_PRIMARY_NAME}/${IMAGE_NAME}:latest")
+    fi
 
     if [ -z "$RELEASE_TAG" ]; then
         echo "****************************************************************"
