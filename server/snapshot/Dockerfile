@@ -41,6 +41,10 @@ RUN if [ -z "$DEBEZIUM_VERSION" ]; then \
         DEBEZIUM_VERSION=$(curl -fsSL https://raw.githubusercontent.com/debezium/debezium/main/pom.xml | \
             grep -oP '<version>\K[^<]*-SNAPSHOT(?=</version>)' | \
             head -1) && \
+        if [ -z "$DEBEZIUM_VERSION" ]; then \
+            echo "ERROR: Failed to detect DEBEZIUM_VERSION from GitHub" && \
+            exit 1; \
+        fi && \
         echo "Detected version: $DEBEZIUM_VERSION"; \
     else \
         echo "Using provided DEBEZIUM_VERSION: $DEBEZIUM_VERSION"; \
