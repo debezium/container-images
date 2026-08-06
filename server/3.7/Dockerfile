@@ -10,7 +10,7 @@ ENV DEBEZIUM_VERSION=3.7.0.Alpha1 \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
-    SERVER_MD5=a4892fc1024d67083711962f21d1af26
+    SERVER_MD5=d2e57fb22c8f8217a02510921eeefd06
 
 #
 # Create a directory for Debezium Server
