@@ -83,13 +83,38 @@
 #
 FROM registry.access.redhat.com/ubi8/ubi-minimal AS builder
 
-ARG DEBEZIUM_VERSION=3.6.2-SNAPSHOT
+# DEBEZIUM_VERSION is optional. If not provided, it will be auto-detected
+# from the debezium/debezium GitHub repository's main branch pom.xml.
+# To use a specific version: docker build --build-arg DEBEZIUM_VERSION=x.y.z-SNAPSHOT
+ARG DEBEZIUM_VERSION=""
 
 ENV DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
     MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
 
+#
+# Install required tools
+#
 RUN microdnf install -y curl gzip tar gawk && \
-    mkdir -p $DEBEZIUM_PLATFORM_CONDUCTOR_HOME && \
+    mkdir -p $DEBEZIUM_PLATFORM_CONDUCTOR_HOME
+
+#
+# Auto-detect version from GitHub if not provided
+#
+RUN if [ -z "$DEBEZIUM_VERSION" ]; then \
+        echo "DEBEZIUM_VERSION not provided, auto-detecting from GitHub..." && \
+        DEBEZIUM_VERSION=$(curl -fsSL https://raw.githubusercontent.com/debezium/debezium/main/pom.xml | \
+            grep -oP '<version>\K[^<]*-SNAPSHOT(?=</version>)' | \
+            head -1) && \
+        echo "Detected version: $DEBEZIUM_VERSION"; \
+    else \
+        echo "Using provided DEBEZIUM_VERSION: $DEBEZIUM_VERSION"; \
+    fi && \
+    echo "$DEBEZIUM_VERSION" > /tmp/debezium_version.txt
+
+#
+# Download and install platform-conductor
+#
+RUN DEBEZIUM_VERSION=$(cat /tmp/debezium_version.txt) && \
     SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}') && \
     echo "Downloading and installing debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz ..." && \
     curl --silent -fSL -o /tmp/debezium-platform-conductor.tar.gz $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-platform-conductor/$DEBEZIUM_VERSION/debezium-platform-conductor-$SNAPSHOT_VERSION.tar.gz && \
@@ -104,11 +129,8 @@ RUN microdnf install -y curl gzip tar gawk && \
 FROM registry.access.redhat.com/ubi8/openjdk-21
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=3.4.3-SNAPSHOT
-
 ENV LANGUAGE='en_US:en'
-ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
-    DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor
+ENV DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor
 
 USER root
 
@@ -118,4 +140,3 @@ EXPOSE 8080
 USER 185
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="$DEBEZIUM_PLATFORM_CONDUCTOR_HOME/quarkus-run.jar"
-

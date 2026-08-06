@@ -83,12 +83,14 @@ LABEL maintainer="Debezium Community"
 #
 # Set the version, home directory
 #
-ARG DEBEZIUM_VERSION=3.6.2-SNAPSHOT
+# DEBEZIUM_VERSION is optional. If not provided, it will be auto-detected
+# from the debezium/debezium GitHub repository's main branch pom.xml.
+# To use a specific version: docker build --build-arg DEBEZIUM_VERSION=x.y.z-SNAPSHOT
+ARG DEBEZIUM_VERSION=""
 
 ENV LANGUAGE='en_US:en'
-ENV DEBEZIUM_VERSION=$DEBEZIUM_VERSION \
-    OPERATOR_HOME=/operator \
-    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots" 
+ENV OPERATOR_HOME=/operator \
+    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
 
 USER root
 
@@ -99,24 +101,37 @@ RUN microdnf install -y gzip
 RUN mkdir $OPERATOR_HOME;
 
 #
+# Auto-detect version from GitHub if not provided
+#
+RUN if [ -z "$DEBEZIUM_VERSION" ]; then \
+        echo "DEBEZIUM_VERSION not provided, auto-detecting from GitHub..." && \
+        DEBEZIUM_VERSION=$(curl -fsSL https://raw.githubusercontent.com/debezium/debezium/main/pom.xml | \
+            grep -oP '<version>\K[^<]*-SNAPSHOT(?=</version>)' | \
+            head -1) && \
+        echo "Detected version: $DEBEZIUM_VERSION"; \
+    else \
+        echo "Using provided DEBEZIUM_VERSION: $DEBEZIUM_VERSION"; \
+    fi && \
+    echo "$DEBEZIUM_VERSION" > /tmp/debezium_version.txt
+
+#
 # Download the snapshot version of debezium-operator and then install it to the `$OPERATOR_HOME` directory...
 #
-RUN SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-operator-dist/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
-    echo "Downloading and installing debezium-operator-dist-$SNAPSHOT_VERSION.tar.gz ..." ; \
+RUN DEBEZIUM_VERSION=$(cat /tmp/debezium_version.txt) && \
+    SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-operator-dist/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}') && \
+    echo "Downloading and installing debezium-operator-dist-$SNAPSHOT_VERSION.tar.gz ..." && \
     curl --silent -fSL -o /tmp/operator.tar.gz  $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-operator-dist/$DEBEZIUM_VERSION/debezium-operator-dist-$SNAPSHOT_VERSION.tar.gz && \
     echo "Extracting debezium-operator-dist-$SNAPSHOT_VERSION.tar.gz ..." && \
     tar xzf /tmp/operator.tar.gz -C $OPERATOR_HOME --strip-components 1 && \
     echo "Successfully installed debezium-operator-$SNAPSHOT_VERSION.tar.gz !" && \
-    rm -f /tmp/operator.tar.gz; 
+    rm -f /tmp/operator.tar.gz
 
 #
 # Set the owner on `$OPERATOR_HOME`
 #
 RUN chown -R 185 $OPERATOR_HOME
 
-
 EXPOSE 8080
 USER 185
 ENV JAVA_OPTS="-Dquarkus.http.host=0.0.0.0 -Djava.util.logging.manager=org.jboss.logmanager.LogManager"
 ENV JAVA_APP_JAR="$OPERATOR_HOME/quarkus-run.jar"
-

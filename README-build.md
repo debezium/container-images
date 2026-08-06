@@ -92,3 +92,24 @@ For building a single Debezium version for multiple platforms, you can run
 the Debezium version. Note that the minimum Debezium version that supports this
 build is `1.9`.
 
+## Building Snapshot Images
+
+Snapshot images automatically detect the current development version from the 
+Debezium main branch. You can build them without specifying a version:
+
+```bash
+docker build -t debezium/connect:snapshot connect/snapshot/
+docker build -t debezium/server:snapshot server/snapshot/
+docker build -t debezium/operator:snapshot operator/snapshot/
+docker build -t debezium/platform-conductor:snapshot platform-conductor/snapshot/
+```
+
+To use a specific version, provide the DEBEZIUM_VERSION build argument:
+
+```bash
+docker build --build-arg DEBEZIUM_VERSION=3.6.2-SNAPSHOT \
+    -t debezium/connect:snapshot connect/snapshot/
+```
+
+The build process will log whether the version was auto-detected or explicitly provided.
+
