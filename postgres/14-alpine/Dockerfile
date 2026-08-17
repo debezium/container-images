@@ -14,9 +14,6 @@ RUN apk add --no-cache --virtual .debezium-build-deps gcc clang llvm git make mu
     && git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSION --single-branch \
     && (cd /postgres-decoderbufs && make CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin && make install CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin) \
     && rm -rf postgres-decoderbufs \
-    && git clone https://github.com/eulerto/wal2json -b master --single-branch \
-    && (cd /wal2json && git checkout $WAL2JSON_COMMIT_ID && make CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin && make install CLANG=clang-${LLVM_VERSION} LLVM_BINPATH=/usr/lib/llvm${LLVM_VERSION}/bin) \
-    && rm -rf wal2json \
     && apk del .debezium-build-deps
 
 # Copy the custom configuration which will be passed down to the server (using a .sample file is the preferred way of doing it by 

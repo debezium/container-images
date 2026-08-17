@@ -4,8 +4,6 @@ ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v3.3.1.Final
 ENV PROTOC_VERSION=1.5
 
-ENV WAL2JSON_COMMIT_ID=wal2json_2_3
-
 # Install the packages which will be required to get everything to compile
 RUN apt-get update \
     && apt-get install -f -y --no-install-recommends \
@@ -31,14 +29,6 @@ RUN git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSIO
     && cd / \
     && rm -rf postgres-decoderbufs
 
-RUN git clone https://github.com/eulerto/wal2json -b master --single-branch \
-    && cd /wal2json \
-    && git checkout $WAL2JSON_COMMIT_ID \
-    && make && make install \
-    && cd / \
-    && rm -rf wal2json
-
-
 FROM mirror.gcr.io/library/postgres:14-bullseye
 
 LABEL maintainer="Debezium Community"
@@ -58,7 +48,7 @@ RUN apt-get update \
         libprotobuf-c1 \
     && rm -rf /var/lib/apt/lists/*
 
-COPY --from=build /usr/lib/postgresql/$PG_MAJOR/lib/decoderbufs.so /usr/lib/postgresql/$PG_MAJOR/lib/wal2json.so /usr/lib/postgresql/$PG_MAJOR/lib/
+COPY --from=build /usr/lib/postgresql/$PG_MAJOR/lib/decoderbufs.so /usr/lib/postgresql/$PG_MAJOR/lib/
 COPY --from=build /usr/share/postgresql/$PG_MAJOR/extension/decoderbufs.control /usr/share/postgresql/$PG_MAJOR/extension/
 # Copy the custom configuration which will be passed down to the server (using a .sample file is the preferred way of doing it by
 # the base Docker image)
