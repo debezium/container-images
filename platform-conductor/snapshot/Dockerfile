@@ -85,7 +85,7 @@ FROM registry.access.redhat.com/ubi8/ubi-minimal AS builder
 
 # DEBEZIUM_VERSION is optional. If not provided, it will be auto-detected
 # from the debezium/debezium GitHub repository's main branch pom.xml.
-# To use a specific version: docker build --build-arg DEBEZIUM_VERSION=3.7.0-SNAPSHOT
+# To use a specific version: docker build --build-arg DEBEZIUM_VERSION=3.6.3-SNAPSHOT
 ARG DEBEZIUM_VERSION=""
 
 ENV DEBEZIUM_PLATFORM_CONDUCTOR_HOME=/debezium-platform-conductor \
