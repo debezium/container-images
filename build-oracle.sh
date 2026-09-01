@@ -63,7 +63,7 @@ build_oracle_image() {
     SUCCESS_MESSAGE="DATABASE IS READY TO USE"
   fi
 
-  mkfifo .logpipe && (docker logs -f oracle | tee .logpipe & awk -v msg="$SUCCESS_MESSAGE" '/DATABASE SETUP WAS NOT SUCCESSFUL/ { exit 1 } $0 ~ msg { exit 0 }' < .logpipe; kill $!; rm .logpipe)
+  mkfifo .logpipe && (docker logs -f oracle 2>&1 | tee .logpipe & awk -v msg="$SUCCESS_MESSAGE" '/DATABASE SETUP WAS NOT SUCCESSFUL/ { exit 1 } $0 ~ msg { exit 0 }' < .logpipe; kill $!; rm .logpipe)
 
   echo ""
   echo "****************************************************************************************************************"
