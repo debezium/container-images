@@ -9,7 +9,7 @@ Using a Kubernetes operator such as [Strimzi](https://strimzi.io/) (which comes 
 
 # How to use this image
 
-This image can be used in several different ways. All require an already-running Zookeeper service, which is either running locally via the container named `zookeeper` or with OpenShift running as a service named `zookeeper`. Also required are already-running Kafka brokers, which are either running locally via the container named `kafka` or with OpenShift running as a service named `kafka`.
+This image can be used in several different ways. It requires either an already-running ZooKeeper service or a Kafka broker running in KRaft mode. When using ZooKeeper, it is expected to be available either locally using the `zookeeper` container or on OpenShift as a service named `zookeeper`. In either case, already-running Kafka brokers are also required, either locally using the `kafka` container or on OpenShift as a service named `kafka`.
 
 ## Start a Kafka Connect service instance
 
