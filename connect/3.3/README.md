@@ -4,12 +4,12 @@
 
 Debezium is a distributed platform that turns your existing databases into event streams, so applications can quickly react to each row-level change in the databases. Debezium is built on top of Kafka and provides Kafka Connect compatible connectors that monitor specific database management systems. Debezium records the history of data changes in Kafka logs, so your application can be stopped and restarted at any time and can easily consume all of the events it missed while it was not running, ensuring that all events are processed correctly and completely.
 
-Running Debezium involves Zookeeper, Kafka, and services that run Debezium's connectors. For simple evaluation and experimentation, all services can all be run on a single host machine, using the recipe outlined below. Production environments, however, require properly running and networking multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines.
+Running Debezium involves Kafka, running in KRaft mode, and services that run Debezium's connectors. For simple evaluation and experimentation, all services can all be run on a single host machine, using the recipe outlined below. Production environments, however, require properly running and networking multiple instances of each service to provide the performance, reliability, replication, and fault tolerance. This can be done with a platform like [OpenShift](https://www.openshift.com) that manages multiple Docker containers running on multiple hosts and machines.
 Using a Kubernetes operator such as [Strimzi](https://strimzi.io/) (which comes with operators and CRDs for Kafka, Kafka Connect, connectors, and more) is recommended for such deployments.
 
 # How to use this image
 
-This image can be used in several different ways. All require an already-running Zookeeper service, which is either running locally via the container named `zookeeper` or with OpenShift running as a service named `zookeeper`. Also required are already-running Kafka brokers, which are either running locally via the container named `kafka` or with OpenShift running as a service named `kafka`.
+This image can be used in several different ways. All require already-running Kafka brokers, which are either running locally via the container named `kafka` or with OpenShift running as a service named `kafka`.
 
 ## Start a Kafka Connect service instance
 
@@ -17,9 +17,9 @@ When running a cluster of one or more Kafka Connect service instances, several i
 
 Starting an instance of Kafka Connect using this image is simple:
 
-    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link zookeeper:zookeeper --link kafka:kafka quay.io/debezium/connect
+    $ docker run -it --name connect -p 8083:8083 -e GROUP_ID=1 -e CONFIG_STORAGE_TOPIC=my-connect-configs -e OFFSET_STORAGE_TOPIC=my-connect-offsets -e ADVERTISED_HOST_NAME=$(echo $DOCKER_HOST | cut -f3  -d'/' | cut -f1 -d':') --link kafka:kafka quay.io/debezium/connect
 
-This command uses this image and starts a new container named `connect`, which runs in the foreground and attaches the console so that it display the service's output and error messages. It exposes its REST API on port 8083, which is mapped to the same port number on the local host. It uses Zookeeper in the container (or service) named `zookeeper` and Kafka brokers in the container (or service) named `kafka`. This command sets the three required environment variables, though you should replace their values with more meaningful values for your environment.
+This command uses this image and starts a new container named `connect`, which runs in the foreground and attaches the console so that it display the service's output and error messages. It exposes its REST API on port 8083, which is mapped to the same port number on the local host. It uses Kafka brokers in the container (or service) named `kafka`. This command sets the three required environment variables, though you should replace their values with more meaningful values for your environment.
 
 To start the container in _detached_ mode, simply replace the `-it` option with `-d`. No service output will be sent to your console, but it can be read at any time using the `docker logs` command. For example, the following command will display the output and keep following the output:
 
