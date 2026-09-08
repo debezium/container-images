@@ -1,8 +1,8 @@
-FROM mirror.gcr.io/library/postgres:14-bullseye AS build
+FROM mirror.gcr.io/library/postgres:14-bookworm AS build
 
 ARG USE_POSTGIS=true
 ENV PLUGIN_VERSION=v3.3.1.Final
-ENV PROTOC_VERSION=1.5
+ENV PROTOC_VERSION=1.4
 
 # Install the packages which will be required to get everything to compile
 RUN apt-get update \
@@ -11,14 +11,10 @@ RUN apt-get update \
         build-essential \
         pkg-config \
         git \
-        clang-11 \
-        llvm-11 \
+        clang-14 \
+        llvm-14 \
         postgresql-server-dev-$PG_MAJOR \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-RUN add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
-    && apt-get update && apt-get install -f -y --no-install-recommends \
-        libprotobuf-c-dev=$PROTOC_VERSION.* \
+        libprotobuf-c-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -29,7 +25,7 @@ RUN git clone https://github.com/debezium/postgres-decoderbufs -b $PLUGIN_VERSIO
     && cd / \
     && rm -rf postgres-decoderbufs
 
-FROM mirror.gcr.io/library/postgres:14-bullseye
+FROM mirror.gcr.io/library/postgres:14-bookworm
 
 LABEL maintainer="Debezium Community"
 
@@ -43,8 +39,7 @@ RUN apt-get update \
         postgresql-$PG_MAJOR-postgis-$POSTGIS_VERSION-scripts \
         postgis; \
        fi \
-    && add-apt-repository "deb http://ftp.debian.org/debian testing main contrib" \
-    && apt-get update && apt-get install -f -y --no-install-recommends \
+    && apt-get install -f -y --no-install-recommends \
         libprotobuf-c1 \
     && rm -rf /var/lib/apt/lists/*
 
