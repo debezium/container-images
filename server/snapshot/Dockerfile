@@ -74,7 +74,9 @@ FROM registry.access.redhat.com/ubi8/openjdk-21
 LABEL maintainer="Debezium Community"
 
 ENV SERVER_HOME=/debezium \
-    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
+    MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots" \
+    OTEL_ENABLED=true \
+    OTEL_SDK_DISABLED=true
 
 USER root
 RUN microdnf clean all
