@@ -82,10 +82,14 @@ Passing `-e JAVA_OPTS=...` at `docker run` will add to — not replace — the a
 The agent is configured exclusively through environment variables passed to the container.
 See the [OpenTelemetry SDK environment variable reference](https://opentelemetry.io/docs/languages/java/configuration/) for the full list.
 
+Although the agent is installed at build time, telemetry export ist **disabled at runtime by default** via the environment variable `OTEL_SDK_DISABLED`.
+To enable it, set `OTEL_SDK_DISABLED=false`.
+
 Common variables:
 
 | Variable | Description | Example |
 |---|---|---|
+| `OTEL_SDK_DISABLED` | Enables the SDK | `false` |
 | `OTEL_SERVICE_NAME` | Service name reported in traces/metrics | `debezium-server` |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint | `http://otel-collector:4317` |
 | `OTEL_TRACES_EXPORTER` | Traces exporter (`otlp`, `logging`, `none`) | `otlp` |
@@ -97,6 +101,7 @@ Common variables:
     $ docker run -it --name debezium -p 8080:8080 \
         -v $PWD/config:/debezium/config \
         -v $PWD/data:/debezium/data \
+        -e OTEL_SDK_DISABLED=false \
         -e OTEL_SERVICE_NAME=debezium-server \
         -e OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317 \
         quay.io/debezium/server
