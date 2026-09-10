@@ -10,11 +10,8 @@ ENV SERVER_HOME=/debezium \
 USER root
 
 RUN microdnf -y install \
-        curl \
         gzip \
         tar \
-        grep \
-        gawk \
     && microdnf clean all
 
 RUN mkdir -p ${SERVER_HOME}/conf ${SERVER_HOME}/data
