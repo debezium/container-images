@@ -67,12 +67,13 @@ Start the Debezium Server:
 
 # OpenTelemetry (OTEL) support
 
-The image ships with the [OpenTelemetry Java agent](https://github.com/open-telemetry/opentelemetry-java-instrumentation) bundled at `/debezium/otel/opentelemetry-javaagent.jar`.
+The image ships with the [OpenTelemetry Java agent](https://github.com/open-telemetry/opentelemetry-java-instrumentation) bundled at `/debezium/lib_metrics/opentelemetry-javaagent.jar`.
 
 ## Enabling / disabling the agent
 
-The agent is **enabled by default** (`OTEL_ENABLED=yes` at image build time).
-To build an image without the agent, pass `--build-arg OTEL_ENABLED=no` to `docker build`.
+The `OTEL_ENABLED` environment variable controls whether the agent is loaded at runtime. It is enabled by default. Set `OTEL_ENABLED=false` to prevent the agent from being loaded.
+
+Loading the agent does not enable telemetry by itself. Telemetry is disabled by default through `OTEL_SDK_DISABLED=true`. Set `OTEL_SDK_DISABLED=false` to enable the OpenTelemetry SDK and activate telemetry.
 
 When the agent is enabled it is wired into `JAVA_OPTS` at build time, so it is always active at runtime.
 Passing `-e JAVA_OPTS=...` at `docker run` will add to — not replace — the agent flag.
@@ -82,14 +83,12 @@ Passing `-e JAVA_OPTS=...` at `docker run` will add to — not replace — the a
 The agent is configured exclusively through environment variables passed to the container.
 See the [OpenTelemetry SDK environment variable reference](https://opentelemetry.io/docs/languages/java/configuration/) for the full list.
 
-Although the agent is installed at build time, telemetry export ist **disabled at runtime by default** via the environment variable `OTEL_SDK_DISABLED`.
-To enable it, set `OTEL_SDK_DISABLED=false`.
-
 Common variables:
 
 | Variable | Description | Example |
 |---|---|---|
-| `OTEL_SDK_DISABLED` | Enables the SDK | `false` |
+| `OTEL_ENABLED` | Decides if the agent is loaded | `true` |
+| `OTEL_SDK_DISABLED` | Disables the OpenTelemetry SDK when set to `true` | `false` |
 | `OTEL_SERVICE_NAME` | Service name reported in traces/metrics | `debezium-server` |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint | `http://otel-collector:4317` |
 | `OTEL_TRACES_EXPORTER` | Traces exporter (`otlp`, `logging`, `none`) | `otlp` |

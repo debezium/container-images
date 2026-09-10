@@ -89,7 +89,7 @@ Common variables:
 
 | Variable | Description | Example |
 |---|---|---|
-| `OTEL_SDK_DISABLED` | Enables the SDK | `false` |
+| `OTEL_SDK_DISABLED` | Disables the OpenTelemetry SDK when set to `true` | `false` |
 | `OTEL_SERVICE_NAME` | Service name reported in traces/metrics | `debezium-server` |
 | `OTEL_EXPORTER_OTLP_ENDPOINT` | OTLP collector endpoint | `http://otel-collector:4317` |
 | `OTEL_TRACES_EXPORTER` | Traces exporter (`otlp`, `logging`, `none`) | `otlp` |
