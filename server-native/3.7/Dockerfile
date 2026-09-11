@@ -2,10 +2,11 @@ FROM registry.access.redhat.com/ubi9/ubi-minimal:9.6 AS builder
 
 LABEL maintainer="Debezium Community"
 
-ARG DEBEZIUM_VERSION=""
-
-ENV SERVER_HOME=/debezium \
-    MAVEN_OSS_SNAPSHOT=https://central.sonatype.com/repository/maven-snapshots
+ENV DEBEZIUM_VERSION=3.7.0.Beta1 \
+    SERVER_HOME=/debezium \
+    MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2"
+ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-native-dist-$DEBEZIUM_VERSION.tar.gz \
+SERVER_MD5=TBD
 
 USER root
 
@@ -17,32 +18,15 @@ RUN microdnf -y install \
 RUN mkdir -p ${SERVER_HOME}/conf ${SERVER_HOME}/data
 
 #
-# Auto-detect version from GitHub if not provided
-#
-RUN if [ -z "$DEBEZIUM_VERSION" ]; then \
-        echo "DEBEZIUM_VERSION not provided, auto-detecting from GitHub..." && \
-        DEBEZIUM_VERSION=$(curl -fsSL https://raw.githubusercontent.com/debezium/debezium/main/pom.xml | \
-            grep -oP '<version>\K[^<]*-SNAPSHOT(?=</version>)' | \
-            head -1) && \
-        test -n "$DEBEZIUM_VERSION"; \
-    fi && \
-    echo "Using version: $DEBEZIUM_VERSION" && \
-    echo "$DEBEZIUM_VERSION" > /tmp/debezium_version.txt
-
-#
 # Download and install Debezium Server
 #
-RUN DEBEZIUM_VERSION=$(cat /tmp/debezium_version.txt) && \
-    SNAPSHOT_VERSION=$(curl -fsSL \
-        ${MAVEN_OSS_SNAPSHOT}/io/debezium/debezium-server-native-dist/${DEBEZIUM_VERSION}/maven-metadata.xml | \
-        awk -F'[<>]' '/extension>tar.gz/ {getline; print $3; exit}') && \
-    echo "Downloading debezium-server-native-dist-${SNAPSHOT_VERSION}.tar.gz" && \
-    curl -fsSL \
-        -o /tmp/debezium.tar.gz \
-        ${MAVEN_OSS_SNAPSHOT}/io/debezium/debezium-server-native-dist/${DEBEZIUM_VERSION}/debezium-server-native-dist-${SNAPSHOT_VERSION}.tar.gz && \
-    tar xzf /tmp/debezium.tar.gz \
-        -C ${SERVER_HOME} \
-        --strip-components=1 && \
+RUN curl -fSL -o /tmp/debezium.tar.gz "$MAVEN_REPO_CENTRAL/$SERVER_URL_PATH"
+
+#
+# Verify the contents and then install ...
+#
+RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
+    tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
     rm -f /tmp/debezium.tar.gz
 
 #
