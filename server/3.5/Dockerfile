@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM registry.access.redhat.com/ubi8/openjdk-21 AS builder
+FROM registry.access.redhat.com/ubi8/openjdk-21@sha256:0c40294ed729433d68991f73fae5c17f5e46d9fcb13cfaaafebf016312736b94 AS builder
 
 LABEL maintainer="Debezium Community"
 
@@ -11,8 +11,8 @@ ARG OTEL_ENABLED=true
 ENV DEBEZIUM_VERSION=3.5.2.Final \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2" \
-    OPENTELEMETRY_AGENT_VERSION=2.25.0 \
-    OPENTELEMETRY_MD5=a7f1cbab5448e61d93e71ffdff9175b6
+    OPENTELEMETRY_AGENT_VERSION=2.26.1 \
+    OPENTELEMETRY_MD5=ea9cb308a0bc152da43089bd00f216e4
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
     SERVER_MD5=c1973260615870e94639c2fe64629c39
 
@@ -64,7 +64,7 @@ RUN if [ "$OTEL_ENABLED" = "true" ]; then \
 RUN chmod -R g+w,o+w $SERVER_HOME
 
 # Stage 2: Final image
-FROM registry.access.redhat.com/ubi8/openjdk-21
+FROM registry.access.redhat.com/ubi8/openjdk-21@sha256:0c40294ed729433d68991f73fae5c17f5e46d9fcb13cfaaafebf016312736b94
 
 LABEL maintainer="Debezium Community"
 
@@ -74,7 +74,8 @@ ENV DEBEZIUM_VERSION=3.5.2.Final \
     OTEL_SDK_DISABLED=true
 
 USER root
-RUN microdnf clean all
+RUN microdnf -y update && \
+    microdnf clean all
 
 USER jboss
 
