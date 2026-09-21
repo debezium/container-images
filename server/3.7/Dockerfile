@@ -60,7 +60,8 @@ ENV DEBEZIUM_VERSION=3.7.0.Beta2 \
     OTEL_SDK_DISABLED=true
 
 USER root
-RUN microdnf clean all
+RUN microdnf -y update && \
+    microdnf clean all
 
 USER jboss
 
