@@ -1,5 +1,5 @@
 # Stage 1: Build stage
-FROM registry.access.redhat.com/ubi8/openjdk-21@sha256:0c40294ed729433d68991f73fae5c17f5e46d9fcb13cfaaafebf016312736b94 AS builder
+FROM registry.access.redhat.com/ubi8/openjdk-21 AS builder
 
 LABEL maintainer="Debezium Community"
 
@@ -64,7 +64,7 @@ RUN if [ "$OTEL_ENABLED" = "true" ]; then \
 RUN chmod -R g+w,o+w $SERVER_HOME
 
 # Stage 2: Final image
-FROM registry.access.redhat.com/ubi8/openjdk-21@sha256:0c40294ed729433d68991f73fae5c17f5e46d9fcb13cfaaafebf016312736b94
+FROM registry.access.redhat.com/ubi8/openjdk-21
 
 LABEL maintainer="Debezium Community"
 
