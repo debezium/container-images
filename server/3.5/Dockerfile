@@ -11,8 +11,8 @@ ARG OTEL_ENABLED=true
 ENV DEBEZIUM_VERSION=3.5.2.Final \
     SERVER_HOME=/debezium \
     MAVEN_REPO_CENTRAL="https://repo1.maven.org/maven2" \
-    OPENTELEMETRY_AGENT_VERSION=2.25.0 \
-    OPENTELEMETRY_MD5=a7f1cbab5448e61d93e71ffdff9175b6
+    OPENTELEMETRY_AGENT_VERSION=2.26.1 \
+    OPENTELEMETRY_MD5=ea9cb308a0bc152da43089bd00f216e4
 ENV SERVER_URL_PATH=io/debezium/debezium-server-dist/$DEBEZIUM_VERSION/debezium-server-dist-$DEBEZIUM_VERSION.tar.gz \
     SERVER_MD5=c1973260615870e94639c2fe64629c39
 
@@ -74,7 +74,8 @@ ENV DEBEZIUM_VERSION=3.5.2.Final \
     OTEL_SDK_DISABLED=true
 
 USER root
-RUN microdnf clean all
+RUN microdnf -y update && \
+    microdnf clean all
 
 USER jboss
 
