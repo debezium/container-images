@@ -1,10 +1,10 @@
-FROM quay.io/debezium/connect-base:3.7
+FROM quay.io/debezium/connect-base:3.8
 
 LABEL maintainer="Debezium Community"
 
 # DEBEZIUM_VERSION is optional. If not provided, it will be auto-detected
 # from the debezium/debezium GitHub repository's main branch pom.xml.
-# To use a specific version: docker build --build-arg DEBEZIUM_VERSION=3.7.0-SNAPSHOT
+# To use a specific version: docker build --build-arg DEBEZIUM_VERSION=3.8.0-SNAPSHOT
 ARG DEBEZIUM_VERSION=""
 
 ENV MAVEN_OSS_SNAPSHOT="https://central.sonatype.com/repository/maven-snapshots"
