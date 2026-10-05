@@ -38,5 +38,5 @@ RUN echo -e '#!/bin/bash\njava -jar /usr/bin/kcctl-dir/quarkus-run.jar' > /usr/b
     chmod +x /usr/bin/kcctl
 
 COPY --from=oracle-tool /opt/debezium-oracle-query-tool/target/quarkus-app /opt/debezium-oracle-query-tool
-RUN echo -e '#!/bin/bash\njava -jar /opt/debezium-oracle-query-tool/quarkus-run.jar' > /usr/bin/dbzoqt && \
+RUN echo -e '#!/bin/bash\njava -jar /opt/debezium-oracle-query-tool/quarkus-run.jar $@' > /usr/bin/dbzoqt && \
     chmod +x /usr/bin/dbzoqt
