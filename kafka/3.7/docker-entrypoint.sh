@@ -11,7 +11,14 @@ get_broker_endpoint() {
         export KAFKA_BROKER=$(env | grep .*PORT_9092_TCP= | sed -e 's|.*tcp://||' | uniq | paste -sd ,)
     fi
     if [[ "x$KAFKA_BROKER" = "x" ]]; then
-        export KAFKA_BROKER=0.0.0.0:9092
+        # Newer Docker no longer sets link environment variables, so fall back to the conventional
+        # broker name when it resolves, and to the loopback address otherwise (for example when the
+        # broker shares this container's network namespace).
+        if getent hosts kafka >/dev/null 2>&1; then
+            export KAFKA_BROKER=kafka:9092
+        else
+            export KAFKA_BROKER=127.0.0.1:9092
+        fi
     fi
     echo "Using KAFKA_BROKER=$KAFKA_BROKER"
 }
