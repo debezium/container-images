@@ -65,6 +65,8 @@ Where `topic-name` is the name of the topic, and
 * `-k` is an optional flag that specifies whether the message key should be shown (by default, the key will not be displayed)
 * `-m minBytes` is an optional parameter to specify that messages should only be fetched when doing so will consume at least the specified number of bytes (defaults to '1')
 
+> **Note:** the container expects the broker to be reachable under the hostname `kafka`. See the `KAFKA_BROKER` environment variable below for the fallback behavior and how to specify a different address.
+
 ## Listing topics on a running broker
 
 If you already have one or more running containers with a Kafka broker, you can use this image to start _another_ container that connects to the running broker(s) and lists the existing topics:
@@ -124,6 +126,16 @@ Use this to specify the topic(s) that should be created as soon as the broker st
 ### `LOG_LEVEL` (optional)
 
 Use this to set the level of detail for Kafka's application log written to STDOUT and STDERR. Valid values are `INFO` (default), `WARN`, `ERROR`, `DEBUG`, or `TRACE`."
+
+### `KAFKA_BROKER` (optional)
+
+Use this to specify the address of the Kafka broker that the `create-topic`, `watch-topic` and `list-topics` commands connect to, for example `broker:9092`. Automatic topic creation via `CREATE_TOPICS` uses the same address.
+
+When `KAFKA_BROKER` is not set, the address is determined automatically:
+
+1. from the environment variables set by Docker container linking, if present;
+2. otherwise from the hostname `kafka` on port 9092, when that hostname can be resolved (the commands above name the broker container `kafka`);
+3. otherwise from `127.0.0.1:9092`, which reaches a broker sharing the container's network namespace, for example a container in the same pod.
 
 ### Others
 
