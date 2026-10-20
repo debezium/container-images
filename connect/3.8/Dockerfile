@@ -16,6 +16,7 @@ ENV DEBEZIUM_VERSION="3.7.0.Final" \
     SPANNER_MD5=9ea2b764defb84ed7b8fae43593dec84 \
     VITESS_MD5=a22cf562b8bcb068f84ff9df3c677029 \
     JDBC_MD5=33c0da9128d4d159ed62619fa00691d4 \
+    ELASTICSEARCH_MD5=TBD \
     INFORMIX_MD5=1a9a60914bfd2adc715aefd6e02a4118 \
     IBMI_MD5=a72b22c17a77d56509c5acdc799103c5 \
     COCKROACHDB_MD5=d93a8bd1c3ad8c97660f4be68ebcf34d \
@@ -35,6 +36,7 @@ RUN docker-maven-download debezium mongodb "$DEBEZIUM_VERSION" "$MONGODB_MD5" &&
     docker-maven-download debezium-additional informix informix "$DEBEZIUM_VERSION" "$INFORMIX_MD5" && \
     docker-maven-download debezium-additional ibmi ibmi "$DEBEZIUM_VERSION" "$IBMI_MD5" && \
     docker-maven-download debezium-additional cockroachdb cockroachdb "$DEBEZIUM_VERSION" "$COCKROACHDB_MD5" && \
+    docker-maven-download debezium-additional elasticsearch elasticsearch "$DEBEZIUM_VERSION" "$ELASTICSEARCH_MD5" && \
     docker-maven-download debezium-optional scripting "$DEBEZIUM_VERSION" "$SCRIPTING_MD5" && \
     docker-maven-download debezium-store storage-chronicle-queue "$DEBEZIUM_VERSION" "$CHRONICLE_QUEUE_MD5"
 

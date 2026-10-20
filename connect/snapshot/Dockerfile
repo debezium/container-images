@@ -31,7 +31,7 @@ RUN if [ -z "$DEBEZIUM_VERSION" ]; then \
 # Download the snapshot version of the connectors and then install them into the `$KAFKA_CONNECT_PLUGINS_DIR/debezium` directory...
 #
 RUN DEBEZIUM_VERSION=$(cat /tmp/debezium_version.txt) && \
-    for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,jdbc,spanner,vitess,informix,ibmi,mariadb,cockroachdb}; do \
+    for CONNECTOR in {mysql,mongodb,postgres,sqlserver,oracle,db2,jdbc,elasticsearch,spanner,vitess,informix,ibmi,mariadb,cockroachdb}; do \
         SNAPSHOT_VERSION=$(curl --silent -fSL $MAVEN_OSS_SNAPSHOT/io/debezium/debezium-connector-$CONNECTOR/$DEBEZIUM_VERSION/maven-metadata.xml | awk -F'<[^>]+>' '/<extension>tar.gz<\/extension>/ {getline; print $2; exit}'); \
         echo "Downloading and installing debezium-connector-$CONNECTOR-$SNAPSHOT_VERSION-plugin.tar.gz ..." ; \
         curl --silent -fSL -o /tmp/plugin.tar.gz \
