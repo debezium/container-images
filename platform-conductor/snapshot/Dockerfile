@@ -142,10 +142,10 @@ COPY --from=builder --chown=185:root $DEBEZIUM_PLATFORM_CONDUCTOR_HOME $DEBEZIUM
 
 # Host deployment uses this image as the Ansible controller. Docker Engine is
 # installed on the target host by the provisioning playbook, not in this image.
-RUN microdnf install -y openssh-clients python39 \
-    && python3.9 -m ensurepip --upgrade \
-    && python3.9 -m pip install --no-cache-dir --upgrade pip \
-    && python3.9 -m pip install --no-cache-dir ansible-core \
+RUN microdnf install -y openssh-clients python3.12 \
+    && python3.12 -m ensurepip --upgrade \
+    && python3.12 -m pip install --no-cache-dir --upgrade pip \
+    && python3.12 -m pip install --no-cache-dir ansible-core==2.21.5 \
     && ansible-galaxy collection install -p /usr/share/ansible/collections ansible.posix community.docker community.general \
     && microdnf clean all
 
