@@ -49,7 +49,7 @@ RUN echo "$SERVER_MD5 /tmp/debezium.tar.gz" | md5sum -c - &&\
 RUN chmod -R g+w,o+w $SERVER_HOME
 
 # Stage 2: Final image
-FROM registry.access.redhat.com/ubi8/openjdk-21
+FROM registry.access.redhat.com/ubi8/openjdk-21-runtime
 
 LABEL maintainer="Debezium Community"
 
