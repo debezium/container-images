@@ -32,7 +32,9 @@ RUN npm install -g serve@14
 WORKDIR /app
 COPY --from=builder /app/dist /app/dist
 COPY --from=cloner /app/debezium-platform/debezium-platform-stage/inject-env.sh /inject-env.sh
-RUN chmod +x /inject-env.sh && chown -R node:node /app /inject-env.sh
+RUN chmod +x /inject-env.sh && \
+    chown -R node:0 /app /inject-env.sh && \
+    chmod -R g=u /app /inject-env.sh
 
 LABEL maintainer="Debezium Community" \
       description="Debezium Platform Stage UI"
