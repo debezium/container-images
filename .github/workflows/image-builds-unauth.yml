@@ -48,3 +48,29 @@ jobs:
       - name: Build Tool Images
         if: matrix.component == 'tool'
         run: ./build-tool-images.sh latest
+
+  server-runtime:
+    name: Server runtime (${{ matrix.runner }})
+    timeout-minutes: 30
+    needs: [ check-signed-commits ]
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-24.04, ubuntu-24.04-arm]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build Server 3.8 runtime image
+        run: docker build --progress=plain -t debezium/server:runtime-test server/3.8
+      - name: Check runtime tools and random UID permissions
+        run: |
+          docker run --rm --entrypoint bash debezium/server:runtime-test -ec '
+            test "$(id -u)" = 185
+            java -version
+            for tool in keytool awk curl find chmod; do command -v "$tool"; done
+          '
+          docker run --rm --user 12345:0 --entrypoint bash debezium/server:runtime-test -ec '
+            touch /debezium/config/permission-test /debezium/data/permission-test
+            cp "$JAVA_HOME/lib/security/cacerts" /tmp/cacerts
+            keytool -list -keystore /tmp/cacerts -storepass changeit >/dev/null
+          '
