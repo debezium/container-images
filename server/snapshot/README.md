@@ -143,3 +143,9 @@ In this volume the configuration files (mostly `application.properties`) are loc
 ### `/debezium/data`
 
 In this volume the data files (mostly file offset storage) are located.
+
+## Runtime base
+
+The final image uses UBI 10 OpenJDK 21 runtime and runs as UID 185. The build stage still uses the full UBI 8 OpenJDK 21 image.
+
+On AMD64, UBI 10 requires an x86-64-v3 CPU. Red Hat supports UBI 10 containers on RHEL 9 and RHEL 10 hosts, but not RHEL 8 hosts. See the [Red Hat container compatibility matrix](https://access.redhat.com/support/policy/rhel-container-compatibility) for host and CPU requirements.
