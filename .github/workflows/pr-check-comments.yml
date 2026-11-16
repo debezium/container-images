@@ -4,6 +4,7 @@ on:
   # Runs with a write token: never check out or run pull request code, and treat artifacts as untrusted.
   workflow_run:
     workflows:
+      - "Contributor Check"
       - "Commit Sign-off Check"
     types:
       - completed
@@ -74,6 +75,14 @@ jobs:
           printf '%s' "$RESULTS" >> "$GITHUB_OUTPUT"
           echo "number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
           echo "login=$(gh api "repos/$GH_REPO/pulls/$PR_NUMBER" --jq '.user.login')" >> "$GITHUB_OUTPUT"
+
+      - name: Contributor check comment
+        if: steps.pr.outputs.contributor == 'fail'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            Welcome as a new contributor to Debezium, @${{ steps.pr.outputs.login }}. Reviewers, please add missing author name(s) and alias name(s) to the [COPYRIGHT.txt](https://github.com/debezium/debezium/blob/main/COPYRIGHT.txt) and [Aliases.txt](https://github.com/debezium/debezium/blob/main/jenkins-jobs/scripts/config/Aliases.txt) respectively.
 
       - name: Commit sign-off comment
         if: steps.pr.outputs.dco == 'fail'
