@@ -1,0 +1,17 @@
+name: Octocat commits check
+on:
+  # Runs with the read-only token of the pull request. Comments are posted by pr-check-comments.yml,
+  # which is triggered through workflow_run from the result recorded by this workflow.
+  pull_request:
+    branches:
+      - main
+      - 1.*
+      - 2.*
+      - 3.*
+      - 4.*
+permissions:
+  contents: read
+
+jobs:
+  octocat-check:
+    uses: debezium/dbz/.github/workflows/octocat-commits-check.yml@main

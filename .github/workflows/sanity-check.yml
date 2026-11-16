@@ -1,15 +1,17 @@
 name: Commit message format check
-on: [pull_request]
+on:
+  # Runs with the read-only token of the pull request. Comments are posted by pr-check-comments.yml,
+  # which is triggered through workflow_run from the result recorded by this workflow.
+  pull_request:
+    branches:
+      - main
+      - 1.*
+      - 2.*
+      - 3.*
+      - 4.*
+permissions:
+  contents: read
 
 jobs:
-  build:
-    name: Commit message
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v6
-      - name: Commit messages in format DBZ-xxx
-        env:
-          BASE_REF: ${{ github.base_ref }}
-        run: |
-          ! git log --format='format:%s' refs/remotes/origin/$BASE_REF.. | tail -n +2 | grep -Ev '^(DBZ-[[:digit:]]+)|(\[release\])|(\[jenkins-jobs\]) '
+  sanity-check:
+    uses: debezium/dbz/.github/workflows/sanity-check.yml@main
