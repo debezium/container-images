@@ -5,7 +5,9 @@ on:
   workflow_run:
     workflows:
       - "Contributor Check"
+      - "Octocat commits check"
       - "Commit Sign-off Check"
+      - "Commit message format check"
     types:
       - completed
 
@@ -83,6 +85,23 @@ jobs:
           issue-number: ${{ steps.pr.outputs.number }}
           body: |
             Welcome as a new contributor to Debezium, @${{ steps.pr.outputs.login }}. Reviewers, please add missing author name(s) and alias name(s) to the [COPYRIGHT.txt](https://github.com/debezium/debezium/blob/main/COPYRIGHT.txt) and [Aliases.txt](https://github.com/debezium/debezium/blob/main/jenkins-jobs/scripts/config/Aliases.txt) respectively.
+
+      - name: Octocat commits comment
+        if: steps.pr.outputs.octocat == 'fail'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            Hi @${{ steps.pr.outputs.login }}. Thank you for your valuable contribution.
+            Please author your commit(s) using an email [linked to your GitHub account](https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-github-profile/managing-contribution-graphs-on-your-profile/why-are-my-contributions-not-showing-up-on-my-profile).
+
+      - name: Commit message format comment
+        if: steps.pr.outputs.sanity == 'fail'
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ steps.pr.outputs.number }}
+          body: |
+            Hi @${{ steps.pr.outputs.login }}, thanks for your contribution. Please prefix the commit message(s) with the [debezium/dbz#xxx GitHub issue key](https://github.com/debezium/debezium/blob/main/CONTRIBUTING.md#making-changes).
 
       - name: Commit sign-off comment
         if: steps.pr.outputs.dco == 'fail'
