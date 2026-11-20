@@ -6,7 +6,7 @@ DEBEZIUM_VERSION="3.7"
 if [ -z "$DEBEZIUM_VERSIONS" ]; then
   DEBEZIUM_VERSIONS="$DEBEZIUM_VERSION"
 fi
-POSTGRES_VERSIONS="14 14-alpine 15 15-alpine 16 16-alpine 17 17-alpine 18 18-alpine"
+POSTGRES_VERSIONS="14 14-alpine 15 15-alpine 16 16-alpine 17 17-alpine 18 18-alpine 19 19-alpine"
 
 for POSTGRES_VERSION in $POSTGRES_VERSIONS; do
   ./build-postgres.sh "$POSTGRES_VERSION"
