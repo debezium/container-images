@@ -69,7 +69,7 @@ RUN DEBEZIUM_VERSION=$(cat /tmp/debezium_version.txt) && \
 RUN chmod -R g+w,o+w $SERVER_HOME
 
 # Stage 2: Final image
-FROM registry.access.redhat.com/ubi8/openjdk-21
+FROM registry.access.redhat.com/ubi10/openjdk-21-runtime
 
 LABEL maintainer="Debezium Community"
 
@@ -81,7 +81,7 @@ ENV SERVER_HOME=/debezium \
 USER root
 RUN microdnf clean all
 
-USER jboss
+USER 185
 
 COPY --from=builder $SERVER_HOME $SERVER_HOME
 
