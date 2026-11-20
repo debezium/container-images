@@ -44,7 +44,7 @@ RUN tar xzf /tmp/debezium.tar.gz -C $SERVER_HOME --strip-components 1 &&\
 RUN chmod -R g+w,o+w $SERVER_HOME
 
 # Stage 2: Final image
-FROM registry.access.redhat.com/ubi8/openjdk-21
+FROM registry.access.redhat.com/ubi8/openjdk-21-runtime
 
 LABEL maintainer="Debezium Community"
 ENV SERVER_HOME=/debezium
